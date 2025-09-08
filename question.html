@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>나와의 대화</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ✅ 강력 CSP: 외부 차단 / 인라인 금지 / iframe 금지 -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src  'self';
+    font-src   'self';
+    img-src    'self' data:;
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
+
+  <!-- ✅ Referrer 최소화 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- ✅ 캐시 방지 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- ✅ 자가 호스팅 리소스 -->
+  <link rel="stylesheet" href="./css/pretendard.css" />
+  <link rel="stylesheet" href="./css/normalize.css" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body>
+
+<main class="sheet">
+  <div class="toolbar">
+    <button id="backBtn" class="back-btn" type="button" aria-label="뒤로가기">←</button>
+    <span class="back-hint">뒤로가기를 누르면 선택한 감정이 초기화됩니다</span>
+  </div>
+
+  <h2>💬 나와의 대화</h2>
+
+  <!-- 카드 1 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">🌱 내 마음 돌보기</div>
+      <span id="pickedEmotion" class="pill">선택 안됨</span>
+    </div>
+    <textarea id="q1" placeholder="예) 화남 → 나를 무시하는 것 같은 생각/마음이 오늘의 감정을 만들었나요?"></textarea>
+  </section>
+
+  <!-- 카드 2 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">✏️ 상대방 입장 되어보기(선택)</div>
+    </div>
+    <textarea id="q2" placeholder="예) 상대방의 입장이 되어 상황을 바라보니, 상대도 내 행동을 보며 자신이 존중받지 못했다고 느꼈을 수도 있을 것 같아."></textarea>
+  </section>
+
+  <!-- 카드 3 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-title">💌 To. 사랑하는 나에게</div>
+    </div>
+    <textarea id="q3" placeholder="예) 내가 존중받길 원하는 만큼, 상대방에게도 똑같은 요구가 있다는 걸 잊고 있었어. 앞으로는 내 감정에 빠지지 말고, 객관적인 눈으로 상황을 보는 연습을 자주 해보자!"></textarea>
+  </section>
+
+  <div class="cta-bar">
+    <button id="goGoal" class="cta" type="button">나를 위한 몰입 목표 만들기 →</button>
+  </div>
+</main>
+
+<!-- ✅ 인라인 금지: 분리된 스크립트만 로드 -->
+<script src="./js/app.js" defer></script>
+
+<noscript>
+  <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+</noscript>
+</body>
+</html>

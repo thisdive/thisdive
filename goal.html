@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>오늘의 몰입 목표</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ✅ 강력 CSP: 외부/인라인 차단, iframe 금지 -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src  'self';
+    img-src    'self' data:;
+    font-src   'self';
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
+
+  <!-- 보조 보안/캐시 메타 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- ✅ 자가 호스팅 리소스 -->
+  <link rel="stylesheet" href="./css/normalize.css" />
+  <link rel="stylesheet" href="./css/pretendard.css" />
+  <link rel="stylesheet" href="./css/goal.css" />
+</head>
+<body data-page="goal">
+
+<main class="sheet" role="main" aria-labelledby="pageTitle">
+  <h1 id="pageTitle">
+    <button id="backBtn" class="back-btn" type="button" aria-label="뒤로가기">←</button>
+    🌟 오늘의 몰입 목표
+  </h1>
+
+  <p class="lead">지금 나에게 가장 필요한 <strong>몰입 유형</strong>은 무엇인가요?</p>
+  <div class="chips" id="catField">
+    <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
+    <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
+    <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
+    <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
+    <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
+  </div>
+
+  <p class="lead">지금 내가 실천할 수 있는 <strong>몰입 목표의 난이도</strong>를 선택하세요.</p>
+  <section class="panel" role="group" aria-labelledby="difficultyLabel">
+    <div class="panel-head">
+      <strong id="difficultyLabel">몰입 목표 난이도</strong>
+      <span id="readout" class="readout">미정 (0/5)</span>
+    </div>
+
+    <div class="stars" id="starsGroup" aria-label="난이도 별점">
+      <input class="sr-radio" type="radio" name="diff" id="d1" value="1">
+      <label for="d1" class="star" data-val="1" role="button" aria-label="1점">★</label>
+
+      <input class="sr-radio" type="radio" name="diff" id="d2" value="2">
+      <label for="d2" class="star" data-val="2" role="button" aria-label="2점">★</label>
+
+      <input class="sr-radio" type="radio" name="diff" id="d3" value="3">
+      <label for="d3" class="star" data-val="3" role="button" aria-label="3점">★</label>
+
+      <input class="sr-radio" type="radio" name="diff" id="d4" value="4">
+      <label for="d4" class="star" data-val="4" role="button" aria-label="4점">★</label>
+
+      <input class="sr-radio" type="radio" name="diff" id="d5" value="5">
+      <label for="d5" class="star" data-val="5" role="button" aria-label="5점">★</label>
+    </div>
+
+    <div class="scale-hint"><span>가볍게</span><span>도전</span></div>
+  </section>
+
+  <p class="lead">선택한 난이도에 맞춰 <strong>오늘의 몰입 목표</strong>를 입력하세요.</p>
+  <input id="goalInput" class="goal-input" type="text"
+         placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
+
+  <div class="actions">
+    <button id="startBtn" class="cta" type="button">몰입 시작하기 →</button>
+  </div>
+</main>
+
+<script src="./js/goal.js" defer></script>
+
+<noscript>
+  <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,69 @@
+body {
+  font-family: 'MaruBuri', system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background-color: #f8f4ef;
+  color: #2a3249;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  min-height: 100vh; padding: 60px 16px 24px; margin: 0;
+}
+h1 { margin-bottom: 15px; font-size: 24px; font-weight: bold; }
+
+/* 🔶 목표 문구만 노란 하이라이트 */
+.goal-banner{ margin: 0 0 28px; text-align:center; max-width:min(86vw, 720px); }
+.goal-banner .hl{
+  font-weight:500; font-size:18.5px; padding:0 6px;
+  background: linear-gradient(transparent 60%, #FFD8C2 0);
+  border-radius:4px;
+}
+
+.timer-controls { display: flex; gap: 12px; margin-bottom: 42px; flex-wrap: wrap; justify-content: center; }
+.timer-controls button {
+  background-color: #F3ECE2; color: #2a3249; border: none;
+  padding: 10px 16px; border-radius: 8px; font-size: 16px; cursor: pointer;
+  transition: transform .06s ease, box-shadow .12s ease;
+}
+.timer-controls button:active{ transform: translateY(1px); }
+.timer-controls button.active {
+  background-color: #2a3249; color: #F3ECE2; font-weight: 550;
+}
+
+.circle-timer { position: relative; width: 220px; height: 220px; margin-bottom: 20px; }
+.circle-timer svg { transform: rotate(-90deg); }
+.circle-timer circle { fill: none; stroke-width: 6; }
+.bg { stroke: #e8dfd6; }
+.progress { stroke: #2a3249; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.time-text { position: absolute; inset: 0; display:flex; align-items:center; justify-content:center;
+  font-size: 32px; font-weight: bold; }
+
+.reflection { text-align: center; margin-top: 12px; }
+.reflection p { margin: 8px 0 25px; font-size: 16px; }
+
+/* ‘몰입 완료’ 버튼 */
+.complete {
+  background-color: #F3ECE2; color: #2a3249; border: none;
+  padding: 10px 16px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+.complete:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ✅ 완료 상태(요청) : 남색 배경 + 글자색(#F3ECE2) */
+.complete.done { background-color: #2A3249; color: #F3ECE2; pointer-events: none; }
+
+.toast{
+  position: fixed; left: 50%; bottom: 75px; transform: translateX(-50%) translateY(12px);
+  padding: 12px 16px; background:#fff; color:#2A3249; border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18); opacity: 0; transition: opacity .2s ease, transform .2s ease;
+  z-index: 10000; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; white-space: nowrap;
+}
+.toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 420px){
+  .goal-banner .hl{ font-size:17px; }
+}
+
+.back-btn{
+  appearance:none; border:1px solid #e5e7eb; background:#fff; color:#374151;
+  width:36px; height:36px; border-radius:10px; font-size:18px; line-height:1;
+  display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+  margin:0 8px 8px 0; align-self:flex-start;
+}
+.back-btn:active{ transform: translateY(1px); }

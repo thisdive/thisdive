@@ -1,0 +1,80 @@
+:root{
+  --bg:#FBF7F2;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --card:#fff;
+  --accent:#0f172a;
+  --shadow:0 20px 40px rgba(0,0,0,.08);
+  --radius:18px;
+  --pill:#f3f4f6;
+  --pill-ink:#374151;
+  --pill-on:#0f172a;
+  --pill-on-ink:#fff;
+  --bd:#eee;
+}
+
+body{
+  font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background:var(--bg); color:var(--ink);
+  margin:0; padding:28px 16px; display:flex; justify-content:center;
+}
+.sheet{ width:min(1160px,100%); }
+
+/* 상단 타이틀/뒤로 */
+.toolbar{ display:flex; align-items:center; gap:10px; margin:0 0 14px; }
+.back-btn{
+  appearance:none; border:1px solid #e5e7eb; background:#fff; color:#374151;
+  width:36px; height:36px; border-radius:10px; font-size:18px; line-height:1;
+  display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.back-btn:active{ transform: translateY(1px); }
+.back-hint{ font-size:13px; color:#9CA3AF; }
+
+h2{margin:6px 0 22px; font-size:22px;}
+
+/* 카드 */
+.card{
+  background:var(--card);
+  border-radius:24px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+  margin: 18px 0 22px;
+}
+.card-header{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:12px;
+}
+.card-title{ display:flex; align-items:center; gap:8px; font-size:18px; font-weight:700; }
+.pill{
+  font-size:13px; line-height:1;
+  padding:8px 10px; border-radius:999px;
+  background:var(--pill); color:var(--pill-ink); border:1px solid #e5e7eb;
+  white-space:nowrap;
+}
+.pill.on{ background:var(--pill-on); color:var(--pill-on-ink); border-color:var(--pill-on); }
+
+textarea{
+  width:100%; min-height:120px;
+  padding:14px 16px; border:1px solid var(--bd);
+  border-radius:14px; font-size:15px; font-family:inherit; resize:vertical;
+  background:#fff;
+}
+
+/* CTA */
+.cta-bar{
+  position:sticky; bottom:0; left:0; right:0;
+  margin-top:28px; display:flex; justify-content:center;
+  padding:18px 0;
+  background:transparent;
+}
+.cta{
+  background:#0f172a; color:#fff; border:0; border-radius:14px;
+  padding:16px 22px; font-weight:800; font-size:16px; cursor:pointer;
+  box-shadow: 0 14px 32px rgba(15,23,42,.25);
+}
+.cta:disabled{ opacity:.55; cursor:not-allowed; }
+
+@media (max-width: 600px){
+  .card{ padding:18px; }
+  .cta{ width:100%; }
+}

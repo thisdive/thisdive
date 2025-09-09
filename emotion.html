@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>오늘 나의 마음은 어떤가요?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ▣ CSP (보안 강화) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src  'self';
+    img-src    'self' data:;
+    font-src   'self';
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
+
+  <!-- Referrer 최소화 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- 캐시 방지 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Reset + Pretendard (자가 호스팅 버전 사용 권장) -->
+  <link rel="stylesheet" href="./css/normalize.css">
+  <link rel="stylesheet" href="./css/pretendard.css">
+  <link rel="stylesheet" href="./css/emotion.css">
+</head>
+<body data-page="emotion">
+
+  <main class="sheet" role="main">
+    <h1>오늘 나의 마음은 어떤가요?</h1>
+    <p class="sub">지금 마음과 <strong>가장 가까운 감정</strong> 한 가지를 선택해주세요 :)</p>
+
+    <!-- 감정 그룹 -->
+    <section class="group" aria-labelledby="g-bright">
+      <h3 id="g-bright">🌿 마음이 밝은 상태</h3>
+      <div class="chips" data-group="bright">
+        <label class="chip"><input type="radio" name="emotion" value="기뻐요">기뻐요</label>
+        <label class="chip"><input type="radio" name="emotion" value="설레요">설레요</label>
+        <label class="chip"><input type="radio" name="emotion" value="감사해요">감사해요</label>
+        <label class="chip"><input type="radio" name="emotion" value="평온해요">평온해요</label>
+      </div>
+    </section>
+
+    <section class="group" aria-labelledby="g-low">
+      <h3 id="g-low">🫧 마음이 가라앉은 상태</h3>
+      <div class="chips" data-group="low">
+        <label class="chip"><input type="radio" name="emotion" value="지쳤어요">지쳤어요</label>
+        <label class="chip"><input type="radio" name="emotion" value="우울해요">우울해요</label>
+        <label class="chip"><input type="radio" name="emotion" value="무기력해요">무기력해요</label>
+        <label class="chip"><input type="radio" name="emotion" value="외로워요">외로워요</label>
+      </div>
+    </section>
+
+    <section class="group" aria-labelledby="g-hot">
+      <h3 id="g-hot">🔥 마음이 달아오른 상태</h3>
+      <div class="chips" data-group="hot">
+        <label class="chip"><input type="radio" name="emotion" value="짜증나요">짜증나요</label>
+        <label class="chip"><input type="radio" name="emotion" value="화나요">화나요</label>
+        <label class="chip"><input type="radio" name="emotion" value="질투나요">질투나요</label>
+        <label class="chip"><input type="radio" name="emotion" value="부끄러워요">부끄러워요</label>
+      </div>
+    </section>
+
+    <section class="group" aria-labelledby="g-tight">
+      <h3 id="g-tight">🧠 마음이 조여오는 상태</h3>
+      <div class="chips" data-group="tight">
+        <label class="chip"><input type="radio" name="emotion" value="불안해요">불안해요</label>
+        <label class="chip"><input type="radio" name="emotion" value="긴장돼요">긴장돼요</label>
+        <label class="chip"><input type="radio" name="emotion" value="두려워요">두려워요</label>
+        <label class="chip"><input type="radio" name="emotion" value="부담돼요">부담돼요</label>
+      </div>
+    </section>
+
+    <div class="cta-bar">
+      <button id="goBtn" class="cta" type="button" disabled>이 감정으로 시작하기 →</button>
+    </div>
+  </main>
+
+  <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
+
+  <script src="./js/emotion.js" defer></script>
+  <noscript>
+    <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
+</body>
+</html>

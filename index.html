@@ -1,26 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <title>Loading…</title>
+  <meta charset="UTF-8">
+  <title>열리는 중…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 보안: CSP -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self';
-    style-src  'self';
+    style-src  'self' https://fonts.googleapis.com;
     img-src    'self' data:;
-    font-src   'self';
+    font-src   'self' https://fonts.gstatic.com https://fonts.googleapis.com;
     connect-src 'self';
-    object-src 'none';
-    form-action 'self';
     frame-ancestors 'none';
     base-uri 'self';
     upgrade-insecure-requests
   ">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- 자동 이동 -->
   <meta http-equiv="refresh" content="0; url=emotion.html">
-  <link rel="canonical" href="emotion.html">
 </head>
 <body>
-  <p>열리는 중… <a href="emotion.html">여기를 눌러 이동</a></p>
+  <!-- 시각적으로는 안 보이지만, 스크린리더/호환성용 안전 링크 -->
+  <p style="position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;">
+    자동 이동이 되지 않는다면 <a href="emotion.html">여기를 눌러 이동</a>하세요.
+  </p>
 </body>
 </html>

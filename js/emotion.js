@@ -66,7 +66,7 @@ goBtn.addEventListener('click', ()=>{
                            "불안해요","긴장돼요","두려워요","부담돼요"]);
   if(!ALLOWED.has(emotion)) return;
 
-  const url = `question2.html?emotion=${encodeURIComponent(emotion)}&v=${Date.now()}`;
+  const url = `question.html?emotion=${encodeURIComponent(emotion)}&v=${Date.now()}`;
   location.href = url;
 });
 

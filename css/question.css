@@ -1,3 +1,4 @@
+/* ========== question.css (final) ========== */
 :root{
   --bg:#FBF7F2;
   --ink:#1f2937;
@@ -11,26 +12,41 @@
   --pill-on:#0f172a;
   --pill-on-ink:#fff;
   --bd:#eee;
+  --ring:#0f172a;
 }
+
+*{ box-sizing:border-box }
+html,body{ height:100% }
 
 body{
   font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-  background:var(--bg); color:var(--ink);
-  margin:0; padding:28px 16px; display:flex; justify-content:center;
+  background:var(--bg);
+  color:var(--ink);
+  margin:0;
+  padding:28px 16px;
+  display:flex;
+  justify-content:center;
 }
+
 .sheet{ width:min(1160px,100%); }
 
 /* 상단 타이틀/뒤로 */
-.toolbar{ display:flex; align-items:center; gap:10px; margin:0 0 14px; }
+.toolbar{
+  display:flex; align-items:center; gap:10px;
+  margin:0 0 14px;
+}
 .back-btn{
   appearance:none; border:1px solid #e5e7eb; background:#fff; color:#374151;
   width:36px; height:36px; border-radius:10px; font-size:18px; line-height:1;
   display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
 }
 .back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{
+  outline:none; box-shadow:0 0 0 3px rgba(15,23,42,.18);
+}
 .back-hint{ font-size:13px; color:#9CA3AF; }
 
-h2{margin:6px 0 22px; font-size:22px;}
+h2{ margin:6px 0 22px; font-size:22px; font-weight:800; }
 
 /* 카드 */
 .card{
@@ -39,12 +55,27 @@ h2{margin:6px 0 22px; font-size:22px;}
   box-shadow: var(--shadow);
   padding: 22px;
   margin: 18px 0 22px;
+  border:1px solid rgba(0,0,0,.02);
 }
 .card-header{
   display:flex; align-items:center; justify-content:space-between;
   gap:12px; margin-bottom:12px;
 }
-.card-title{ display:flex; align-items:center; gap:8px; font-size:18px; font-weight:700; }
+.card-title{
+  display:flex; align-items:center; gap:8px;
+  font-size:18px; font-weight:700;
+}
+.card-sub{ font-size:14px; color:var(--muted); margin-top:2px; }
+
+/* 예시/보조문 */
+.hint{ font-size:13px; color:var(--muted); }
+.example{
+  font-size:13px; color:#6b7280; line-height:1.65;
+  background:#fafafa; border:1px dashed #e5e7eb; border-radius:12px;
+  padding:10px 12px; margin-top:10px;
+}
+
+/* 필 */
 .pill{
   font-size:13px; line-height:1;
   padding:8px 10px; border-radius:999px;
@@ -53,11 +84,24 @@ h2{margin:6px 0 22px; font-size:22px;}
 }
 .pill.on{ background:var(--pill-on); color:var(--pill-on-ink); border-color:var(--pill-on); }
 
+/* 입력영역 */
 textarea{
   width:100%; min-height:120px;
   padding:14px 16px; border:1px solid var(--bd);
   border-radius:14px; font-size:15px; font-family:inherit; resize:vertical;
-  background:#fff;
+  background:#fff; color:var(--ink);
+  transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+textarea::placeholder{ color:#9CA3AF }
+textarea:focus{
+  outline:none;
+  border-color:#d6d6d6;
+  box-shadow:0 0 0 4px rgba(15,23,42,.10);
+}
+
+/* 카드 내 푸터(우측 하단 아이콘 같은 영역이 있을 경우) */
+.card-footer{
+  display:flex; justify-content:flex-end; margin-top:8px; color:#9CA3AF; font-size:12px;
 }
 
 /* CTA */
@@ -68,13 +112,39 @@ textarea{
   background:transparent;
 }
 .cta{
-  background:#0f172a; color:#fff; border:0; border-radius:14px;
+  background:var(--accent); color:#fff; border:0; border-radius:14px;
   padding:16px 22px; font-weight:800; font-size:16px; cursor:pointer;
   box-shadow: 0 14px 32px rgba(15,23,42,.25);
+  transition: transform .05s ease, opacity .15s ease;
 }
-.cta:disabled{ opacity:.55; cursor:not-allowed; }
+.cta:hover{ transform: translateY(-1px); }
+.cta:active{ transform: translateY(0); }
+.cta:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
 
+/* 레이아웃 보조 */
+.section{ margin: 10px 0 4px; }
+.spacer8{ height:8px } .spacer12{ height:12px } .spacer16{ height:16px }
+
+/* 모바일 최적화 */
 @media (max-width: 600px){
   .card{ padding:18px; }
   .cta{ width:100%; }
+  h2{ font-size:20px; }
+}
+
+/* 다크모드(선택) */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111418;
+    --ink:#e5e7eb;
+    --card:#151a20;
+    --bd:#273041;
+    --pill:#111827;
+    --pill-ink:#d1d5db;
+    --shadow: 0 20px 40px rgba(0,0,0,.35);
+  }
+  .back-btn{ background:#0f141a; border-color:#222b36; color:#cbd5e1; }
+  .example{ background:#0f141a; border-color:#1f2937; color:#aab4c3; }
+  textarea{ background:#0f141a; border-color:#223042; color:#e5e7eb; }
+  textarea::placeholder{ color:#77839a; }
 }

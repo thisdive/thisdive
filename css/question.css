@@ -164,18 +164,3 @@ textarea:focus{
     min-width:unset; width:calc(100% - 32px); height:58px; border-radius:20px;
   }
 }
-
-/* 다크 모드(선택) */
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#121417;
-    --ink:#e5e7eb;
-    --card:#161a1f;
-    --bd:#273041;
-    --shadow:0 20px 40px rgba(0,0,0,.35);
-    --pill:#0f141a; --pill-ink:#cbd5e1;
-  }
-  .example{ background:#0f141a; border-color:#222b36; color:#aab4c3 }
-  textarea{ background:#0f141a; border-color:#253042; color:#e5e7eb }
-  textarea::placeholder{ color:#7f8aa3 }
-}

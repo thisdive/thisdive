@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>오늘의 몰입 카드 – 지윤 감성</title>
+<meta name="color-scheme" content="light" />
+<style>
+  /* =========================
+     JIYOON SOFT THEME
+  ==========================*/
+  :root{
+    /* palette (beige × soft rose) */
+    --bg: #f7f3ed;          /* paper beige */
+    --surface: #ffffff;     /* card white */
+    --fg: #2a2a2a;          /* warm charcoal */
+    --muted: #7a7a7a;       /* soft gray */
+    --border: #ece6df;      /* light beige line */
+
+    --rose-50:#fbf5f3;
+    --rose-100:#f4e6e2;
+    --rose-300:#d7a8b5;     /* accent tint */
+    --navy:#172034;         /* calm navy for CTA */
+
+    --radius-xl:20px;
+    --radius-lg:16px;
+    --radius-md:12px;
+
+    --shadow: 0 8px 26px rgba(23, 32, 52, .06);
+    --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
+
+    --h2: 1.02rem;       /* a bit modest */
+    --body: .96rem;
+    --hint: .925rem;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    letter-spacing:.2px;
+  }
+
+  .app{min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto}
+
+  /* Subtle header */
+  .header{
+    position: sticky; top:0; z-index:10;
+    background: linear-gradient(180deg, rgba(247,243,237,.9), rgba(247,243,237,.65));
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(6px);
+  }
+  .header .inner{
+    max-width: 860px; margin:0 auto; padding: 14px 22px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo-dot{
+    width:10px; height:10px; border-radius:9999px;
+    background: var(--rose-300);
+    box-shadow: 0 0 0 6px var(--rose-100);
+  }
+  .title{
+    font-weight: 650;  /* softer than bold */
+  }
+
+  /* Content wrap */
+  .wrap{
+    max-width: 860px; margin: 0 auto;
+    padding: 22px clamp(16px, 3vw, 28px) 40px;
+  }
+
+  /* Card */
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    padding: 18px clamp(14px, 2.3vw, 26px);
+    margin-bottom: 18px;
+  }
+  .card:hover{ box-shadow: var(--shadow) }
+
+  .card h2{
+    margin: 0 0 8px;
+    font-size: var(--h2);
+    font-weight: 650;        /* semi-bold, not heavy */
+    display:flex; align-items:center; gap:10px;
+  }
+  .hint{
+    margin:0 0 12px;
+    font-size: var(--hint);
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* Emotion emphasis – soft chip with underline feel */
+  .emotion-soft{
+    display:inline-block;
+    padding: 6px 12px;
+    background: var(--rose-50);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    position: relative;
+    font-size: .9rem;
+    margin: 0 4px;
+  }
+  .emotion-soft::after{
+    /* delicate underline shadow */
+    content:"";
+    position:absolute; left:12px; right:12px; bottom:4px; height:2px;
+    background: var(--rose-100);
+    border-radius: 2px;
+  }
+
+  textarea{
+    width:100%;
+    min-height:112px;
+    padding:14px 14px 14px 14px;
+    font-size: var(--body);
+    color: var(--fg);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    outline: none; resize: vertical;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+  }
+  textarea::placeholder{ color: color-mix(in oklab, var(--muted) 78%, #bbb) }
+  textarea:focus{
+    border-color: var(--rose-100);
+    box-shadow: 0 0 0 6px rgba(244,230,226,.55);
+    transition: box-shadow .18s ease, border-color .18s ease;
+  }
+
+  /* CTA – calm navy, rounded, airy */
+  .cta{
+    position: static; left:0; right:0; bottom:0; z-index:20;
+    background: linear-gradient(180deg, rgba(247,243,237,0), rgba(247,243,237,1) 48%);
+    border-top: 1px solid var(--border);
+    padding: 14px clamp(14px,3vw,26px);
+  }
+  .cta-inner{ max-width: 860px; margin: 0 auto; }
+  .btn{
+    width:100%;
+    padding: 16px 18px;
+    background: var(--navy);
+    color: #fff;
+    border: 1px solid rgba(23,32,52,.12);
+    border-radius: 18px;
+    font-weight: 650; letter-spacing:.2px;
+    box-shadow: 0 10px 24px rgba(23,32,52,.22);
+    cursor: pointer;
+  }
+  .btn:active{ transform: translateY(1px) }
+  .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35) }
+
+  @supports (padding: max(0px)){
+    .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)) }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- header -->
+  <header class="header">
+    <div class="inner">
+      <span class="logo-dot" aria-hidden="true"></span>
+      <div class="title">오늘의 몰입 카드</div>
+    </div>
+  </header>
+
+  <!-- content -->
+  <main class="wrap">
+
+    <!-- 1. 내 마음 속 이야기 -->
+    <section class="card" aria-labelledby="h1">
+      <h2 id="h1">📝 나의 마음 속 이야기</h2>
+      <p class="hint">
+        오늘 나의 감정
+        <span class="emotion-soft" id="emotionValue">선택 안됨</span>
+        은(는) 나의 어떤 생각/욕구로 인해 시작되었을까요?
+      </p>
+      <textarea placeholder="예) 나를 무시한다는 생각 / 존중 받고 싶은 욕구"></textarea>
+    </section>
+
+    <!-- 2. 상대방의 입장 되어보기 (선택) -->
+    <section class="card" aria-labelledby="h2">
+      <h2 id="h2">👥 상대방의 입장 되어보기 (선택)</h2>
+      <p class="hint">같은 장면을 상대의 눈으로 바라보면, 감정의 결을 부드럽게 바꿀 수 있어요.</p>
+      <textarea placeholder="예) 아마 그 사람도 ○○ 때문에 힘들었을 것 같아요."></textarea>
+    </section>
+
+    <!-- 3. 나에게 건네는 한마디 -->
+    <section class="card" aria-labelledby="h3">
+      <h2 id="h3">💡 나에게 건네는 한마디</h2>
+      <p class="hint">오늘 내가 배운 점, 혹은 지금의 나에게 가장 필요한 말을 남겨보세요.</p>
+      <textarea placeholder="예) 조금 천천히 해도 괜찮아."></textarea>
+    </section>
+
+  </main>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-inner">
+      <button class="btn" id="nextBtn">오늘의 목표 정하기 →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // URL ?emotion= 값 읽어와 부드러운 배지에 표시
+  const params = new URLSearchParams(location.search);
+  const emotionRaw = (params.get('emotion') || '선택 안됨').trim();
+
+  // (선택) 영문 코드를 한글 감정으로 매핑
+  const map = {
+    worry: '걱정돼요',
+    joy: '기뻐요',
+    calm: '평온해요',
+    sad: '슬퍼요',
+    angry: '화가 나요',
+    tired: '지쳐요'
+  };
+  const emotion = map[emotionRaw] || emotionRaw || '선택 안됨';
+  document.getElementById('emotionValue').textContent = emotion;
+
+  // 다음 단계 이동 (필요시 경로 교체)
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    const next = params.get('next') || 'goal.html';
+    const q = new URLSearchParams({ emotion }).toString();
+    location.href = `${next}?${q}`;
+  });
+</script>
+</body>
+</html>

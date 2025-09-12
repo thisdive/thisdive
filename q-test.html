@@ -79,6 +79,9 @@
     box-shadow: var(--shadow-soft);
     padding: 18px clamp(14px, 2.3vw, 26px);
     margin-bottom: 18px;
+      min-height: clamp(240px, 38vh, 420px); /* 최소~가변~최대 높이 */
+  display: flex;           /* 내부 정렬을 위해 */
+  flex-direction: column;
   }
   .card:hover{ box-shadow: var(--shadow) }
 
@@ -235,6 +238,7 @@
 </script>
 </body>
 </html>
+
 
 
 

@@ -228,10 +228,11 @@
 
   // 다음 단계 이동 (필요시 경로 교체)
   document.getElementById('nextBtn').addEventListener('click', () => {
-    const next = params.get('next') || 'goal.html';
+    const next = params.get('next') || 'q-test.html';
     const q = new URLSearchParams({ emotion }).toString();
     location.href = `${next}?${q}`;
   });
 </script>
 </body>
 </html>
+

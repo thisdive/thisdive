@@ -156,10 +156,10 @@
     padding: 14px clamp(14px,3vw,26px);
     background: none;
   }
-  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; }
+  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto;  text-align: center;   /* 버튼 중앙 배치 */ }
   .btn{
-    width:100%;
-    padding: 16px 18px;
+    width:200px;
+    padding: 16px 0;
     background: var(--navy);
     color: #fff;
     border: 1px solid rgba(23,32,52,.12);
@@ -167,6 +167,8 @@
     font-weight: 650; letter-spacing:.2px;
     box-shadow: 0 10px 24px rgba(23,32,52,.22);
     cursor: pointer;
+      text-align: center;   /* 텍스트 가운데 */
+  margin: 0 auto;       /* 가운데 정렬 */
   }
   .btn:active{ transform: translateY(1px) }
   .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35) }
@@ -210,14 +212,14 @@
     <!-- 2. 상대방의 입장 되어보기 (선택) -->
     <section class="card" aria-labelledby="h2">
       <h2 id="h2">👂🏻 너의 이야기 (선택)</h2>
-      <p class="hint">같은 장면을 상대방의 눈으로 보게 되면 <br>감정을 한결 부드럽게 바꿀 수 있어요 :)</br></p>
+      <p class="hint">같은 장면도 상대의 눈으로 보게 되면 <br>감정을 한결 부드럽게 바꿀 수 있어요 :)</br></p>
       <textarea placeholder="예) 아마 그 사람도 ○○ 때문에 힘들었을 것 같아요."></textarea>
     </section>
 
     <!-- 3. 나에게 건네는 한마디 -->
     <section class="card" aria-labelledby="h3">
       <h2 id="h3">💌 사랑하는 나에게</h2>
-      <p class="hint">오늘 내가 알게된 점 혹은 배운 점이나<br>지금의 나에게 가장 필요한 말을 남겨보세요.</br></p>
+      <p class="hint">오늘 새롭게 알게된 점이나<br>지금의 나에게 가장 필요한 말을 남겨보세요.</br></p>
       <textarea placeholder="예) 조금 천천히 해도 괜찮아."></textarea>
     </section>
 
@@ -257,6 +259,7 @@
 </script>
 </body>
 </html>
+
 
 
 

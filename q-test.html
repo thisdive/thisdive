@@ -7,6 +7,24 @@
 <meta name="color-scheme" content="light" />
 <style>
   /* =========================
+     FONTS (local)
+  ==========================*/
+  @font-face{
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family: 'Pretendard';
+    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* =========================
      JIYOON SOFT THEME
   ==========================*/
   :root{
@@ -41,10 +59,13 @@
   html,body{height:100%}
   body{
     margin:0; background:var(--bg); color:var(--fg);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
+    /* 본문 기본 폰트 */
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
     -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
     letter-spacing:.2px;
   }
+  /* 본문 계열도 Pretendard */
+  p, textarea, .hint, .btn { font-family: inherit; }
 
   .app{min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto}
 
@@ -93,26 +114,24 @@
   .card:hover{ box-shadow: var(--shadow) }
 
   /* 마지막 카드만 간격 줄이기 */
-.card:last-of-type{
-  margin-bottom: -15px;   /* 원하는 값으로 조절 */
-}
+  .card:last-of-type{ margin-bottom: -15px; }
 
-  .card h2{
+  /* 제목만 MaruBuri 적용 */
+  .card h2, #h1, #h2, #h3{
+    font-family: 'MaruBuri', serif;
+    font-weight: 700;               /* 굵게(Regular만 있어도 브라우저가 합성) */
     margin: 0 0 14px;
     font-size: var(--h2);
-    font-weight: 650;
-    display:flex; 
-    align-items:center; 
-    justify-content: center; /* center emoji + text */
-    gap:10px;
+    display:flex; align-items:center; justify-content: center; gap:10px;
     text-align:center;
   }
+
   .hint{
     margin:0 0 14px;
     font-size: var(--hint);
     color: var(--muted);
     line-height: 1.65;
-    text-align: center;   /* center the sentence + badge */
+    text-align: center;
   }
 
   /* Emotion badge */
@@ -150,7 +169,7 @@
   textarea::placeholder{ color: color-mix(in oklab, var(--muted) 78%, #bbb) }
   textarea:focus{
     border-color: var(--rose-300);
-    box-shadow: none; /* thin focus */
+    box-shadow: none;
     transition: border-color .18s ease;
   }
 
@@ -161,7 +180,7 @@
     padding: 14px clamp(14px,3vw,26px);
     background: none;
   }
-  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto;  text-align: center;   /* 버튼 중앙 배치 */ }
+  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
   .btn{
     width:200px;
     padding: 16px 0;
@@ -171,10 +190,8 @@
     border-radius: 18px;
     font-weight: 650; letter-spacing:.2px;
     box-shadow: 0 10px 24px rgba(23,32,52,.22);
-          font-size: 0.9rem;   /* ← 글자 크기 키우기 (기본 대비 확대) */
+    font-size: 0.9rem;
     cursor: pointer;
-
-
   }
   .btn:active{ transform: translateY(1px) }
   .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35) }
@@ -184,14 +201,10 @@
   }
 
   @media (max-width: 480px){
-  .wrap{
-    padding-left: 14px;
-    padding-right: 14px;
+    :root{ --wrap-max: 100%; }
+    .wrap{ padding-left: 14px; padding-right: 14px; }
   }
-}
-  
 </style>
-  
 </head>
 <body>
 <div class="app">
@@ -246,14 +259,7 @@
   const emotionRaw = (params.get('emotion') || '선택 안됨').trim();
 
   // 영문 코드를 한글 감정으로 매핑
-  const map = {
-    worry: '걱정돼요',
-    joy: '기뻐요',
-    calm: '평온해요',
-    sad: '슬퍼요',
-    angry: '화가 나요',
-    tired: '지쳐요'
-  };
+  const map = { worry:'걱정돼요', joy:'기뻐요', calm:'평온해요', sad:'슬퍼요', angry:'화가 나요', tired:'지쳐요' };
   const emotion = map[emotionRaw] || emotionRaw || '선택 안됨';
   document.getElementById('emotionValue').textContent = emotion;
 
@@ -266,25 +272,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

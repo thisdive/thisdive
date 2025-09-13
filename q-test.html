@@ -87,7 +87,7 @@
     padding: 14px 22px;
     display:flex; 
     align-items:center; 
-    justify-content: flex-start; /* 카드 왼쪽과 수직 정렬 */
+    justify-content: center;
     gap:10px;
   }
   .logo-dot{
@@ -101,7 +101,7 @@
   .wrap{
     max-width: var(--wrap-max);
     margin: 0 auto;
-    padding: 22px 22px 40px;  /* ← 좌우 패딩 22px */
+    padding: 22px clamp(16px, 3vw, 28px) 40px;
 
   }
 
@@ -269,6 +269,7 @@
 </script>
 </body>
 </html>
+
 
 
 

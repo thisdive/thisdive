@@ -16,15 +16,13 @@
     font-style: normal;
     font-display: swap;
   }
-
-  /* Bold 700 */
-@font-face {
-  font-family: 'MaruBuri';
-  src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+  @font-face {
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
   @font-face{
     font-family: 'Pretendard';
     src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
@@ -34,10 +32,9 @@
   }
 
   /* =========================
-     SOFT THEME
+     THEME
   ==========================*/
   :root{
-    /* palette (beige × soft rose) */
     --bg: #f7f3ed;          
     --surface: #ffffff;     
     --fg: #2a2a2a;          
@@ -89,6 +86,7 @@
     align-items:center; 
     justify-content: center;
     gap:10px;
+    position: relative;
   }
   .logo-dot{
     width:10px; height:10px; border-radius:9999px;
@@ -97,12 +95,23 @@
   }
   .title{ font-weight: 650;}
 
+  /* Back Button */
+  .back-btn{
+    position: absolute;
+    left: 16px; /* 헤더 왼쪽 고정 */
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--fg);
+  }
+  .back-btn:hover{ opacity: 0.7; }
+
   /* Content wrap */
   .wrap{
     max-width: var(--wrap-max);
     margin: 0 auto;
     padding: 22px clamp(16px, 3vw, 28px) 40px;
-
   }
 
   /* Card */
@@ -121,26 +130,22 @@
   .card:hover{ box-shadow: var(--shadow) }
   .card:last-of-type{ margin-bottom: -15px; }
 
-  /* 제목 + 힌트: MaruBuri */
-  .card h2, .card .hint{
-    font-family: 'MaruBuri', serif;
-  }
+  .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
   .card h2{
     margin: 0 0 14px;
     font-size: var(--h2);
     font-weight: 700;
-    display:flex; align-items:center; justify-content: flex-start; /* ← 왼쪽 정렬 */ gap:10px;
-    text-align:left;            /* ← 왼쪽 정렬 */
-      color: #172034; /* ← 남색 (navy) */
+    display:flex; align-items:center; justify-content: flex-start;
+    text-align:left; gap:10px;
+    color: #172034;
   }
   .hint{
     margin:0 0 14px;
     font-size: var(--hint);
-        font-weight: 400;
-    color: var(--muted);
+    font-weight: 400;
+    color: #172034;
     line-height: 1.65;
     text-align:center;
-          color: #172034; /* ← 남색 (navy) */
   }
 
   /* Emotion badge */
@@ -219,6 +224,7 @@
 <div class="app">
   <header class="header">
     <div class="inner">
+      <button class="back-btn" aria-label="뒤로가기">←</button>
       <span class="logo-dot" aria-hidden="true"></span>
       <div class="title">나와의 대화</div>
     </div>
@@ -261,26 +267,17 @@
   const emotion = map[emotionRaw] || emotionRaw || '선택 안됨';
   document.getElementById('emotionValue').textContent = emotion;
 
+  // CTA 버튼 클릭 시 이동
   document.getElementById('nextBtn').addEventListener('click', () => {
     const next = params.get('next') || 'goal.html';
     const q = new URLSearchParams({ emotion }).toString();
     location.href = `${next}?${q}`;
   });
+
+  // Back 버튼 뒤로가기
+  document.querySelector('.back-btn').addEventListener('click', () => {
+    history.back(); // ← 뒤로가기 동작
+  });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

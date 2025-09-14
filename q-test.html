@@ -95,17 +95,27 @@
   }
   .title{ font-weight: 650;}
 
-  /* Back Button */
+  /* Back Button (지윤 감성 스타일) */
   .back-btn{
     position: absolute;
-    left: 16px; /* 헤더 왼쪽 고정 */
-    background: none;
-    border: none;
-    font-size: 1.2rem;
+    left: 16px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--navy);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    color: var(--fg);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.2s ease;
   }
-  .back-btn:hover{ opacity: 0.7; }
+  .back-btn:hover{
+    background: var(--rose-50);
+    box-shadow: var(--shadow);
+  }
 
   /* Content wrap */
   .wrap{
@@ -224,6 +234,7 @@
 <div class="app">
   <header class="header">
     <div class="inner">
+      <!-- 뒤로가기 버튼 -->
       <button class="back-btn" aria-label="뒤로가기">←</button>
       <span class="logo-dot" aria-hidden="true"></span>
       <div class="title">나와의 대화</div>
@@ -276,7 +287,7 @@
 
   // Back 버튼 뒤로가기
   document.querySelector('.back-btn').addEventListener('click', () => {
-    history.back(); // ← 뒤로가기 동작
+    history.back();
   });
 </script>
 </body>

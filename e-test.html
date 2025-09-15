@@ -108,11 +108,11 @@
     }
 
     h1{ font-size: clamp(20px, 3.2vw, 28px); margin:0 0 8px; }
-    .sub{ color:var(--muted); margin-bottom:22px; }
+    .sub{ color:var(--muted); margin-bottom:22px; text-align: center; }
 
     /* ===== 칩(라디오) ===== */
     .group{ margin: 18px 0; }
-    .group h3{ display:flex; align-items:center; gap:8px; font-size:16px; margin:14px 0; }
+    .group h3{ display:flex; align-items:center; justify-content: center; gap:8px; font-size:16px; margin:14px 0; }
     .chips{ display:flex; flex-wrap:wrap; gap:10px 12px; }
     .chip{
       display:inline-flex; align-items:center; gap:8px;
@@ -178,7 +178,7 @@
   <!-- 페이지 컨텐츠 -->
   <div class="page">
     <main class="sheet" role="main">
-      <p class="sub">지금 마음과 <strong>가장 가까운 감정</strong> 한 가지를 선택해주세요 :)</p>
+      <p class="sub">지금 마음과 <strong>가장 가까운</strong></br>감정 한 가지를 선택해주세요 :)</p>
 
       <!-- 감정 그룹들 -->
       <section class="group" aria-labelledby="g-bright">

@@ -17,14 +17,11 @@
     base-uri 'self';
     upgrade-insecure-requests
   ">
-  <!-- Referrer 최소화 -->
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <!-- 캐시 방지(정적 호스팅 한계 내) -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <!-- ▣ 폰트/리셋 (SRI + crossorigin) -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
@@ -41,7 +38,7 @@
       --card:#ffffff;
       --ink:#1e293b;
       --muted:#6b7280;
-      --accent:#0f172a;     /* 남색 */
+      --accent:#0f172a;
       --chip:#ffffff;
       --chip-bd:#e5e7eb;
       --chip-on:#0f172a;
@@ -49,19 +46,22 @@
       --shadow:0 16px 36px rgba(0,0,0,.08);
       --radius:22px;
 
-      /* ▼ 헤더/레이아웃 공통 변수 */
-      --wrap-max: 1040px;
+      /* ▼ 레이아웃/카드 폭 통일 */
+      --wrap-max: clamp(860px, 72vw, 1160px);
+      --card-max: 760px; /* ← 2페이지 카드 폭과 맞춤(필요 시 조정) */
+
       --border: #ece6df;
       --rose-100: #f4e6e2;
       --rose-300: #d7a8b5;
 
-      /* ▼ 카드 CSS에서 사용하는 변수 별칭 보강 */
       --surface: var(--card);
       --radius-xl: var(--radius);
       --shadow-soft: 0 3px 10px rgba(0,0,0,.06);
       --h2: 1.02rem;
       --hint: .925rem;
     }
+
+    *{ box-sizing: border-box; }
 
     html,body{height:100%;}
     body{
@@ -72,7 +72,7 @@
       padding: 0;
     }
 
-    /* ===== HEADER COMMON ===== */
+    /* ===== HEADER ===== */
     .header{
       position: sticky; top:0; z-index:10;
       background: var(--bg);
@@ -93,16 +93,20 @@
     .title{ font-weight:650; }
 
     /* ===== 페이지 레이아웃 ===== */
-    .page{
-      display:flex; justify-content:center;
-      padding: 28px 16px;
-    }
+    .page{ display:flex; justify-content:center; padding: 0 16px; }
+
     .sheet{
-      width:min(1040px, 100%); background:var(--card);
+      /* ← 1페이지도 2페이지 카드와 같은 폭으로 */
+      max-width: var(--card-max);
+      width: 100%;
+      margin: 28px auto;
+
+      background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: clamp(20px, 4vw, 44px);
     }
+
     h1{ font-size: clamp(20px, 3.2vw, 28px); margin:0 0 8px; }
     .sub{ color:var(--muted); margin-bottom:22px; }
 
@@ -126,16 +130,7 @@
       transform: translateY(-1px);
     }
 
-    /* ===== CTA ===== */
-    .cta-bar{ display:flex; justify-content:flex-start; margin-top: 22px; }
-    .cta{
-      background: var(--accent); color:#fff; border:0;
-      border-radius: 12px; padding: 14px 18px; font-weight:700;
-      cursor:pointer; font-size:16px;
-    }
-    .cta:disabled{ opacity:.5; cursor:not-allowed; }
-
-    /* ===== 카드(CARD) - 재사용용 복붙 블록 ===== */
+    /* ===== 카드 공통 (2페이지와 동일 유지) ===== */
     .card{
       width:100%;
       background: var(--surface);
@@ -156,36 +151,18 @@
       margin: 0 0 14px;
       font-size: var(--h2);
       font-weight: 700;
-      display:flex; align-items:center; justify-content: flex-start;
-      text-align:left; gap:10px;
-      color: #172034;
+      display:flex; align-items:center; justify-content:flex-start;
+      text-align:left; gap:10px; color:#172034;
     }
     .hint{
-      margin:0 0 14px;
-      font-size: var(--hint);
-      font-weight: 400;
-      color: #172034;
-      line-height: 1.65;
-      text-align:center;
+      margin:0 0 14px; font-size:var(--hint); font-weight:400;
+      color:#172034; line-height:1.65; text-align:center;
     }
 
-    @media (max-width: 768px){
-      .sheet{ padding: 24px; }
-      .chips{ gap:10px; }
-      .chip{ padding:9px 12px; font-size:15px; }
+    @media (max-width: 480px){
+      :root{ --card-max: 100%; } /* 모바일에선 화면 가득 */
+      .sheet{ padding-left:14px; padding-right:14px; }
     }
-    @media (max-width: 420px){
-      .sheet{ padding: 18px; border-radius: 14px; }
-      .cta{ width:100%; text-align:center; padding:14px 16px; }
-    }
-
-    /* 네트워크 토스트 */
-    .net{
-      position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
-      background:#111827; color:#fff; padding:8px 12px; border-radius:999px; font-size:13px;
-      box-shadow: 0 10px 24px rgba(0,0,0,.18); opacity:0; pointer-events:none; transition: opacity .2s ease;
-    }
-    .net.show{ opacity: .92; }
   </style>
 </head>
 <body>
@@ -201,7 +178,6 @@
   <!-- 페이지 컨텐츠 -->
   <div class="page">
     <main class="sheet" role="main">
-      <h1>오늘 나의 마음은 어떤가요?</h1>
       <p class="sub">지금 마음과 <strong>가장 가까운 감정</strong> 한 가지를 선택해주세요 :)</p>
 
       <!-- 감정 그룹들 -->

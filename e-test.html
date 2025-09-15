@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>오늘 나의 마음은 어떤가요?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ▣ 최소 보안: CSP(리소스 출처 제한 + iframe 금지) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    style-src  'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
+    img-src    'self' data:;
+    font-src   'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
+  <!-- Referrer 최소화 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- 캐시 방지(정적 호스팅 한계 내) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- ▣ 폰트/리셋 (SRI + crossorigin) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
+        integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU="
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css"
+        integrity="sha384-6rQx8ZfE6t7m1pQk4mepm0qkH0N7XvFqH2Lx5GmL0l2bVZzqf2Z4f9r1m5Y1iGmE"
+        crossorigin="anonymous">
+
+  <style>
+    :root{
+      --bg:#f7f3ee;
+      --card:#ffffff;
+      --ink:#1e293b;
+      --muted:#6b7280;
+      --accent:#0f172a;     /* 남색 */
+      --chip:#ffffff;
+      --chip-bd:#e5e7eb;
+      --chip-on:#0f172a;
+      --chip-on-ink:#ffffff;
+      --shadow:0 16px 36px rgba(0,0,0,.08);
+      --radius:22px;
+
+      /* ▼ 헤더 공통 CSS에서 쓰는 변수 보강 */
+      --wrap-max: 1040px;
+      --border: #ece6df;
+      --rose-100: #f4e6e2;
+      --rose-300: #d7a8b5;
+    }
+    html,body{height:100%;}
+    body{
+      font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display:flex; flex-direction:column; align-items:stretch; /* 헤더를 위해 column */
+      padding: 0; /* 헤더가 붙도록 body padding 제거 */
+    }
+
+    /* ===== HEADER COMMON (copy to other pages) ===== */
+    .header{
+      position: sticky; top:0; z-index:10;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);  /* 제목 아래 밑줄 라인 */
+    }
+    .header .inner{
+      max-width: var(--wrap-max);
+      margin:0 auto;
+      padding: 14px 22px;
+      display:flex; align-items:center; justify-content:center;
+      gap:10px; position:relative;
+    }
+    .back-btn{
+      position:absolute; left:16px;
+      width:22px; height:22px;
+      border-radius:50%;
+      border:1px solid var(--border);
+      background:#fff; color:#bbb;
+      font-size:14px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      box-shadow: 0 3px 10px rgba(23,32,52,.04);
+      transition: all .2s ease;
+    }
+    .back-btn:hover{
+      background:#fbf5f3; /* 아주 옅은 rose */
+      box-shadow: 0 8px 26px rgba(23,32,52,.06);
+    }
+    .logo-dot{
+      width:10px; height:10px; border-radius:9999px;
+      background: var(--rose-300);
+      box-shadow: 0 0 0 6px var(--rose-100); /* 점 뒤의 보송한 링 */
+    }
+    .title{ font-weight:650; }
+
+    /* 페이지 컨텐츠 패딩(헤더와 분리) */
+    .page{
+      display:flex; justify-content:center;
+      padding: 28px 16px;
+    }
+
+    .sheet{
+      width:min(1040px, 100%); background:var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 44px);
+    }
+    h1{ font-size: clamp(20px, 3.2vw, 28px); margin:0 0 8px; }
+    .sub{ color:var(--muted); margin-bottom:22px; }
+
+    .group{ margin: 18px 0; }
+    .group h3{ display:flex; align-items:center; gap:8px; font-size:16px; margin:14px 0; }
+    .chips{ display:flex; flex-wrap:wrap; gap:10px 12px; }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--chip-bd); background:var(--chip);
+      padding:10px 14px; border-radius:999px; cursor:pointer;
+      transition: transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+      font-size:15px;
+    }
+    .chip input{ appearance:none; width:16px; height:16px; border:2px solid #cbd5e1; border-radius:50%; display:inline-block; position:relative; }
+    .chip input:checked{ border-color:transparent; background:var(--chip-on); }
+    .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
+    .chip.on{
+      background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on);
+      box-shadow: 0 8px 18px rgba(15,23,42,.20);
+      transform: translateY(-1px);
+    }
+
+    .cta-bar{ display:flex; justify-content:flex-start; margin-top: 22px; }
+    .cta{
+      background: var(--accent); color:#fff; border:0;
+      border-radius: 12px; padding: 14px 18px; font-weight:700;
+      cursor:pointer; font-size:16px;
+    }
+    .cta:disabled{ opacity:.5; cursor:not-allowed; }
+
+    @media (max-width: 768px){
+      .sheet{ padding: 24px; }
+      .chips{ gap:10px; }
+      .chip{ padding:9px 12px; font-size:15px; }
+    }
+    @media (max-width: 420px){
+      .sheet{ padding: 18px; border-radius: 14px; }
+      .cta{ width:100%; text-align:center; padding:14px 16px; }
+    }
+
+    .net{
+      position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+      background:#111827; color:#fff; padding:8px 12px; border-radius:999px; font-size:13px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18); opacity:0; pointer-events:none; transition: opacity .2s ease;
+    }
+    .net.show{ opacity: .92; }
+  </style>
+</head>
+<body>
+
+  <!-- ▲ 공통 헤더 -->
+  <header class="header">
+    <div class="inner">
+      <button class="back-btn" aria-label="뒤로가기">←</button>
+      <span class="logo-dot" aria-hidden="true"></span>
+      <div class="title">오늘의 감정</div>
+    </div>
+  </header>
+
+  <!-- 페이지 컨텐츠 -->
+  <div class="page">
+    <main class="sheet" role="main">
+      <h1>오늘 나의 마음은 어떤가요?</h1>
+      <p class="sub">지금 마음과 <strong>가장 가까운 감정</strong> 한 가지를 선택해주세요 :)</p>
+
+      <!-- 감정 그룹들 -->
+      <section class="group" aria-labelledby="g-bright">
+        <h3 id="g-bright">🌿 마음이 밝은 상태</h3>
+        <div class="chips" data-group="bright">
+          <label class="chip"><input type="radio" name="emotion" value="기뻐요">기뻐요</label>
+          <label class="chip"><input type="radio" name="emotion" value="설레요">설레요</label>
+          <label class="chip"><input type="radio" name="emotion" value="감사해요">감사해요</label>
+          <label class="chip"><input type="radio" name="emotion" value="평온해요">평온해요</label>
+        </div>
+      </section>
+
+      <section class="group" aria-labelledby="g-low">
+        <h3 id="g-low">🫧 마음이 가라앉은 상태</h3>
+        <div class="chips" data-group="low">
+          <label class="chip"><input type="radio" name="emotion" value="지쳤어요">지쳤어요</label>
+          <label class="chip"><input type="radio" name="emotion" value="우울해요">우울해요</label>
+          <label class="chip"><input type="radio" name="emotion" value="무기력해요">무기력해요</label>
+          <label class="chip"><input type="radio" name="emotion" value="외로워요">외로워요</label>
+        </div>
+      </section>
+
+      <section class="group" aria-labelledby="g-hot">
+        <h3 id="g-hot">🔥 마음이 달아오른 상태</h3>
+        <div class="chips" data-group="hot">
+          <label class="chip"><input type="radio" name="emotion" value="짜증나요">짜증나요</label>
+          <label class="chip"><input type="radio" name="emotion" value="화나요">화나요</label>
+          <label class="chip"><input type="radio" name="emotion" value="질투나요">질투나요</label>
+          <label class="chip"><input type="radio" name="emotion" value="부끄러워요">부끄러워요</label>
+        </div>
+      </section>
+
+      <section class="group" aria-labelledby="g-tight">
+        <h3 id="g-tight">🧠 마음이 조여오는 상태</h3>
+        <div class="chips" data-group="tight">
+          <label class="chip"><input type="radio" name="emotion" value="불안해요">불안해요</label>
+          <label class="chip"><input type="radio" name="emotion" value="긴장돼요">긴장돼요</label>
+          <label class="chip"><input type="radio" name="emotion" value="두려워요">두려워요</label>
+          <label class="chip"><input type="radio" name="emotion" value="부담돼요">부담돼요</label>
+        </div>
+      </section>
+
+      <div class="cta-bar">
+        <button id="goBtn" class="cta" type="button" disabled>이 감정으로 시작하기 →</button>
+      </div>
+    </main>
+  </div>
+
+  <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
+
+  <script>
+    /* 뒤로가기 */
+    document.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.back-btn');
+      if(btn){ history.back(); }
+    });
+
+    /* 선택 활성화/이동 로직 (기존 페이지 동작 예시) */
+    const chips = document.querySelectorAll('.chip');
+    const goBtn = document.getElementById('goBtn');
+
+    function disableCTA(v){ goBtn.disabled = !!v; }
+    disableCTA(true);
+
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const input = chip.querySelector('input[type="radio"]');
+        if(!input) return;
+        document.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
+        input.checked = true;
+        chip.classList.add('on');
+        disableCTA(false);
+      });
+    });
+
+    goBtn.addEventListener('click', ()=>{
+      const picked = document.querySelector('input[name="emotion"]:checked');
+      if(!picked) return;
+      const url = `q-test.html?emotion=${encodeURIComponent(picked.value)}&v=${Date.now()}`;
+      location.href = url;
+    });
+
+    /* 네트워크 토스트 */
+    const net = document.getElementById('net');
+    function showNet(msg){
+      if(!net) return;
+      net.textContent = msg;
+      net.hidden = false;
+      net.classList.add('show');
+      clearTimeout(showNet._t);
+      showNet._t = setTimeout(()=> net.classList.remove('show'), 1600);
+    }
+    window.addEventListener('offline', ()=> showNet('오프라인입니다. 네트워크를 확인하세요.'));
+    window.addEventListener('online',  ()=> showNet('온라인에 연결되었습니다.'));
+  </script>
+
+  <noscript>
+    <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
+</body>
+</html>

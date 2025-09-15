@@ -46,9 +46,9 @@
       --shadow:0 16px 36px rgba(0,0,0,.08);
       --radius:22px;
 
-      /* ▼ 레이아웃/카드 폭 통일 */
+      /* 폭 통일 */
       --wrap-max: clamp(860px, 72vw, 1160px);
-      --card-max: 350px; /* ← 2페이지 카드 폭과 맞춤(필요 시 조정) */
+      --card-max: 350px;
 
       --border: #ece6df;
       --rose-100: #f4e6e2;
@@ -62,8 +62,7 @@
     }
 
     *{ box-sizing: border-box; }
-
-    html,body{height:100%;}
+    html,body{height:100%}
     body{
       font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       background: var(--bg);
@@ -92,36 +91,62 @@
     }
     .title{ font-weight:650; }
 
-    /* ===== 페이지 레이아웃 ===== */
+    /* ===== PAGE & CARD ===== */
     .page{ display:flex; justify-content:center; padding: 0 16px; }
-
     .sheet{
-      /* ← 1페이지도 2페이지 카드와 같은 폭으로 */
       max-width: var(--card-max);
       width: 100%;
       margin: 28px auto;
-
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: clamp(20px, 4vw, 44px);
+      padding: clamp(20px, 4vw, 28px); /* 안쪽 여백 소폭 줄여 한눈성↑ */
     }
 
-    h1{ font-size: clamp(20px, 3.2vw, 28px); margin:0 0 8px; }
-    .sub{ color:var(--muted); margin-bottom:22px; text-align: center; }
+    .sub{
+      color:var(--muted);
+      margin: 4px 0 14px;        /* 위아래 여백 컴팩트 */
+      text-align: center;
+      line-height: 1.4;
+    }
 
-    /* ===== 칩(라디오) ===== */
-    .group{ margin: 18px 0; }
-    .group h3{ display:flex; align-items:center; justify-content: center; gap:8px; font-size:16px; margin:14px 0; }
-    .chips{ display:flex; flex-wrap:wrap; gap:10px 12px; }
+    /* ===== 그룹(섹션) – 보기 좋게 컴팩트 ===== */
+    .groups{
+      display: flex;
+      flex-direction: column;
+      gap: 14px;                 /* 그룹 간격 최소화 */
+    }
+    .group{
+      padding: 6px 0 2px;
+      border-top: 1px dashed var(--border);
+    }
+    .group:first-child{ border-top: 0; padding-top: 0; }
+    .group h3{
+      display:flex; align-items:center; justify-content:center;
+      gap:8px; font-size:16px; margin: 6px 0 10px;
+      font-weight: 700;
+    }
+
+    /* ===== 칩(라디오) – 2열 그리드로 한눈에 ===== */
+    .chips{
+      display: grid;
+      grid-template-columns: 1fr 1fr;  /* 2열 */
+      gap: 10px 12px;
+    }
     .chip{
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      width: 100%;
       border:1px solid var(--chip-bd); background:var(--chip);
-      padding:10px 14px; border-radius:999px; cursor:pointer;
+      padding:10px 12px;
+      border-radius:999px; cursor:pointer;
       transition: transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
       font-size:15px;
+      white-space: nowrap;
     }
-    .chip input{ appearance:none; width:16px; height:16px; border:2px solid #cbd5e1; border-radius:50%; display:inline-block; position:relative; }
+    .chip input{
+      appearance:none; width:14px; height:14px;
+      border:2px solid #cbd5e1; border-radius:50%; display:inline-block; position:relative;
+    }
     .chip input:checked{ border-color:transparent; background:var(--chip-on); }
     .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
     .chip.on{
@@ -130,7 +155,7 @@
       transform: translateY(-1px);
     }
 
-    /* ===== 카드 공통 (2페이지와 동일 유지) ===== */
+    /* ===== (재사용) 카드 스타일 – 필요 페이지에서 그대로 사용 가능 ===== */
     .card{
       width:100%;
       background: var(--surface);
@@ -145,7 +170,6 @@
     }
     .card:hover{ box-shadow: var(--shadow); }
     .card:last-of-type{ margin-bottom: -15px; }
-
     .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
     .card h2{
       margin: 0 0 14px;
@@ -159,9 +183,11 @@
       color:#172034; line-height:1.65; text-align:center;
     }
 
+    /* 모바일에서는 가득, 간격 살짝 키움 */
     @media (max-width: 480px){
-      :root{ --card-max: 100%; } /* 모바일에선 화면 가득 */
+      :root{ --card-max: 100%; }
       .sheet{ padding-left:14px; padding-right:14px; }
+      .chips{ grid-template-columns: 1fr 1fr; } /* 모바일도 2열 유지 */
     }
   </style>
 </head>
@@ -178,50 +204,52 @@
   <!-- 페이지 컨텐츠 -->
   <div class="page">
     <main class="sheet" role="main">
-      <p class="sub">지금 마음과 <strong>가장 가까운</strong></br>감정 한 가지를 선택해주세요 :)</p>
+      <p class="sub">지금 마음과 <strong>가장 가까운</strong><br>감정 한 가지를 선택해주세요 :)</p>
 
-      <!-- 감정 그룹들 -->
-      <section class="group" aria-labelledby="g-bright">
-        <h3 id="g-bright">🌿 마음이 밝은 상태</h3>
-        <div class="chips" data-group="bright">
-          <label class="chip"><input type="radio" name="emotion" value="기뻐요">기뻐요</label>
-          <label class="chip"><input type="radio" name="emotion" value="설레요">설레요</label>
-          <label class="chip"><input type="radio" name="emotion" value="감사해요">감사해요</label>
-          <label class="chip"><input type="radio" name="emotion" value="평온해요">평온해요</label>
-        </div>
-      </section>
+      <!-- 보기 좋게 묶은 그룹 컨테이너 -->
+      <div class="groups">
+        <section class="group" aria-labelledby="g-bright">
+          <h3 id="g-bright">🌿 마음이 밝은 상태</h3>
+          <div class="chips" data-group="bright">
+            <label class="chip"><input type="radio" name="emotion" value="기뻐요">기뻐요</label>
+            <label class="chip"><input type="radio" name="emotion" value="설레요">설레요</label>
+            <label class="chip"><input type="radio" name="emotion" value="감사해요">감사해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="평온해요">평온해요</label>
+          </div>
+        </section>
 
-      <section class="group" aria-labelledby="g-low">
-        <h3 id="g-low">🫧 마음이 가라앉은 상태</h3>
-        <div class="chips" data-group="low">
-          <label class="chip"><input type="radio" name="emotion" value="지쳤어요">지쳤어요</label>
-          <label class="chip"><input type="radio" name="emotion" value="우울해요">우울해요</label>
-          <label class="chip"><input type="radio" name="emotion" value="무기력해요">무기력해요</label>
-          <label class="chip"><input type="radio" name="emotion" value="외로워요">외로워요</label>
-        </div>
-      </section>
+        <section class="group" aria-labelledby="g-low">
+          <h3 id="g-low">🫧 마음이 가라앉은 상태</h3>
+          <div class="chips" data-group="low">
+            <label class="chip"><input type="radio" name="emotion" value="지쳤어요">지쳤어요</label>
+            <label class="chip"><input type="radio" name="emotion" value="우울해요">우울해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="무기력해요">무기력해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="외로워요">외로워요</label>
+          </div>
+        </section>
 
-      <section class="group" aria-labelledby="g-hot">
-        <h3 id="g-hot">🔥 마음이 달아오른 상태</h3>
-        <div class="chips" data-group="hot">
-          <label class="chip"><input type="radio" name="emotion" value="짜증나요">짜증나요</label>
-          <label class="chip"><input type="radio" name="emotion" value="화나요">화나요</label>
-          <label class="chip"><input type="radio" name="emotion" value="질투나요">질투나요</label>
-          <label class="chip"><input type="radio" name="emotion" value="부끄러워요">부끄러워요</label>
-        </div>
-      </section>
+        <section class="group" aria-labelledby="g-hot">
+          <h3 id="g-hot">🔥 마음이 달아오른 상태</h3>
+          <div class="chips" data-group="hot">
+            <label class="chip"><input type="radio" name="emotion" value="짜증나요">짜증나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="화나요">화나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="질투나요">질투나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="부끄러워요">부끄러워요</label>
+          </div>
+        </section>
 
-      <section class="group" aria-labelledby="g-tight">
-        <h3 id="g-tight">🧠 마음이 조여오는 상태</h3>
-        <div class="chips" data-group="tight">
-          <label class="chip"><input type="radio" name="emotion" value="불안해요">불안해요</label>
-          <label class="chip"><input type="radio" name="emotion" value="긴장돼요">긴장돼요</label>
-          <label class="chip"><input type="radio" name="emotion" value="두려워요">두려워요</label>
-          <label class="chip"><input type="radio" name="emotion" value="부담돼요">부담돼요</label>
-        </div>
-      </section>
+        <section class="group" aria-labelledby="g-tight">
+          <h3 id="g-tight">🧠 마음이 조여오는 상태</h3>
+          <div class="chips" data-group="tight">
+            <label class="chip"><input type="radio" name="emotion" value="불안해요">불안해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="긴장돼요">긴장돼요</label>
+            <label class="chip"><input type="radio" name="emotion" value="두려워요">두려워요</label>
+            <label class="chip"><input type="radio" name="emotion" value="부담돼요">부담돼요</label>
+          </div>
+        </section>
+      </div>
 
-      <div class="cta-bar">
+      <div class="cta-bar" style="margin-top:18px">
         <button id="goBtn" class="cta" type="button" disabled>이 감정으로 시작하기 →</button>
       </div>
     </main>

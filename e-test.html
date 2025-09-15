@@ -49,26 +49,34 @@
       --shadow:0 16px 36px rgba(0,0,0,.08);
       --radius:22px;
 
-      /* ▼ 헤더 공통 CSS에서 쓰는 변수 보강 */
+      /* ▼ 헤더/레이아웃 공통 변수 */
       --wrap-max: 1040px;
       --border: #ece6df;
       --rose-100: #f4e6e2;
       --rose-300: #d7a8b5;
+
+      /* ▼ 카드 CSS에서 사용하는 변수 별칭 보강 */
+      --surface: var(--card);
+      --radius-xl: var(--radius);
+      --shadow-soft: 0 3px 10px rgba(0,0,0,.06);
+      --h2: 1.02rem;
+      --hint: .925rem;
     }
+
     html,body{height:100%;}
     body{
       font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       background: var(--bg);
       color: var(--ink);
-      display:flex; flex-direction:column; align-items:stretch; /* 헤더를 위해 column */
-      padding: 0; /* 헤더가 붙도록 body padding 제거 */
+      display:flex; flex-direction:column; align-items:stretch;
+      padding: 0;
     }
 
-    /* ===== HEADER COMMON (copy to other pages) ===== */
+    /* ===== HEADER COMMON ===== */
     .header{
       position: sticky; top:0; z-index:10;
       background: var(--bg);
-      border-bottom: 1px solid var(--border);  /* 제목 아래 밑줄 라인 */
+      border-bottom: 1px solid var(--border);
     }
     .header .inner{
       max-width: var(--wrap-max);
@@ -77,34 +85,18 @@
       display:flex; align-items:center; justify-content:center;
       gap:10px; position:relative;
     }
-    .back-btn{
-      position:absolute; left:16px;
-      width:22px; height:22px;
-      border-radius:50%;
-      border:1px solid var(--border);
-      background:#fff; color:#bbb;
-      font-size:14px; display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-      box-shadow: 0 3px 10px rgba(23,32,52,.04);
-      transition: all .2s ease;
-    }
-    .back-btn:hover{
-      background:#fbf5f3; /* 아주 옅은 rose */
-      box-shadow: 0 8px 26px rgba(23,32,52,.06);
-    }
     .logo-dot{
       width:10px; height:10px; border-radius:9999px;
       background: var(--rose-300);
-      box-shadow: 0 0 0 6px var(--rose-100); /* 점 뒤의 보송한 링 */
+      box-shadow: 0 0 0 6px var(--rose-100);
     }
     .title{ font-weight:650; }
 
-    /* 페이지 컨텐츠 패딩(헤더와 분리) */
+    /* ===== 페이지 레이아웃 ===== */
     .page{
       display:flex; justify-content:center;
       padding: 28px 16px;
     }
-
     .sheet{
       width:min(1040px, 100%); background:var(--card);
       border-radius: var(--radius);
@@ -114,6 +106,7 @@
     h1{ font-size: clamp(20px, 3.2vw, 28px); margin:0 0 8px; }
     .sub{ color:var(--muted); margin-bottom:22px; }
 
+    /* ===== 칩(라디오) ===== */
     .group{ margin: 18px 0; }
     .group h3{ display:flex; align-items:center; gap:8px; font-size:16px; margin:14px 0; }
     .chips{ display:flex; flex-wrap:wrap; gap:10px 12px; }
@@ -133,6 +126,7 @@
       transform: translateY(-1px);
     }
 
+    /* ===== CTA ===== */
     .cta-bar{ display:flex; justify-content:flex-start; margin-top: 22px; }
     .cta{
       background: var(--accent); color:#fff; border:0;
@@ -140,6 +134,40 @@
       cursor:pointer; font-size:16px;
     }
     .cta:disabled{ opacity:.5; cursor:not-allowed; }
+
+    /* ===== 카드(CARD) - 재사용용 복붙 블록 ===== */
+    .card{
+      width:100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      padding: 23px clamp(14px, 2.3vw, 26px);
+      margin-bottom: 28px;
+      min-height: clamp(240px, 38vh, 420px);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover{ box-shadow: var(--shadow); }
+    .card:last-of-type{ margin-bottom: -15px; }
+
+    .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
+    .card h2{
+      margin: 0 0 14px;
+      font-size: var(--h2);
+      font-weight: 700;
+      display:flex; align-items:center; justify-content: flex-start;
+      text-align:left; gap:10px;
+      color: #172034;
+    }
+    .hint{
+      margin:0 0 14px;
+      font-size: var(--hint);
+      font-weight: 400;
+      color: #172034;
+      line-height: 1.65;
+      text-align:center;
+    }
 
     @media (max-width: 768px){
       .sheet{ padding: 24px; }
@@ -151,6 +179,7 @@
       .cta{ width:100%; text-align:center; padding:14px 16px; }
     }
 
+    /* 네트워크 토스트 */
     .net{
       position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
       background:#111827; color:#fff; padding:8px 12px; border-radius:999px; font-size:13px;
@@ -164,7 +193,6 @@
   <!-- ▲ 공통 헤더 -->
   <header class="header">
     <div class="inner">
-      <button class="back-btn" aria-label="뒤로가기">←</button>
       <span class="logo-dot" aria-hidden="true"></span>
       <div class="title">오늘의 감정</div>
     </div>
@@ -226,13 +254,7 @@
   <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
 
   <script>
-    /* 뒤로가기 */
-    document.addEventListener('click', (e)=>{
-      const btn = e.target.closest('.back-btn');
-      if(btn){ history.back(); }
-    });
-
-    /* 선택 활성화/이동 로직 (기존 페이지 동작 예시) */
+    /* 선택 활성화/이동 로직 */
     const chips = document.querySelectorAll('.chip');
     const goBtn = document.getElementById('goBtn');
 

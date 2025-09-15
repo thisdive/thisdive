@@ -40,7 +40,7 @@
       --muted:#6b7280;
       --accent:#0f172a;
       --chip:#ffffff;
-      --chip-bd:#e5e7eb;
+      --chip-bd:var(--border);  /* 칩 테두리 = 헤더 밑줄 색 */
       --chip-on:#0f172a;
       --chip-on-ink:#ffffff;
       --shadow:0 16px 36px rgba(0,0,0,.08);
@@ -143,9 +143,10 @@
       font-size:15px;
       white-space: nowrap;
     }
+
     .chip input{
       appearance:none; width:14px; height:14px;
-      border:2px solid #cbd5e1; border-radius:50%; display:inline-block; position:relative;
+      border:2px solid var(--border); border-radius:50%; display:inline-block; position:relative;
     }
     .chip input:checked{ border-color:transparent; background:var(--chip-on); }
     .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }

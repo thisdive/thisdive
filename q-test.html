@@ -95,25 +95,25 @@
   }
   .title{ font-weight: 650;}
 
-  /* Back Button (크기 살짝 키우고 중앙정렬 강화) */
+  /* Back Button (중앙정렬 강화 + 더 작게) */
   .back-btn{
     position: absolute;
     left: 16px;
-    width: 26px;              /* 22 → 26 */
-    height: 26px;             /* 22 → 26 */
+    width: 22px;              /* 더 작게 */
+    height: 22px;             /* 더 작게 */
     border-radius: 50%;
     border: 1px solid var(--border);
     background: var(--surface);
     color: #bbb;
-    font-size: 18px;          /* 14 → 18 */
-    display: flex;
-    align-items: center;      /* 중앙 정렬 */
-    justify-content: center;  /* 중앙 정렬 */
+    font-size: 16px;          /* 아이콘 크기도 약간만 */
+    display: grid;            /* 완전 중앙정렬 */
+    place-items: center;      /* 가로·세로 중앙 */
     line-height: 1;           /* 베이스라인 영향 제거 */
     cursor: pointer;
     box-shadow: var(--shadow-soft);
     transition: all 0.2s ease;
     font-family: 'Pretendard', sans-serif;
+    padding: 0;               /* 여백 제거로 정확한 중앙 */
   }
   .back-btn:hover{
     background: var(--rose-50);
@@ -164,8 +164,9 @@
   /* Emotion badge */
   .emotion-soft{
     display: inline-flex;
-    align-items: center;      /* 텍스트 수직 가운데 */
-    justify-content: center;  /* 텍스트 수평 가운데 */
+    align-items: center;      /* 수직 가운데 */
+    justify-content: center;  /* 수평 가운데 */
+    text-align: center;       /* 내부 텍스트 정중앙 */
     padding: 6px 14px;
     background: #fdfaf6;      /* 더 환한 베이지(모바일 포함) */
     border: 1px solid #e9dcd7;
@@ -178,14 +179,16 @@
     /* 밑줄 색을 테두리와 동기화하기 위한 변수 */
     --chip-bdc: #e9dcd7;
   }
-  /* 텍스트 ‘아래만’ 밑줄 (두께 2배) + Bold */
+  /* 텍스트 ‘아래만’ 밑줄 (2px) + Pretendard Regular + 중앙정렬 보강 */
   .emotion-soft .chip-label{
-    display: inline-block;
+    display: inline-flex;        /* 자체도 플렉스로 중앙정렬 */
+    align-items: center;
+    justify-content: center;
     padding-bottom: 2px;
-    border-bottom: 2px solid var(--chip-bdc); /* 1px → 2px */
-    font-weight: 700;                          /* Pretendard Bold */
-    text-align: center;                        /* 가운데 정렬 안전장치 */
-    width: 100%;
+    border-bottom: 2px solid var(--chip-bdc);
+    font-weight: 400;            /* Regular */
+    width: auto;                 /* 텍스트 너비만 */
+    text-align: center;
   }
 
   .emotion-soft::after{

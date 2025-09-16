@@ -230,10 +230,12 @@
     .wrap{ padding-left: 14px; padding-right: 14px; }
   }
 
-/* ▼ 감정 불러오는 캡슐(#emotionValue)에 '선택된 칩'과 동일 스타일 적용 */
+/* ▼ 감정 불러오는 캡슐(#emotionValue)에 '선택된 칩'과 동일 스타일 적용 + 폰트/색상 지정 */
 #emotionValue.emotion-soft{
-  background: #faf7f2 !important; /* chip.on 과 동일 */
-  border-color: #f4e6e2 !important; /* chip.on 의 테두리색과 동일 */
+  background: #faf7f2 !important;   /* 선택 칩 배경 */
+  border-color: #f4e6e2 !important;  /* 선택 칩 테두리 */
+  font-family: 'Pretendard', sans-serif !important; /* 요청: 프리텐다드체 */
+  color: var(--navy) !important;     /* 요청: 네이비 컬러 */
 }
 
 </style>

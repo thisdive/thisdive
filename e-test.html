@@ -65,13 +65,12 @@
     --muted:#6b7280;
     --accent:#0f172a;
     --chip:#ffffff;
-    --chip-bd:var(--border);  /* 칩 테두리 = 헤더 밑줄 색 */
+    --chip-bd:var(--border);
     --chip-on:#0f172a;
     --chip-on-ink:#ffffff;
     --shadow:0 16px 36px rgba(0,0,0,.08);
     --radius:22px;
 
-    /* 폭 통일 */
     --wrap-max: clamp(860px, 72vw, 1160px);
     --card-max: 350px;
 
@@ -84,12 +83,13 @@
     --shadow-soft: 0 3px 10px rgba(0,0,0,.06);
     --h2: 1.02rem;
     --hint: .925rem;
+
+    --navy:#172034; /* 버튼 배경 */
   }
 
   *{ box-sizing: border-box; }
   html,body{height:100%}
   body{
-    /* 본문/설명 = 프리텐다드 */
     font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
     background: var(--bg);
     color: var(--ink);
@@ -116,14 +116,17 @@
     box-shadow: 0 0 0 6px var(--rose-100);
   }
   .title{
-    /* 큰 제목 = 마루부리 */
-
     font-weight: 700;
     letter-spacing: -.2px;
   }
 
   /* ===== PAGE & CARD ===== */
-  .page{ display:flex; justify-content:center; padding: 0 16px; }
+  .page{
+    display:flex;
+    flex-direction: column;     /* ⬅️ 카드 아래로 CTA가 내려가도록 */
+    align-items: center;
+    padding: 0 16px;
+  }
   .sheet{
     max-width: var(--card-max);
     width: 100%;
@@ -132,99 +135,71 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: clamp(20px, 4vw, 28px);
-  border: 1px solid var(--border);   /* ← 헤더 밑줄과 동일한 색 */
+    border: 1px solid var(--border);
   }
 
   .sub{
-    /* 본문 안내문 = 프리텐다드(기본 값) */
-
     color:var(--muted);
     margin: 4px 0 14px;
     text-align: center;
     line-height: 1.4;
   }
 
-  /* ===== 그룹(섹션) ===== */
-  .groups{
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .group{
-    padding: 6px 0 2px;
-    border-top: 1px dashed var(--border);
-  }
+  .groups{ display: flex; flex-direction: column; gap: 14px; }
+  .group{ padding: 6px 0 2px; border-top: 1px dashed var(--border); }
   .group:first-child{ border-top: 0; padding-top: 0; }
   .group h3{
     font-family: 'MaruBuri', serif;
     display:flex; align-items:center; justify-content:center;
     gap:8px; font-size:16px; margin: 6px 0 10px;
-    font-weight: 700;
-    letter-spacing: -.2px;
+    font-weight: 700; letter-spacing: -.2px;
   }
 
-  /* ===== 칩(라디오) – 2열 ===== */
-  .chips{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 12px;
-  }
+  .chips{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
   .chip{
-    /* 감정 단어 = 마루부리 */
-
     font-weight: 600;
     display:inline-flex; align-items:center; justify-content:center; gap:8px;
     width: 100%;
     border:1px solid var(--chip-bd); background:var(--chip);
-    padding:10px 12px;
-    border-radius:999px; cursor:pointer;
+    padding:10px 12px; border-radius:999px; cursor:pointer;
     transition: transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-    font-size:15px;
-    white-space: nowrap;
-    color: var(--muted);
+    font-size:15px; white-space: nowrap; color: var(--muted);
   }
-  .chip input{
-    appearance:none; width:14px; height:14px;
-    border:2px solid var(--border); border-radius:50%; display:inline-block; position:relative;
-  }
+  .chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative; }
   .chip input:checked{ border-color:transparent; background:var(--chip-on); }
   .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
-  .chip.on{
-    background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on);
-    box-shadow: 0 8px 18px rgba(15,23,42,.20);
-    transform: translateY(-1px);
-  }
+  .chip.on{ background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); box-shadow: 0 8px 18px rgba(15,23,42,.20); transform: translateY(-1px); }
 
-  /* ===== (재사용) 카드 스타일 ===== */
-  .card{
-
-    width:100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
-    padding: 23px clamp(14px, 2.3vw, 26px);
-    margin-bottom: 28px;
-    min-height: clamp(240px, 38vh, 420px);
-    display: flex;
-    flex-direction: column;
-  }
+  .card{ width:100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-soft);
+         padding: 23px clamp(14px, 2.3vw, 26px); margin-bottom: 28px; min-height: clamp(240px, 38vh, 420px); display: flex; flex-direction: column; }
   .card:hover{ box-shadow: var(--shadow); }
   .card:last-of-type{ margin-bottom: -15px; }
   .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
-  .card h2{
-    margin: 0 0 14px;
-    font-size: var(--h2);
-    font-weight: 700;
-    display:flex; align-items:center; justify-content:flex-start;
-    text-align:left; gap:10px; color:#172034;
+  .card h2{ margin: 0 0 14px; font-size: var(--h2); font-weight: 700; display:flex; align-items:center; gap:10px; color:#172034; }
+  .hint{ margin:0 0 14px; font-size:var(--hint); font-weight:400; color:#172034; line-height:1.65; text-align:center; }
+
+  /* ===== CTA (카드 바깥, 아래) ===== */
+  .cta{
+    width:100%;
+    border-top: 1px solid var(--border);  /* 버튼 위 구분선 (전폭) */
+    padding: 14px clamp(14px,3vw,26px);
+    background: none;
+    margin-top: 18px;
   }
-  .hint{
-    margin:0 0 14px; font-size:var(--hint); font-weight:400;
-    color:#172034; line-height:1.65; text-align:center;
+  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
+  .btn{
+    width:200px; padding: 16px 0; background: var(--navy); color: #fff;
+    border: 1px solid rgba(23,32,52,.12); border-radius: 18px;
+    font-weight: 650; letter-spacing:.2px; box-shadow: 0 10px 24px rgba(23,32,52,.22);
+    font-size: 0.9rem; cursor: pointer;
+  }
+  .btn:active{ transform: translateY(1px) }
+  .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35) }
+
+  @supports (padding: max(0px)){
+    .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
   }
 
-  /* 모바일 최적화 */
   @media (max-width: 480px){
     :root{ --card-max: 100%; }
     .sheet{ padding-left:14px; padding-right:14px; }
@@ -247,7 +222,6 @@
     <main class="sheet" role="main">
       <p class="sub">지금 나와 <strong>가장 가까운 마음</strong><br>한 가지를 선택하세요.</p>
 
-      <!-- 보기 좋게 묶은 그룹 컨테이너 -->
       <div class="groups">
         <section class="group" aria-labelledby="g-bright">
           <h3 id="g-bright">🌿 밝은 마음</h3>
@@ -289,11 +263,14 @@
           </div>
         </section>
       </div>
-
-      <div class="cta-bar" style="margin-top:18px">
-        <button id="goBtn" class="cta" type="button" disabled>이 감정으로 시작하기 →</button>
-      </div>
     </main>
+
+    <!-- ▼ 카드 아래, 바깥에 위치한 CTA -->
+    <div class="cta">
+      <div class="cta-inner">
+        <button id="goBtn" class="btn" type="button" disabled>이 감정으로 시작하기 →</button>
+      </div>
+    </div>
   </div>
 
   <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>

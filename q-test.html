@@ -161,18 +161,27 @@
 
   /* Emotion badge */
   .emotion-soft{
-  display: inline-flex;              /* inline-block → inline-flex */
-  align-items: center;               /* 수직 중앙 */
-  justify-content: center;           /* 수평 중앙 */
-  padding: 6px 14px;                 /* 안쪽 여백 */
-  background: #faf7f2;               /* 배경 */
-  border: 1px solid #e9dcd7;         /* 테두리 */
-  border-radius: 9999px;             /* 둥근 캡슐 */
-  font-family: 'Pretendard', sans-serif;
-  font-size: 0.95rem;
-  color: #172034;                    /* 네이비 */
-  line-height: 1;                    /* 줄간격 딱 맞추기 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    background: #fefcf9;
+    border: 1px solid #e9dcd7;
+    border-radius: 9999px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.95rem;
+    color: #172034;
+    line-height: 1;
+    /* 밑줄 색을 테두리와 동기화하기 위한 변수 */
+    --chip-bdc: #e9dcd7;
   }
+  /* 텍스트 ‘아래만’ 밑줄 */
+  .emotion-soft .chip-label{
+    display: inline-block;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--chip-bdc);
+  }
+
   .emotion-soft::after{
     content:"";
     position:absolute; left:8px; right:8px; bottom:4px; height:2px;
@@ -232,14 +241,14 @@
     .wrap{ padding-left: 14px; padding-right: 14px; }
   }
 
-/* ▼ 감정 불러오는 캡슐(#emotionValue)에 '선택된 칩'과 동일 스타일 적용 + 폰트/색상 지정 */
+/* ▼ 감정 불러오는 캡슐(#emotionValue) - 선택 칩과 동일 스타일 + 폰트/색상 + 밑줄색 동기화 */
 #emotionValue.emotion-soft{
-  background: #faf7f2 !important;   /* 선택 칩 배경 */
-  border-color: #f4e6e2 !important;  /* 선택 칩 테두리 */
-  font-family: 'Pretendard', sans-serif !important; /* 프리텐다드체 */
-  color: var(--navy) !important;     /* 네이비 컬러 */
+  background: #faf7f2 !important;        /* 선택 칩 배경 */
+  border-color: #f4e6e2 !important;       /* 선택 칩 테두리 */
+  font-family: 'Pretendard', sans-serif !important;
+  color: var(--navy) !important;
+  --chip-bdc: #f4e6e2;                    /* 밑줄색 = 테두리색 */
 }
-
 </style>
 </head>
 <body>
@@ -257,7 +266,9 @@
     <section class="card" aria-labelledby="h1">
       <h2 id="h1">🪴 나의 마음은</h2>
       <p class="hint">
-        오늘의 <span class="emotion-soft" id="emotionValue">선택 안됨</span>
+        오늘의 
+        <!-- ▼ 텍스트에만 밑줄을 주기 위해 내부 span 추가 -->
+        <span class="emotion-soft" id="emotionValue"><span class="chip-label">선택 안됨</span></span>
         라는 감정은 <br>나의 어떤 생각/욕구로 시작되었나요?
       </p>
       <textarea placeholder="예) 나를 무시한다고 생각했다 → 팀원으로써 존중 받고 싶은 욕구 (불충족)"></textarea>
@@ -288,31 +299,27 @@
   const emotionRaw = (params.get('emotion') || '선택 안됨').trim();
   const map = { worry:'걱정돼요', joy:'기뻐요', calm:'평온해요', sad:'슬퍼요', angry:'화가 나요', tired:'지쳐요' };
   const emotion = map[emotionRaw] || emotionRaw || '선택 안됨';
-  document.getElementById('emotionValue').textContent = emotion;
+  document.getElementById('emotionValue').querySelector('.chip-label').textContent = emotion;
 
   // === PERSIST START ==========================================
   (function persistState(){
     const STORAGE_KEY = 'talkPageState'; // 이 페이지 전용 상태 저장 키
     const textareas = Array.from(document.querySelectorAll('textarea'));
 
-    // 저장된 상태 가져오기
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e){ saved = null; }
 
-    // 직전 저장 감정과 현재 감정이 다르면 초기화(= 직전 페이지에서 감정 변경했다고 판단)
     if (saved && saved.emotion && saved.emotion !== emotion) {
       localStorage.removeItem(STORAGE_KEY);
       saved = null;
     }
 
-    // 저장된 값 복원
     if (saved && Array.isArray(saved.values)) {
       textareas.forEach((ta, i) => {
         if (typeof saved.values[i] === 'string') ta.value = saved.values[i];
       });
     }
 
-    // 입력 변화 시 저장
     const save = () => {
       const values = textareas.map(ta => ta.value || '');
       const payload = { emotion, values, ts: Date.now() };

@@ -33,164 +33,200 @@
         crossorigin="anonymous">
 
   <style>
-    :root{
-      --bg:#f7f3ee;
-      --card:#ffffff;
-      --ink:#1e293b;
-      --muted:#6b7280;
-      --accent:#0f172a;
-      --chip:#ffffff;
-      --chip-bd:var(--border);  /* 칩 테두리 = 헤더 밑줄 색 */
-      --chip-on:#0f172a;
-      --chip-on-ink:#ffffff;
-      --shadow:0 16px 36px rgba(0,0,0,.08);
-      --radius:22px;
+  /* =========================
+     FONTS (local)
+  ==========================*/
+  @font-face{
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family: 'Pretendard';
+    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
-      /* 폭 통일 */
-      --wrap-max: clamp(860px, 72vw, 1160px);
-      --card-max: 350px;
+  :root{
+    --bg:#f7f3ee;
+    --card:#ffffff;
+    --ink:#1e293b;
+    --muted:#6b7280;
+    --accent:#0f172a;
+    --chip:#ffffff;
+    --chip-bd:var(--border);  /* 칩 테두리 = 헤더 밑줄 색 */
+    --chip-on:#0f172a;
+    --chip-on-ink:#ffffff;
+    --shadow:0 16px 36px rgba(0,0,0,.08);
+    --radius:22px;
 
-      --border: #ece6df;
-      --rose-100: #f4e6e2;
-      --rose-300: #d7a8b5;
+    /* 폭 통일 */
+    --wrap-max: clamp(860px, 72vw, 1160px);
+    --card-max: 350px;
 
-      --surface: var(--card);
-      --radius-xl: var(--radius);
-      --shadow-soft: 0 3px 10px rgba(0,0,0,.06);
-      --h2: 1.02rem;
-      --hint: .925rem;
-    }
+    --border: #ece6df;
+    --rose-100: #f4e6e2;
+    --rose-300: #d7a8b5;
 
-    *{ box-sizing: border-box; }
-    html,body{height:100%}
-    body{
-      font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      display:flex; flex-direction:column; align-items:stretch;
-      padding: 0;
-    }
+    --surface: var(--card);
+    --radius-xl: var(--radius);
+    --shadow-soft: 0 3px 10px rgba(0,0,0,.06);
+    --h2: 1.02rem;
+    --hint: .925rem;
+  }
 
-    /* ===== HEADER ===== */
-    .header{
-      position: sticky; top:0; z-index:10;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-    .header .inner{
-      max-width: var(--wrap-max);
-      margin:0 auto;
-      padding: 14px 22px;
-      display:flex; align-items:center; justify-content:center;
-      gap:10px; position:relative;
-    }
-    .logo-dot{
-      width:10px; height:10px; border-radius:9999px;
-      background: var(--rose-300);
-      box-shadow: 0 0 0 6px var(--rose-100);
-    }
-    .title{ font-weight:650; }
+  *{ box-sizing: border-box; }
+  html,body{height:100%}
+  body{
+    /* 본문/설명 = 프리텐다드 */
+    font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    display:flex; flex-direction:column; align-items:stretch;
+    padding: 0;
+  }
 
-    /* ===== PAGE & CARD ===== */
-    .page{ display:flex; justify-content:center; padding: 0 16px; }
-    .sheet{
-      max-width: var(--card-max);
-      width: 100%;
-      margin: 28px auto;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(20px, 4vw, 28px); /* 안쪽 여백 소폭 줄여 한눈성↑ */
-    }
+  /* ===== HEADER ===== */
+  .header{
+    position: sticky; top:0; z-index:10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .header .inner{
+    max-width: var(--wrap-max);
+    margin:0 auto;
+    padding: 14px 22px;
+    display:flex; align-items:center; justify-content:center;
+    gap:10px; position:relative;
+  }
+  .logo-dot{
+    width:10px; height:10px; border-radius:9999px;
+    background: var(--rose-300);
+    box-shadow: 0 0 0 6px var(--rose-100);
+  }
+  .title{
+    /* 큰 제목 = 마루부리 */
 
-    .sub{
-      color:var(--muted);
-      margin: 4px 0 14px;        /* 위아래 여백 컴팩트 */
-      text-align: center;
-      line-height: 1.4;
-    }
+    font-weight: 700;
+    letter-spacing: -.2px;
+  }
 
-    /* ===== 그룹(섹션) – 보기 좋게 컴팩트 ===== */
-    .groups{
-      display: flex;
-      flex-direction: column;
-      gap: 14px;                 /* 그룹 간격 최소화 */
-    }
-    .group{
-      padding: 6px 0 2px;
-      border-top: 1px dashed var(--border);
-    }
-    .group:first-child{ border-top: 0; padding-top: 0; }
-    .group h3{
-      display:flex; align-items:center; justify-content:center;
-      gap:8px; font-size:16px; margin: 6px 0 10px;
-      font-weight: 700;
-    }
+  /* ===== PAGE & CARD ===== */
+  .page{ display:flex; justify-content:center; padding: 0 16px; }
+  .sheet{
+    max-width: var(--card-max);
+    width: 100%;
+    margin: 28px auto;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: clamp(20px, 4vw, 28px);
+  }
 
-    /* ===== 칩(라디오) – 2열 그리드로 한눈에 ===== */
-    .chips{
-      display: grid;
-      grid-template-columns: 1fr 1fr;  /* 2열 */
-      gap: 10px 12px;
-    }
-    .chip{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      width: 100%;
-      border:1px solid var(--chip-bd); background:var(--chip);
-      padding:10px 12px;
-      border-radius:999px; cursor:pointer;
-      transition: transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-      font-size:15px;
-      white-space: nowrap;
-color: var(--muted);   /* ← 회색 폰트색 적용 */
-    }
+  .sub{
+    /* 본문 안내문 = 프리텐다드(기본 값) */
+    color:var(--muted);
+    margin: 4px 0 14px;
+    text-align: center;
+    line-height: 1.4;
+  }
 
-    .chip input{
-      appearance:none; width:14px; height:14px;
-      border:2px solid var(--border); border-radius:50%; display:inline-block; position:relative;
-    }
-    .chip input:checked{ border-color:transparent; background:var(--chip-on); }
-    .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
-    .chip.on{
-      background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on);
-      box-shadow: 0 8px 18px rgba(15,23,42,.20);
-      transform: translateY(-1px);
-    }
+  /* ===== 그룹(섹션) ===== */
+  .groups{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .group{
+    padding: 6px 0 2px;
+    border-top: 1px dashed var(--border);
+  }
+  .group:first-child{ border-top: 0; padding-top: 0; }
+  .group h3{
 
-    /* ===== (재사용) 카드 스타일 – 필요 페이지에서 그대로 사용 가능 ===== */
-    .card{
-      width:100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-soft);
-      padding: 23px clamp(14px, 2.3vw, 26px);
-      margin-bottom: 28px;
-      min-height: clamp(240px, 38vh, 420px);
-      display: flex;
-      flex-direction: column;
-    }
-    .card:hover{ box-shadow: var(--shadow); }
-    .card:last-of-type{ margin-bottom: -15px; }
-    .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
-    .card h2{
-      margin: 0 0 14px;
-      font-size: var(--h2);
-      font-weight: 700;
-      display:flex; align-items:center; justify-content:flex-start;
-      text-align:left; gap:10px; color:#172034;
-    }
-    .hint{
-      margin:0 0 14px; font-size:var(--hint); font-weight:400;
-      color:#172034; line-height:1.65; text-align:center;
-    }
+    display:flex; align-items:center; justify-content:center;
+    gap:8px; font-size:16px; margin: 6px 0 10px;
+    font-weight: 700;
+    letter-spacing: -.2px;
+  }
 
-    /* 모바일에서는 가득, 간격 살짝 키움 */
-    @media (max-width: 480px){
-      :root{ --card-max: 100%; }
-      .sheet{ padding-left:14px; padding-right:14px; }
-      .chips{ grid-template-columns: 1fr 1fr; } /* 모바일도 2열 유지 */
-    }
+  /* ===== 칩(라디오) – 2열 ===== */
+  .chips{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+  }
+  .chip{
+    /* 감정 단어 = 마루부리 */
+    font-family: 'MaruBuri', serif;
+    font-weight: 600;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    width: 100%;
+    border:1px solid var(--chip-bd); background:var(--chip);
+    padding:10px 12px;
+    border-radius:999px; cursor:pointer;
+    transition: transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    font-size:15px;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  .chip input{
+    appearance:none; width:14px; height:14px;
+    border:2px solid var(--border); border-radius:50%; display:inline-block; position:relative;
+  }
+  .chip input:checked{ border-color:transparent; background:var(--chip-on); }
+  .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
+  .chip.on{
+    background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on);
+    box-shadow: 0 8px 18px rgba(15,23,42,.20);
+    transform: translateY(-1px);
+  }
+
+  /* ===== (재사용) 카드 스타일 ===== */
+  .card{
+    width:100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    padding: 23px clamp(14px, 2.3vw, 26px);
+    margin-bottom: 28px;
+    min-height: clamp(240px, 38vh, 420px);
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover{ box-shadow: var(--shadow); }
+  .card:last-of-type{ margin-bottom: -15px; }
+  .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
+  .card h2{
+    margin: 0 0 14px;
+    font-size: var(--h2);
+    font-weight: 700;
+    display:flex; align-items:center; justify-content:flex-start;
+    text-align:left; gap:10px; color:#172034;
+  }
+  .hint{
+    margin:0 0 14px; font-size:var(--hint); font-weight:400;
+    color:#172034; line-height:1.65; text-align:center;
+  }
+
+  /* 모바일 최적화 */
+  @media (max-width: 480px){
+    :root{ --card-max: 100%; }
+    .sheet{ padding-left:14px; padding-right:14px; }
+    .chips{ grid-template-columns: 1fr 1fr; }
+  }
   </style>
 </head>
 <body>

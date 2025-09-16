@@ -5,92 +5,349 @@
   <title>오늘의 몰입 목표</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- ✅ 검색 차단 -->
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="googlebot" content="noindex, nofollow">
-
-  <!-- ✅ 강력 CSP: 외부/인라인 차단, iframe 금지 -->
+  <!-- CSP 등 기존 메타는 동일 -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self';
-    style-src  'self';
+    script-src 'self' 'unsafe-inline';
+    style-src  'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
     img-src    'self' data:;
-    font-src   'self';
+    font-src   'self' https://fonts.gstatic.com https://fonts.googleapis.com;
     connect-src 'self';
     frame-ancestors 'none';
     base-uri 'self';
     upgrade-insecure-requests
   ">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
-  <!-- 보조 보안/캐시 메타 -->
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
+        integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU="
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
 
-  <!-- ✅ 자가 호스팅 리소스 -->
-  <link rel="stylesheet" href="./css/normalize.css" />
-  <link rel="stylesheet" href="./css/pretendard.css" />
-  <link rel="stylesheet" href="./css/goal.css" />
+  <style>
+    :root{
+      --bg:#f8f5f0; --card:#fff; --ink:#1f2937; --muted:#6b7280;
+      --accent:#0f172a; --chip-bd:#e5e7eb; --chip-bg:#fff;
+      --chip-on:#0f172a; --chip-on-ink:#fff;
+      --radius:22px;
+      --divider:#f0ebe6;         /* 헤더/기본 구분선 */
+      --wrap-max: 1160px;
+      --border: var(--divider, #ece6df);
+      --rose-100:#f4e6e2;
+      --rose-300:#d7a8b5;
+    }
+
+    /* ===== 레이아웃: 헤더는 전폭 상단, 시트는 그 아래 ===== */
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      padding:0;
+    }
+    .page{ display:flex; justify-content:center; padding:28px 12px; }
+
+    /* ── 헤더(상단 전폭 + 밑줄) ── */
+    .header{
+      position: sticky; top:0; z-index:10;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .header .inner{
+      max-width: var(--wrap-max);
+      margin:0 auto; padding:14px 22px;
+      display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
+    }
+    .back-btn{
+      position: absolute; left:16px;
+      width:22px; height:22px; border-radius:50%; border:1px solid var(--border);
+      background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer;
+    }
+    .back-btn:hover{ background: var(--rose-100); }
+    .logo-dot{ width:10px; height:10px; border-radius:9999px; background: var(--rose-300); box-shadow: 0 0 0 6px var(--rose-100); }
+    .title{ font-weight:650; }
+
+    /* 시트(카드) — 너비/그림자/테두리(기존 유지) */
+    .sheet{
+      width:100%;
+      max-width: clamp(220px, 68vw, 260px);
+      background:var(--card);
+      border: 1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow: 0 3px 10px rgba(23,32,52,.04);
+      padding:clamp(20px,4vw,40px);
+      margin-top:14px;
+    }
+    .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
+
+    h1{ font-size:clamp(20px,3.2vw,28px); margin:0 0 18px; display:flex; align-items:center; gap:8px; font-weight:700; }
+    p.lead{ color:var(--muted); margin:8px 0 18px; }
+
+    .block{ margin-bottom:26px; }
+    .block-title{
+      font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink);
+      border-bottom:1px solid var(--divider); padding-bottom:6px;
+    }
+
+    /* ==========================================================
+       SHEET 안에서만 정갈하게 재배치 + 모든 테두리 베이지 통일
+       ==========================================================*/
+    .sheet{ --beige-bd:#e9dcd7; }
+
+    /* 섹션 구획 */
+    .sheet .block{ padding:18px 0; margin:0; border-top:1px solid var(--beige-bd); }
+    .sheet .block:first-of-type{ border-top:0; padding-top:0; }
+    .sheet .block-title{ border-bottom:1px solid var(--beige-bd); }
+
+    /* 리드 문단 정돈 */
+    .sheet .lead{
+      margin:10px 0 16px;
+      line-height:1.6;
+      color:#6f7280;
+    }
+
+    /* 칩 그리드 (정갈) */
+    .sheet .chips{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
+    }
+    .sheet .chip{
+      justify-content:center; width:100%;
+      padding:12px 14px;
+      border:1px solid var(--beige-bd);
+      background:#fff; color:var(--ink);
+      border-radius:999px; font-weight:600;
+    }
+    /* 선택 칩: 배경만 강조, "테두리는 베이지 유지" */
+    .sheet .chip.on{
+      background:var(--chip-on); color:var(--chip-on-ink);
+      border-color:var(--beige-bd);
+    }
+
+    /* 별점 패널 */
+    .sheet .panel{
+      border:1px solid var(--beige-bd);
+      background:#fff; border-radius:16px; padding:16px;
+    }
+    .sheet .panel-head{ margin-bottom:12px; }
+    .sheet .readout{
+      border:1px solid var(--beige-bd);
+      background:#fff; color:#6b7280;
+      padding:6px 10px; border-radius:999px; font-size:12.5px;
+    }
+    .sheet .stars{ gap:14px; padding:4px 2px; }
+    .sheet .scale-hint{ color:#9aa0a6; font-size:12.5px; margin-top:8px; }
+
+    /* 입력 */
+    .sheet .goal-input{
+      border:1px solid var(--beige-bd);
+      background:#fff; border-radius:12px;
+      padding:12px 14px; font-size:15px;
+    }
+    .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
+
+    /* 시트 안의 기타 pill/버튼 외곽선도 베이지로 */
+    .sheet .readout, .sheet .chip, .sheet .panel, .sheet .goal-input{ box-shadow:none; }
+  </style>
 </head>
-<body data-page="goal">
+<body>
 
-<main class="sheet" role="main" aria-labelledby="pageTitle">
-  <h1 id="pageTitle">
-    <button id="backBtn" class="back-btn" type="button" aria-label="뒤로가기">←</button>
-    🌟 오늘의 몰입 목표
-  </h1>
-
-  <p class="lead">지금 나에게 가장 필요한 <strong>몰입 유형</strong>은 무엇인가요?</p>
-  <div class="chips" id="catField">
-    <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
-    <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
-    <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
-    <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
-    <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
+<!-- ▣ 상단 고정 헤더 -->
+<header class="header">
+  <div class="inner">
+    <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button>
+    <span class="logo-dot" aria-hidden="true"></span>
+    <div class="title">오늘의 목표</div>
   </div>
+</header>
 
-  <p class="lead">지금 내가 실천할 수 있는 <strong>몰입 목표의 난이도</strong>를 선택하세요.</p>
-  <section class="panel" role="group" aria-labelledby="difficultyLabel">
-    <div class="panel-head">
-      <strong id="difficultyLabel">몰입 목표 난이도</strong>
-      <span id="readout" class="readout">미정 (0/5)</span>
+<!-- ▣ 본문(시트) -->
+<div class="page">
+  <main class="sheet" role="main" aria-labelledby="pageTitle">
+
+    <!-- 유형 -->
+    <section class="block" aria-labelledby="b1">
+      <h2 id="b1" class="block-title">나에게 필요한 몰입 유형</h2>
+      <p class="lead">지금 나에게 가장 필요한 <strong>몰입 유형</strong>을 선택하세요.</p>
+      <div class="chips" id="catField">
+        <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
+        <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
+        <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
+        <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
+        <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
+      </div>
+    </section>
+
+    <!-- 난이도 -->
+    <section class="block" aria-labelledby="b2">
+      <h2 id="b2" class="block-title">몰입 목표 난이도</h2>
+      <p class="lead">지금 내가 실천할 수 있는 <strong>몰입 목표의 난이도</strong>를 선택하세요.</p>
+
+      <div class="panel" role="group" aria-labelledby="difficultyLabel">
+        <div class="panel-head">
+          <strong id="difficultyLabel">난이도 선택</strong>
+          <span id="readout" class="readout">미정 (0/5)</span>
+        </div>
+
+        <div class="stars" id="starsGroup" aria-label="난이도 별점">
+          <input class="sr-radio" type="radio" name="diff" id="d1" value="1">
+          <label for="d1" class="star" data-val="1" role="button" aria-label="1점">★</label>
+
+          <input class="sr-radio" type="radio" name="diff" id="d2" value="2">
+          <label for="d2" class="star" data-val="2" role="button" aria-label="2점">★</label>
+
+          <input class="sr-radio" type="radio" name="diff" id="d3" value="3">
+          <label for="d3" class="star" data-val="3" role="button" aria-label="3점">★</label>
+
+          <input class="sr-radio" type="radio" name="diff" id="d4" value="4">
+          <label for="d4" class="star" data-val="4" role="button" aria-label="4점">★</label>
+
+          <input class="sr-radio" type="radio" name="diff" id="d5" value="5">
+          <label for="d5" class="star" data-val="5" role="button" aria-label="5점">★</label>
+        </div>
+
+        <div class="scale-hint"><span>가볍게</span><span>도전</span></div>
+      </div>
+    </section>
+
+    <!-- 목표 -->
+    <section class="block" aria-labelledby="b3">
+      <h2 id="b3" class="block-title">오늘의 몰입 목표</h2>
+      <p class="lead">선택한 난이도에 맞춰 <strong>오늘의 몰입 목표</strong>를 입력하세요.</p>
+      <input id="goalInput" class="goal-input" type="text"
+             placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
+    </section>
+
+    <!-- CTA -->
+    <div class="actions">
+      <button id="startBtn" class="cta" type="button">몰입 시작하기 →</button>
     </div>
+  </main>
+</div>
 
-    <div class="stars" id="starsGroup" aria-label="난이도 별점">
-      <input class="sr-radio" type="radio" name="diff" id="d1" value="1">
-      <label for="d1" class="star" data-val="1" role="button" aria-label="1점">★</label>
+<script>
+  const NS='thisdive';
+  const K_P2_CURRENT=`${NS}.p2:current`;
+  const K_Q_DATA=`${NS}.q:data`;
+  const K_P4_LASTP2=`${NS}.p4:lastP2`;
+  const K_P4_LASTQ=`${NS}.p4:lastQ`;
+  const K_G_DATA=`${NS}.g:data`;
+  const K_SELECTED=`${NS}.selectedEmotion`;
 
-      <input class="sr-radio" type="radio" name="diff" id="d2" value="2">
-      <label for="d2" class="star" data-val="2" role="button" aria-label="2점">★</label>
+  (function resetIfHash(){
+    if(location.hash.replace('#','')==='reset'){
+      try{
+        sessionStorage.clear();
+        localStorage.removeItem(K_P2_CURRENT);
+        localStorage.removeItem(K_Q_DATA);
+        localStorage.removeItem(K_P4_LASTP2);
+        localStorage.removeItem(K_P4_LASTQ);
+        localStorage.removeItem(K_G_DATA);
+      }catch(e){}
+    }
+  })();
 
-      <input class="sr-radio" type="radio" name="diff" id="d3" value="3">
-      <label for="d3" class="star" data-val="3" role="button" aria-label="3점">★</label>
+  const backBtn=document.getElementById('backBtn');
+  const catField=document.getElementById('catField');
+  const readout=document.getElementById('readout');
+  const goalEl=document.getElementById('goalInput');
+  const startBtn=document.getElementById('startBtn');
+  const starsWrap=document.getElementById('starsGroup');
 
-      <input class="sr-radio" type="radio" name="diff" id="d4" value="4">
-      <label for="d4" class="star" data-val="4" role="button" aria-label="4점">★</label>
+  const minuteMap={1:10,2:15,3:25,4:40,5:50};
+  const diffText={0:'미정',1:'가볍게',2:'쉬움',3:'보통',4:'집중',5:'도전'};
 
-      <input class="sr-radio" type="radio" name="diff" id="d5" value="5">
-      <label for="d5" class="star" data-val="5" role="button" aria-label="5점">★</label>
-    </div>
+  (function compareSnapshotsOnEnter(){
+    try{
+      const curP2=localStorage.getItem(K_P2_CURRENT)||'';
+      const lastP2=localStorage.getItem(K_P4_LASTP2)||'';
+      if(curP2!==lastP2) localStorage.removeItem(K_G_DATA);
+      localStorage.setItem(K_P4_LASTP2,curP2);
 
-    <div class="scale-hint"><span>가볍게</span><span>도전</span></div>
-  </section>
+      const curQ=localStorage.getItem(K_Q_DATA)||'';
+      localStorage.setItem(K_P4_LASTQ,curQ);
+    }catch(e){}
+  })();
 
-  <p class="lead">선택한 난이도에 맞춰 <strong>오늘의 몰입 목표</strong>를 입력하세요.</p>
-  <input id="goalInput" class="goal-input" type="text"
-         placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
+  (function restore(){
+    updateReadout(0);
+    try{
+      const raw=localStorage.getItem(K_G_DATA);
+      if(!raw) return;
+      const d=JSON.parse(raw);
+      if(d.cat){
+        const chip=[...catField.querySelectorAll('label.chip input')].find(i=>i.value===d.cat);
+        if(chip){ chip.checked=true; chip.closest('.chip')?.classList.add('on'); }
+      }
+      if(d.diff){
+        const r=document.getElementById('d'+d.diff);
+        if(r){ r.checked=true; paintStars(d.diff); updateReadout(d.diff); }
+      }
+      if(typeof d.goal==='string') goalEl.value=d.goal;
+    }catch(e){}
+  })();
 
-  <div class="actions">
-    <button id="startBtn" class="cta" type="button">몰입 시작하기 →</button>
-  </div>
-</main>
+  catField.addEventListener('click', (e)=>{
+    const label=e.target.closest('.chip'); if(!label) return;
+    const input=label.querySelector('input[type="radio"]'); if(!input) return;
+    input.checked=true;
+    catField.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    label.classList.add('on');
+    save();
+  });
 
-<script src="./js/goal.js" defer></script>
+  starsWrap.addEventListener('click', (e)=>{
+    const star=e.target.closest('.star'); if(!star) return;
+    const val=Number(star.dataset.val);
+    const r=document.getElementById('d'+val); if(r){ r.checked=true; }
+    paintStars(val); updateReadout(val); save();
+  });
 
-<noscript>
-  <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
-</noscript>
+  function paintStars(val){
+    [...starsWrap.querySelectorAll('.star')].forEach(s=>{
+      s.style.color=(Number(s.dataset.val)<=Number(val))?'var(--star-on)':'var(--star-off)';
+    });
+  }
+  function updateReadout(v){
+    const val=Number(v)||0;
+    const extra=minuteMap[val]?` · ${minuteMap[val]}분`:'';
+    readout.textContent=`${diffText[val]} (${val}/5)${extra}`;
+  }
+
+  function save(){
+    const cat=(catField.querySelector('input:checked')||{}).value||'';
+    const diff=Number((document.querySelector('input[name="diff"]:checked')||{}).value||0);
+    const goal=goalEl.value||'';
+    const data={cat,diff,goal,at:Date.now()};
+    try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
+  }
+  goalEl.addEventListener('input', save);
+
+  startBtn.addEventListener('click',()=>{
+    const cat=(catField.querySelector('input:checked')||{}).value||'';
+    const goal=(goalEl.value||'').trim();
+    try{
+      if(!sessionStorage.getItem(K_SELECTED)){
+        const p2raw=localStorage.getItem(K_P2_CURRENT);
+        if(p2raw){ const obj=JSON.parse(p2raw); if(obj&&obj.value) sessionStorage.setItem(K_SELECTED,obj.value); }
+      }
+      sessionStorage.setItem(`${NS}.goal`,goal);
+      sessionStorage.setItem(`${NS}.cat`,cat);
+    }catch(e){}
+    location.href=`timer2.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
+  });
+
+  backBtn.addEventListener('click',()=>{
+    if(document.referrer){ history.back(); return; }
+    location.href='question2.html?v='+Date.now();
+  });
+
+  window.addEventListener('pageshow',(e)=>{ if(e.persisted){ /* BFCache 복귀 */ }});
+</script>
 </body>
 </html>
-

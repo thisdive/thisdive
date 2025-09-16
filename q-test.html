@@ -161,15 +161,17 @@
 
   /* Emotion badge */
   .emotion-soft{
-    display:inline-block;
-    padding: 2px 8px;
-    background: #faf7f2;
-    color: var(--fg);
-    border: 1px solid var(--border);
-    border-radius: 9999px;
-    position: relative;
-    font-size: .9rem;
-    margin: 0 4px;
+  display: inline-flex;              /* inline-block → inline-flex */
+  align-items: center;               /* 수직 중앙 */
+  justify-content: center;           /* 수평 중앙 */
+  padding: 6px 14px;                 /* 안쪽 여백 */
+  background: #faf7f2;               /* 배경 */
+  border: 1px solid #e9dcd7;         /* 테두리 */
+  border-radius: 9999px;             /* 둥근 캡슐 */
+  font-family: 'Pretendard', sans-serif;
+  font-size: 0.95rem;
+  color: #172034;                    /* 네이비 */
+  line-height: 1;                    /* 줄간격 딱 맞추기 */
   }
   .emotion-soft::after{
     content:"";
@@ -234,8 +236,8 @@
 #emotionValue.emotion-soft{
   background: #faf7f2 !important;   /* 선택 칩 배경 */
   border-color: #f4e6e2 !important;  /* 선택 칩 테두리 */
-  font-family: 'Pretendard', sans-serif !important; /* 요청: 프리텐다드체 */
-  color: var(--navy) !important;     /* 요청: 네이비 컬러 */
+  font-family: 'Pretendard', sans-serif !important; /* 프리텐다드체 */
+  color: var(--navy) !important;     /* 네이비 컬러 */
 }
 
 </style>

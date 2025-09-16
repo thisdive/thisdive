@@ -61,7 +61,7 @@
   }
 
   *{box-sizing:border-box}
-  html,body{height:100%}
+  html,body{ overflow-x: hidden;}
   body{
     margin:0; background:var(--bg); color:var(--fg);
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
@@ -162,7 +162,7 @@
   .emotion-soft{
     display:inline-block;
     padding: 2px 8px;
-    background: var(--rose-50);
+    background: #faf7f2;
     color: var(--fg);
     border: 1px solid var(--border);
     border-radius: 9999px;
@@ -278,6 +278,40 @@
   const emotion = map[emotionRaw] || emotionRaw || '선택 안됨';
   document.getElementById('emotionValue').textContent = emotion;
 
+  // === PERSIST START ==========================================
+  (function persistState(){
+    const STORAGE_KEY = 'talkPageState'; // 이 페이지 전용 상태 저장 키
+    const textareas = Array.from(document.querySelectorAll('textarea'));
+
+    // 저장된 상태 가져오기
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e){ saved = null; }
+
+    // 직전 저장 감정과 현재 감정이 다르면 초기화(= 직전 페이지에서 감정 변경했다고 판단)
+    if (saved && saved.emotion && saved.emotion !== emotion) {
+      localStorage.removeItem(STORAGE_KEY);
+      saved = null;
+    }
+
+    // 저장된 값 복원
+    if (saved && Array.isArray(saved.values)) {
+      textareas.forEach((ta, i) => {
+        if (typeof saved.values[i] === 'string') ta.value = saved.values[i];
+      });
+    }
+
+    // 입력 변화 시 저장
+    const save = () => {
+      const values = textareas.map(ta => ta.value || '');
+      const payload = { emotion, values, ts: Date.now() };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch(e){}
+    };
+
+    textareas.forEach(ta => ta.addEventListener('input', save));
+    window.addEventListener('beforeunload', save);
+  })();
+  // === PERSIST END ============================================
+
   // CTA 버튼 클릭 시 이동
   document.getElementById('nextBtn').addEventListener('click', () => {
     const next = params.get('next') || 'goal.html';
@@ -292,6 +326,3 @@
 </script>
 </body>
 </html>
-
-
-

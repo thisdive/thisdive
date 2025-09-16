@@ -111,6 +111,7 @@
     cursor: pointer;
     box-shadow: var(--shadow-soft);
     transition: all 0.2s ease;
+  font-family: 'Pretendard', sans-serif; /* ← 여기 추가 */
   }
   .back-btn:hover{
     background: var(--rose-50);
@@ -173,7 +174,7 @@
   .emotion-soft::after{
     content:"";
     position:absolute; left:8px; right:8px; bottom:4px; height:2px;
-    background: var(--rose-100);
+
     border-radius: 2px;
   }
 
@@ -228,6 +229,13 @@
     :root{ --wrap-max: 100%; }
     .wrap{ padding-left: 14px; padding-right: 14px; }
   }
+
+/* ▼ 감정 불러오는 캡슐(#emotionValue)에 '선택된 칩'과 동일 스타일 적용 */
+#emotionValue.emotion-soft{
+  background: #faf7f2 !important; /* chip.on 과 동일 */
+  border-color: #f4e6e2 !important; /* chip.on 의 테두리색과 동일 */
+}
+
 </style>
 </head>
 <body>

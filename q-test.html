@@ -95,23 +95,25 @@
   }
   .title{ font-weight: 650;}
 
-  /* Back Button */
+  /* Back Button (크기 살짝 키우고 중앙정렬 강화) */
   .back-btn{
     position: absolute;
     left: 16px;
-    width: 22px; height: 22px;
+    width: 26px;              /* 22 → 26 */
+    height: 26px;             /* 22 → 26 */
     border-radius: 50%;
     border: 1px solid var(--border);
     background: var(--surface);
     color: #bbb;
-    font-size: 14px;
+    font-size: 18px;          /* 14 → 18 */
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center;      /* 중앙 정렬 */
+    justify-content: center;  /* 중앙 정렬 */
+    line-height: 1;           /* 베이스라인 영향 제거 */
     cursor: pointer;
     box-shadow: var(--shadow-soft);
     transition: all 0.2s ease;
-  font-family: 'Pretendard', sans-serif; /* ← 여기 추가 */
+    font-family: 'Pretendard', sans-serif;
   }
   .back-btn:hover{
     background: var(--rose-50);
@@ -162,30 +164,33 @@
   /* Emotion badge */
   .emotion-soft{
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center;      /* 텍스트 수직 가운데 */
+    justify-content: center;  /* 텍스트 수평 가운데 */
     padding: 6px 14px;
-    background: #fefcf9;
+    background: #fdfaf6;      /* 더 환한 베이지(모바일 포함) */
     border: 1px solid #e9dcd7;
     border-radius: 9999px;
     font-family: 'Pretendard', sans-serif;
     font-size: 0.95rem;
     color: #172034;
     line-height: 1;
+    position: relative;
     /* 밑줄 색을 테두리와 동기화하기 위한 변수 */
     --chip-bdc: #e9dcd7;
   }
-  /* 텍스트 ‘아래만’ 밑줄 */
+  /* 텍스트 ‘아래만’ 밑줄 (두께 2배) + Bold */
   .emotion-soft .chip-label{
     display: inline-block;
     padding-bottom: 2px;
-    border-bottom: 1px solid var(--chip-bdc);
+    border-bottom: 2px solid var(--chip-bdc); /* 1px → 2px */
+    font-weight: 700;                          /* Pretendard Bold */
+    text-align: center;                        /* 가운데 정렬 안전장치 */
+    width: 100%;
   }
 
   .emotion-soft::after{
     content:"";
     position:absolute; left:8px; right:8px; bottom:4px; height:2px;
-
     border-radius: 2px;
   }
 
@@ -241,14 +246,14 @@
     .wrap{ padding-left: 14px; padding-right: 14px; }
   }
 
-/* ▼ 감정 불러오는 캡슐(#emotionValue) - 선택 칩과 동일 스타일 + 폰트/색상 + 밑줄색 동기화 */
-#emotionValue.emotion-soft{
-  background: #faf7f2 !important;        /* 선택 칩 배경 */
-  border-color: #f4e6e2 !important;       /* 선택 칩 테두리 */
-  font-family: 'Pretendard', sans-serif !important;
-  color: var(--navy) !important;
-  --chip-bdc: #f4e6e2;                    /* 밑줄색 = 테두리색 */
-}
+  /* ▼ 감정 불러오는 캡슐(#emotionValue) - 선택 칩과 동일 스타일 + 밑줄색 동기화 */
+  #emotionValue.emotion-soft{
+    background: #fdfaf6 !important;      /* 더 환한 베이지 */
+    border-color: #f4e6e2 !important;     /* 선택 칩 테두리 */
+    font-family: 'Pretendard', sans-serif !important;
+    color: var(--navy) !important;
+    --chip-bdc: #f4e6e2;                  /* 밑줄색 = 테두리색 */
+  }
 </style>
 </head>
 <body>
@@ -267,7 +272,7 @@
       <h2 id="h1">🪴 나의 마음은</h2>
       <p class="hint">
         오늘의 
-        <!-- ▼ 텍스트에만 밑줄을 주기 위해 내부 span 추가 -->
+        <!-- 텍스트에만 밑줄을 주기 위해 내부 span 유지 -->
         <span class="emotion-soft" id="emotionValue"><span class="chip-label">선택 안됨</span></span>
         라는 감정은 <br>나의 어떤 생각/욕구로 시작되었나요?
       </p>

@@ -73,7 +73,7 @@
     --radius:22px;
 
     --wrap-max: clamp(860px, 72vw, 1160px);
-    --card-max: 350px;
+    --card-max: 350px; /* 더 이상 사용 안 하지만 기존 값은 보존 */
 
     --border: #ece6df;
     /* ▼ 추가: 살구톤 & 선택 칩 전용 변수 */
@@ -96,7 +96,7 @@
   *{ box-sizing: border-box; }
   html,body{height:100%}
   body{
-margin: 0;   /* 꼭 확인! */
+    margin: 0;
     font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
     background: var(--bg);
     color: var(--ink);
@@ -132,21 +132,26 @@ margin: 0;   /* 꼭 확인! */
     display:flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 16px;
+
+    /* ▼ 두 번째 코드(.wrap)와 동일한 폭/패딩 적용 */
+    max-width: var(--wrap-max);
+    margin: 0 auto;
+    padding: 22px clamp(16px, 3vw, 28px) 0;
   }
   .sheet{
-    max-width: var(--card-max);
+    /* ▼ 카드 가로폭을 wrap 안에서 100%로 */
     width: 100%;
-    margin: 22px auto;
+    max-width: 100%;
+
     background: var(--card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: clamp(20px, 4vw, 28px);
     border: 1px solid var(--border);
-    margin-bottom: 6px;
+
+    /* 상단 여백은 두 번째 코드 느낌에 맞춰 적당히 */
+    margin: 0 0 6px;
   }
-
-
 
   .sub{
     color:var(--muted);
@@ -179,7 +184,7 @@ margin: 0;   /* 꼭 확인! */
   /* ▼ 체크 인디케이터/테두리 컬러 */
   .chip input:checked{
     border-color: var(--rose-300);
-    background: var(--rose-300); /* 원하면 var(--rose-300)로 변경 가능 */
+    background: var(--rose-300);
   }
   .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
 
@@ -210,7 +215,7 @@ margin: 0;   /* 꼭 확인! */
   }
   .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
   .btn{
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
     width:200px; padding: 16px 0; background: var(--navy); color: #fff;
     border: 1px solid rgba(23,32,52,.12); border-radius: 18px;
     font-weight: 650; letter-spacing:.2px; box-shadow: 0 10px 24px rgba(23,32,52,.22);
@@ -343,6 +348,3 @@ margin: 0;   /* 꼭 확인! */
   </noscript>
 </body>
 </html>
-
-
-

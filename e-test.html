@@ -68,7 +68,8 @@
     --chip-bd:var(--border);
     --chip-on:#0f172a;
     --chip-on-ink:#ffffff;
-    --shadow:0 16px 36px rgba(0,0,0,.08);
+    --shadow: 0 8px 26px rgba(23, 32, 52, .06);
+    --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
     --radius:22px;
 
     --wrap-max: clamp(860px, 72vw, 1160px);
@@ -80,7 +81,6 @@
 
     --surface: var(--card);
     --radius-xl: var(--radius);
-    --shadow-soft: 0 3px 10px rgba(0,0,0,.06);
     --h2: 1.02rem;
     --hint: .925rem;
 
@@ -136,6 +136,7 @@
     box-shadow: var(--shadow);
     padding: clamp(20px, 4vw, 28px);
     border: 1px solid var(--border);
+margin-bottom: 12px; /* 기본 auto여백 대신 줄여주기 */
   }
 
   .sub{

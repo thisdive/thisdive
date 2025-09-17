@@ -30,7 +30,6 @@
         href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
 
   <style>
-
  /* =========================
      FONTS (local)
   ==========================*/
@@ -56,22 +55,19 @@
     font-display: swap;
   }
 
-
     :root{
       --bg:#f8f5f0; --card:#fff; --ink:#1f2937; --muted:#6b7280;
       --accent:#0f172a; --chip-bd:#e5e7eb; --chip-bg:#fff;
       --chip-on:#0f172a; --chip-on-ink:#fff;
       --radius:22px;
-      --divider:#f0ebe6;         /* 헤더/기본 구분선 */
+      --divider:#f0ebe6;
       --wrap-max: 1160px;
       --border: var(--divider, #ece6df);
       --rose-100:#f4e6e2;
       --rose-300:#d7a8b5;
 
-      /* 별 위젯 색상 (goal2 스타일) */
-      --star-on:#f59e0b;    /* 채워진 별 */
-      --star-off:#e5e7eb;   /* 비활성 별 */
-      --star-hover:#fbbf24; /* 호버 시 */
+      /* 별 위젯 색상 */
+      --star-on:#f59e0b;    --star-off:#e5e7eb;   --star-hover:#fbbf24;
     }
 
     html,body{height:100%}
@@ -112,7 +108,7 @@
       box-shadow: 0 3px 10px rgba(23,32,52,.04);
       padding:clamp(20px,4vw,40px);
       margin-top:14px;
-      --beige-bd:#e9dcd7;   /* 카드 내부 공용 베이지 라인 */
+      --beige-bd:#e9dcd7;
     }
     .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
 
@@ -127,13 +123,13 @@
     .sheet .lead { text-align:center; }
 
     .block-title{
-      font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink); 
+      font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink);
     }
 
     /* 칩 */
     .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
     .sheet .chip{
-      justify-content:center; width:var(--pill-w);    /* 균일 폭 */
+      justify-content:center; width:var(--pill-w);
       padding:12px 14px; border:1px solid var(--beige-bd);
       background:#fff; color:var(--ink);
       border-radius:999px; font-weight:600;
@@ -148,7 +144,7 @@
     }
     .sheet .panel-head{ margin-bottom:12px; }
 
-    /* 읽기값 캡슐(캡슐 형태 유지) */
+    /* 읽기값 캡슐 */
     .sheet .readout{
       border:1px solid var(--beige-bd);
       background:#fff; color:#6b7280;
@@ -156,10 +152,10 @@
       display:inline-block;
     }
 
-    /* 별 위젯 (goal2에서 가져옴) */
+    /* 별 위젯 */
     .stars{
       display:inline-flex;
-      flex-direction: row-reverse; /* 5→1 순서 선택 가능 */
+      flex-direction: row-reverse;
       gap:6px; user-select:none; padding:4px 2px;
     }
     .stars input{ position:absolute; opacity:0; pointer-events:none; }
@@ -195,14 +191,20 @@
       padding:12px 16px; font-weight:700; cursor:pointer; opacity:.92;
     }
 
-#b1.block-title, /* 나에게 필요한 몰입 */
-#b2.block-title, /* 현재 실행 가능한 난이도 */
-#b3.block-title  /* 실행 가능한 상세 목표(수치) */
-{
-  font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
-  font-weight: 700;
-}
+    /* 섹션 제목 3개 마루부리 */
+    #b1.block-title,#b2.block-title,#b3.block-title{
+      font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
+      font-weight: 700;
+    }
 
+    /* 점선 구분선 */
+    .dotted-sep{
+      width:100%;
+      height:0;
+      border:0;
+      border-top:1px dashed var(--beige-bd, var(--border, #ece6df));
+      margin:12px 0;
+    }
   </style>
 </head>
 <body>
@@ -231,7 +233,10 @@
       </div>
     </section>
 
-    <!-- 난이도 (goal2 별 UI 이식, 패널/캡슐은 goal1 스타일 유지) -->
+    <!-- ▽ 구분선 ①: 카테고리 아래 -->
+    <div class="dotted-sep" role="separator" aria-hidden="true"></div>
+
+    <!-- 난이도 -->
     <section class="block" aria-labelledby="b2">
       <h2 id="b2" class="block-title">현재 실행 가능한 난이도</h2>
 
@@ -240,7 +245,7 @@
           <span id="readout" class="readout">미정 (0/5)</span>
         </div>
 
-        <!-- ★ 별 위젯 (goal2) -->
+        <!-- ★ 별 위젯 -->
         <div class="stars" id="starsGroup">
           <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전" />
           <label for="diff-5" title="5">★</label>
@@ -257,10 +262,11 @@
           <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 가볍게" />
           <label for="diff-1" title="1">★</label>
         </div>
-
-
       </div>
     </section>
+
+    <!-- ▽ 구분선 ②: 난이도 섹션 아래 -->
+    <div class="dotted-sep" role="separator" aria-hidden="true"></div>
 
     <!-- 목표 -->
     <section class="block" aria-labelledby="b3">
@@ -320,9 +326,9 @@
   })();
 
   function updateReadout(v){
-  const val = Number(v) || 0;
-  readout.textContent = `${diffText[val]} (${val}/5)`;   // 분 표시는 제거
-}
+    const val = Number(v) || 0;
+    readout.textContent = `${diffText[val]} (${val}/5)`;   // 분 표시는 제거
+  }
 
   (function restore(){
     updateReadout(0);
@@ -353,7 +359,7 @@
     save();
   });
 
-  // ★ 난이도(별) 위젯 – goal2 로직 적응
+  // ★ 난이도(별) 위젯
   (function initDifficulty(){
     const radios = document.querySelectorAll('input[name="difficulty"]');
     function setVal(v){

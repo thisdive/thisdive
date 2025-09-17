@@ -30,6 +30,33 @@
         href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
 
   <style>
+
+ /* =========================
+     FONTS (local)
+  ==========================*/
+  @font-face{
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family: 'Pretendard';
+    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+
     :root{
       --bg:#f8f5f0; --card:#fff; --ink:#1f2937; --muted:#6b7280;
       --accent:#0f172a; --chip-bd:#e5e7eb; --chip-bg:#fff;
@@ -100,13 +127,13 @@
     .sheet .lead { text-align:center; }
 
     .block-title{
-      font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink);
+      font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink); 
     }
 
     /* 칩 */
     .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
     .sheet .chip{
-      justify-content:center; width:100%;
+      justify-content:center; width:var(--pill-w);    /* 균일 폭 */
       padding:12px 14px; border:1px solid var(--beige-bd);
       background:#fff; color:var(--ink);
       border-radius:999px; font-weight:600;
@@ -167,6 +194,15 @@
       background:#2a3249; color:#fff; border:none; border-radius:12px;
       padding:12px 16px; font-weight:700; cursor:pointer; opacity:.92;
     }
+
+#b1.block-title, /* 나에게 필요한 몰입 */
+#b2.block-title, /* 현재 실행 가능한 난이도 */
+#b3.block-title  /* 실행 가능한 상세 목표(수치) */
+{
+  font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+}
+
   </style>
 </head>
 <body>
@@ -191,12 +227,13 @@
         <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
         <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
         <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
+        <label class="chip"><input type="radio" name="cat" value="성찰"> ✨ 성찰</label>
       </div>
     </section>
 
     <!-- 난이도 (goal2 별 UI 이식, 패널/캡슐은 goal1 스타일 유지) -->
     <section class="block" aria-labelledby="b2">
-      <h2 id="b2" class="block-title">실행 가능한 난이도</h2>
+      <h2 id="b2" class="block-title">현재 실행 가능한 난이도</h2>
 
       <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
         <div class="panel-head">

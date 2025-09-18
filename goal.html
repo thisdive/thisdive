@@ -26,24 +26,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
 
   <style>
-  /* =========================
-     FONTS (local)
-  ==========================*/
-  @font-face{
-    font-family: 'MaruBuri';
-    src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
-    font-weight: 400; font-style: normal; font-display: swap;
-  }
-  @font-face{
-    font-family: 'MaruBuri';
-    src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
-    font-weight: 700; font-style: normal; font-display: swap;
-  }
-  @font-face{
-    font-family: 'Pretendard';
-    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
-    font-weight: 400; font-style: normal; font-display: swap;
-  }
+  /* ========================= FONTS (local) ==========================*/
+  @font-face{ font-family:'MaruBuri'; src:url('./fonts/MaruBuri-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'MaruBuri'; src:url('./fonts/MaruBuri-Bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Pretendard'; src:url('./fonts/Pretendard-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
 
   :root{
     --bg:#f7f3ee;
@@ -56,11 +42,12 @@
     --divider:#f0ebe6;
     --border: var(--divider, #ece6df);
 
-    /* 로즈 팔레트 (선택 캡슐에서 사용) */
-    --rose-100:#f4e6e2;
-    --rose-300:#d7a8b5;
+    /* 로즈 팔레트(원본 페이지와 동일) */
+    --rose-50:#fbf5f3;   /* 참고용 */
+    --rose-100:#f4e6e2;  /* 테두리 */
+    --rose-300:#d7a8b5;  /* 라디오 점 */
 
-    /* 선택 캡슐 내부 배경 */
+    /* 선택 캡슐 내부 배경(원본처럼 #faf7f2 고정) */
     --chip-on-bg:#faf7f2;
     --chip-on-bd:var(--rose-100);
     --chip-on-ink:var(--ink);
@@ -76,8 +63,7 @@
     /* 버튼 색 */
     --navy:#172034;
 
-    /* 섹션 간격 공통 */
-    --section-gap: 12px;
+    --section-gap:12px;
   }
 
   html,body{height:100%}
@@ -90,27 +76,11 @@
   .page{ display:flex; justify-content:center; padding:8px 12px; }
 
   /* ── 헤더 ── */
-  .header{
-    position: sticky; top:0; z-index:10;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-  }
-  .header .inner{
-    max-width: var(--wrap-max); margin:0 auto; padding:14px 22px;
-    display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
-  }
-  .back-btn{
-    position: absolute; left:16px; width:22px; height:22px;
-    border-radius:50%;
-    border:1px solid var(--border); background:#fff; color:#bbb;
-    font-size:16px; display:grid; place-items:center; cursor:pointer;
-  }
-  .back-btn:hover{ background: #f8f4ef; }
-  .logo-dot{
-    width:10px; height:10px; border-radius:9999px;
-    background: var(--rose-300);
-    box-shadow: 0 0 0 6px var(--rose-100);
-  }
+  .header{ position: sticky; top:0; z-index:10; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .header .inner{ max-width: var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative; }
+  .back-btn{ position: absolute; left:16px; width:22px; height:22px; border-radius:50%; border:1px solid var(--border); background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer; }
+  .back-btn:hover{ background:#f8f4ef; }
+  .logo-dot{ width:10px; height:10px; border-radius:9999px; background: var(--rose-300); box-shadow: 0 0 0 6px var(--rose-100); }
   .title{ font-weight:650; }
 
   /* 시트 */
@@ -121,78 +91,47 @@
     border-radius:var(--radius);
     box-shadow: 0 3px 10px rgba(23,32,52,.04);
     padding:clamp(20px,4vw,30px);
-    margin-top:14px;
-    margin-bottom:14px;
+    margin:14px 0;
   }
   .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
-
-  h1{
-    font-size:clamp(20px,3.2vw,28px); margin:0 0 18px;
-    display:flex; align-items:center; gap:8px; font-weight:700;
-  }
-  p.lead{ color:var(--muted); margin:8px 0 18px; }
 
   .block{ margin:0; padding:5px 0; }
   .sheet .block:first-of-type{ padding-top:0; }
 
   /* 섹션 제목 */
   .sheet .block-title, .sheet .lead { text-align:center; }
-  .block-title{
-    font-size:1rem; font-weight:600;
-    margin: var(--section-gap) 0 var(--section-gap);
-    color:var(--ink);
-    position:relative;
-  }
+  .block-title{ font-size:1rem; font-weight:600; margin: var(--section-gap) 0 var(--section-gap); color:var(--ink); }
 
-
-  /* 카테고리 칩 */
-  .sheet .chips{
-    display:grid; grid-template-columns: repeat(2,1fr); gap:12px;
-  }
+  /* 카테고리 칩 (기본) */
+  .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
   .sheet .chip{
-    justify-content:center;
-    padding:10px 10px;
+    justify-content:center; padding:10px 12px;
     border:1px solid var(--border);
-    background:#fff;
-    color:var(--muted);
+    background:#fff; color:var(--muted);
     border-radius:999px; font-weight:600;
     display:inline-flex; align-items:center; gap:8px;
-    cursor:pointer;
-    transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
     white-space:nowrap;
   }
-  .sheet .chip input{
-    appearance:none; width:14px; height:14px;
-    border:2px solid var(--border);
-    border-radius:50%; position:relative;
-  }
-  .sheet .chip input:checked{
-    border-color: var(--rose-300);
-    background: var(--rose-300);
-  }
-  .sheet .chip input:checked::after{
-    content:''; position:absolute; inset:4px; background:#fff; border-radius:50%;
-  }
+
+  /* 라디오 점 (기본/선택) — 원본 페이지와 동일 동작 */
+  .sheet .chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative; }
+  .sheet .chip input:checked{ border-color:var(--rose-300); background:var(--rose-300); }
+  .sheet .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
+
+  /* ✅ 선택된 칩 스타일 — 첫 이미지 '그대로' 이식 (우선순위+!important로 확실히 적용) */
   #catField .chip.on{
-    background: var(--chip-on-bg);
-    color: var(--chip-on-ink);
-    border-color: var(--chip-on-bd);
-    box-shadow: 0 6px 16px rgba(23,32,52,.06);
-    transform: translateY(-1px);
+    background:#faf7f2 !important;      /* 테두리 내부색 */
+    border-color:#f4e6e2 !important;     /* 테두리색 */
+    color:var(--ink) !important;         /* 옵션 텍스트색 */
+    box-shadow:0 6px 16px rgba(23,32,52,.06);
+    transform:translateY(-1px);
   }
 
-  /* 패널 */
-  .sheet .panel{
-    border:1px solid var(--border);
-    background:#fff; border-radius:16px; padding:16px;
-    max-width:280px; margin:0 auto; text-align:center;
-  }
+  /* 패널/읽기값/입력 */
+  .sheet .panel{ border:1px solid var(--border); background:#fff; border-radius:16px; padding:16px; max-width:280px; margin:0 auto; text-align:center; }
   .sheet .panel-head{ margin-bottom:12px; }
-  .sheet .readout{
-    border:1px solid #e5e7eb;
-    background:#f9fafb; color:#6b7280;
-    padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block;
-  }
+  .sheet .readout{ border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block; }
 
   /* 별 위젯 */
   .stars{ display:inline-flex; flex-direction: row-reverse; gap:6px; user-select:none; padding:4px 2px; }
@@ -202,54 +141,28 @@
   .stars input:checked ~ label{ color:var(--star-on); }
   .stars label:active{ transform: scale(.96); }
   .stars input:focus-visible + label{ outline:3px solid rgba(59,130,246,.35); border-radius:6px; outline-offset:2px; }
-  .scale-hint{ display:flex; justify-content:space-between; font-size:.82rem; color:#9aa0a6; margin-top:6px; }
 
   /* 입력 */
   .sheet .goal-input{
-    border:1px solid var(--border);
-    background:#fff; border-radius:12px; padding:12px 14px; font-size:15px;
-    display:block; margin:0 auto; text-align:center;
-    width: 90%; max-width: none;
+    border:1px solid var(--border); background:#fff; border-radius:12px;
+    padding:12px 14px; font-size:15px; display:block; margin:0 auto; text-align:center;
+    width:90%; max-width:none;
   }
   .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
 
-  /* 섹션 제목 3개 프리텐다드 */
-  #b1.block-title,
-  #b2.block-title,
-  #b3.block-title {
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-    font-weight: 700;
-  }
+  /* 제목 폰트(프리텐다드) */
+  #b1.block-title,#b2.block-title,#b3.block-title{ font-family:'Pretendard','Noto Sans KR',sans-serif; font-weight:700; }
 
   /* 점선 구분선 */
-  .dotted-sep{
-    width:100%; height:0; border:0;
-    border-top:1px dashed var(--border);
-  margin: 12px 0 1px;  /* 위쪽은 6px, 아래쪽은 12px */
-  }
+  .dotted-sep{ width:100%; height:0; border:0; border-top:1px dashed var(--border); margin:12px 0 1px; }
 
   /* CTA */
-  .cta{
-    border-top: 1px solid var(--border);
-    padding: 14px clamp(14px, 3vw, 26px);
-    background: none;
-  }
+  .cta{ border-top:1px solid var(--border); padding:14px clamp(14px,3vw,26px); background:none; }
   .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
-  .btn{
-    font-family: 'Pretendard', sans-serif;
-    width: 200px; padding: 16px 0;
-    background: var(--navy); color: #fff;
-    border: 1px solid rgba(23,32,52,.12);
-    border-radius: 18px; font-weight: 650; letter-spacing: .2px;
-    box-shadow: 0 10px 24px rgba(23,32,52,.22);
-    font-size: .9rem; cursor: pointer;
-  }
-  .btn:active{ transform: translateY(1px); }
-  .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35); }
-
-  @supports (padding: max(0px)){
-    .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
-  }
+  .btn{ font-family:'Pretendard',sans-serif; width:200px; padding:16px 0; background:var(--navy); color:#fff; border:1px solid rgba(23,32,52,.12); border-radius:18px; font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22); font-size:.9rem; cursor:pointer; }
+  .btn:active{ transform:translateY(1px); }
+  .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
+  @supports (padding: max(0px)){ .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); } }
   </style>
 </head>
 <body>
@@ -370,4 +283,82 @@
       if(d.diff){
         const r=document.getElementById('diff-'+d.diff);
         if(r){ r.checked=true; }
-        updateReadout
+        updateReadout(d.diff);
+      }
+      if(typeof d.goal==='string') goalEl.value=d.goal;
+    }catch(e){}
+  })();
+
+  // 카테고리 칩
+  catField.addEventListener('click', (e)=>{
+    const label=e.target.closest('.chip');
+    if(!label) return;
+    const input=label.querySelector('input[type="radio"]');
+    if(!input) return;
+
+    input.checked=true;
+    catField.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    label.classList.add('on');
+    save();
+  });
+
+  // 별 위젯
+  (function initDifficulty(){
+    const radios = document.querySelectorAll('input[name="difficulty"]');
+    function setVal(v){ updateReadout(v); save(); }
+    radios.forEach(r=>{
+      r.addEventListener('change', e=> setVal(e.target.value));
+      r.addEventListener('keydown', e=>{
+        if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
+          e.preventDefault();
+          const prev=[...radios].findLast(x=> +x.value < +r.value);
+          if(prev){ prev.checked=true; prev.dispatchEvent(new Event('change')); prev.focus(); }
+        }
+        if(e.key==='ArrowRight' || e.key==='ArrowUp'){
+          e.preventDefault();
+          const next=[...radios].find(x=> +x.value > +r.value);
+          if(next){ next.checked=true; next.dispatchEvent(new Event('change')); next.focus(); }
+        }
+      });
+    });
+  })();
+
+  function currentDiff(){
+    const sel=document.querySelector('input[name="difficulty"]:checked');
+    return sel ? Number(sel.value) : 0;
+  }
+
+  function save(){
+    const cat=(catField.querySelector('input:checked')||{}).value||'';
+    const diff=currentDiff();
+    const goal=goalEl.value||'';
+    const data={cat,diff,goal,at:Date.now()};
+    try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
+  }
+
+  goalEl.addEventListener('input', save);
+
+  nextBtn.addEventListener('click',()=>{
+    const cat=(catField.querySelector('input:checked')||{}).value||'';
+    const goal=(goalEl.value||'').trim();
+    try{
+      if(!sessionStorage.getItem(K_SELECTED)){
+        const p2raw=localStorage.getItem(K_P2_CURRENT);
+        if(p2raw){
+          const obj=JSON.parse(p2raw);
+          if(obj&&obj.value) sessionStorage.setItem(K_SELECTED,obj.value);
+        }
+      }
+      sessionStorage.setItem(`${NS}.goal`,goal);
+      sessionStorage.setItem(`${NS}.cat`,cat);
+    }catch(e){}
+    location.href=`t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
+  });
+
+  backBtn.addEventListener('click',()=>{
+    if(document.referrer){ history.back(); return; }
+    location.href='q-test.html?v='+Date.now();
+  });
+  </script>
+</body>
+</html>

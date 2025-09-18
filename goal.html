@@ -117,8 +117,9 @@
     border: 1px solid var(--border);
     border-radius:var(--radius);
     box-shadow: 0 3px 10px rgba(23,32,52,.04);
-    padding:clamp(20px,4vw,40px);
-    margin-top:24px;
+    padding:clamp(20px,4vw,30px);
+    margin-top:14px;
+    margin-bottom:14px;
   }
   .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
 
@@ -133,7 +134,7 @@
 
   /* 섹션 제목/리드 가운데 */
   .sheet .block-title, .sheet .lead { text-align:center; }
-  .block-title{ font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink); }
+  .block-title{ font-size:1rem; font-weight:600; margin:0 0 15px; color:var(--ink); }
 
   /* ===============================
      카테고리 칩 (첫 페이지 선택 스타일 이식)
@@ -146,7 +147,7 @@
   }
   .sheet .chip{
     justify-content:center; width:var(--pill-w);
-    padding:12px 14px;
+    padding:10px 10px;
     border:1px solid var(--border);            /* ← 카드 테두리 색으로 통일 */
     background:#fff;
     color:var(--muted);                         /* 기본은 회색 텍스트 */
@@ -185,7 +186,7 @@
   }
   .sheet .panel-head{ margin-bottom:12px; }
   .sheet .readout{
-    border:1px solid var(--border);
+    border:1px solid #e5e7eb;
     background:#F7F7F8; color:#6b7280;
     padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block;
   }
@@ -204,14 +205,15 @@
   .sheet .goal-input{
     border:1px solid var(--border);            /* 카드 테두리 색 */
     background:#fff; border-radius:12px; padding:12px 14px; font-size:15px;
-    display:block; margin:0 auto; text-align:center; max-width:280px;
+    display:block; margin:0 auto; text-align:center;   width: 90%;        /* ← 가로 꽉 차게 */
+  max-width: none;    /* ← 280px 제한 해제 */
   }
   .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
 
   /* 섹션 제목 3개 마루부리 */
   #b1.block-title,#b2.block-title,#b3.block-title{
     font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
-    font-weight: 700;
+    font-weight: 700; 
   }
 
   /* 점선 구분선 → 카드 테두리 색으로 */
@@ -258,7 +260,7 @@
     <main class="sheet" role="main" aria-labelledby="pageTitle">
       <!-- 유형 -->
       <section class="block" aria-labelledby="b1">
-        <h2 id="b1" class="block-title">나에게 필요한 몰입</h2>
+        <h2 id="b1" class="block-title">나에게 필요한 몰입은?</h2>
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
           <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
@@ -274,7 +276,7 @@
 
       <!-- 난이도 -->
       <section class="block" aria-labelledby="b2">
-        <h2 id="b2" class="block-title">현재 실행 가능한 난이도</h2>
+        <h2 id="b2" class="block-title">오늘의 목표 난이도는?</h2>
         <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
           <div class="panel-head">
             <span id="readout" class="readout">미정 (0/5)</span>
@@ -301,8 +303,8 @@
 
       <!-- 목표 -->
       <section class="block" aria-labelledby="b3">
-        <h2 id="b3" class="block-title">실행 가능한 상세 목표(수치)</h2>
-        <input id="goalInput" class="goal-input" type="text" placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
+        <h2 id="b3" class="block-title">오늘의 목표</h2>
+        <input id="goalInput" class="goal-input" type="text" placeholder="예) 영단어 10개 외우기" />
       </section>
       <!-- (기존 actions/startBtn 삭제) -->
     </main>

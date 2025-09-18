@@ -67,7 +67,7 @@
       --rose-300:#d7a8b5;
 
       /* 별 위젯 색상 */
-      --star-on:#f59e0b;    --star-off:#e5e7eb;   --star-hover:#fbbf24;
+      --star-on:#FDE68A;    --star-off:#F3F4F6;   --star-hover:#FDE68A;
     }
 
     html,body{height:100%}
@@ -147,7 +147,7 @@
     /* 읽기값 캡슐 */
     .sheet .readout{
       border:1px solid var(--beige-bd);
-      background:#f3f4f6;; color:#6b7280;
+      background:#F7F7F8; color:#6b7280;
       padding:6px 10px; border-radius:999px; font-size:12.5px;
       display:inline-block;
     }
@@ -233,6 +233,13 @@
     @supports (padding: max(0px)){
       .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
     }
+
+/* 카테고리 칩 기본 텍스트를 회색으로 */
+#catField .chip{ color: var(--muted); }   /* 예: #6B7280 */
+
+/* 선택된 칩은 기존 대비 유지(어두운 배경 위 흰색) */
+#catField .chip.on{ color: var(--chip-on-ink); } /* 보통 #fff */
+
   </style>
 </head>
 <body>

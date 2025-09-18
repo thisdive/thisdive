@@ -22,306 +22,300 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
-        integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU="
-        crossorigin="anonymous">
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
 
   <style>
- /* =========================
+  /* =========================
      FONTS (local)
   ==========================*/
   @font-face{
     font-family: 'MaruBuri';
     src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+    font-weight: 400; font-style: normal; font-display: swap;
   }
-  @font-face {
+  @font-face{
     font-family: 'MaruBuri';
     src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
+    font-weight: 700; font-style: normal; font-display: swap;
   }
   @font-face{
     font-family: 'Pretendard';
     src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+    font-weight: 400; font-style: normal; font-display: swap;
   }
 
-    :root{
-      --bg:#f7f3ee; --card:#fff; --ink:#1f2937; --muted:#6b7280;
-      --accent:#0f172a; --chip-bd:#e5e7eb; --chip-bg:#fff;
-      --chip-on:#0f172a; --chip-on-ink:#fff;
-      --radius:22px;
-      --divider:#f0ebe6;
-      --wrap-max: 1160px;
-      --border: var(--divider, #ece6df);
-      --rose-100:#f4e6e2;
-      --rose-300:#d7a8b5;
+  :root{
+    --bg:#f7f3ee;
+    --card:#fff;
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --accent:#0f172a;
 
-      /* 별 위젯 색상 */
-      --star-on:#FDE68A;    --star-off:#F3F4F6;   --star-hover:#FDE68A;
-    }
+    /* 카드 테두리(모든 선 통일 색) */
+    --divider:#f0ebe6;
+    --border: var(--divider, #ece6df);
 
-    html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      padding:0;
-    }
-    .page{ display:flex; justify-content:center; padding:8px 12px; }
+    /* 로즈 팔레트 (선택 캡슐에서 사용) */
+    --rose-100:#f4e6e2;
+    --rose-300:#d7a8b5;
 
-    /* ── 헤더 ── */
-    .header{
-      position: sticky; top:0; z-index:10;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-    .header .inner{
-      max-width: var(--wrap-max);
-      margin:0 auto; padding:14px 22px;
-      display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
-    }
-    .back-btn{
-      position: absolute; left:16px;
-      width:22px; height:22px; border-radius:50%; border:1px solid var(--border);
-      background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer;
-    }
-    .back-btn:hover{ background: var(--rose-100); }
-    .logo-dot{ width:10px; height:10px; border-radius:9999px; background: var(--rose-300); box-shadow: 0 0 0 6px var(--rose-100); }
-    .title{ font-weight:650; }
+    /* 선택 캡슐 내부 배경(첫 페이지 캡슐과 동일 톤) */
+    --chip-on-bg:#faf7f2;    /* 캡슐 내부 연베이지 */
+    --chip-on-bd:var(--rose-100); /* 선택 시 테두리 */
+    --chip-on-ink:var(--ink);     /* 선택 시 글자색 */
 
-    /* 시트 */
-    .sheet{
-      width:100%;
-      max-width: clamp(220px, 68vw, 260px);
-      background:var(--card);
-      border: 1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow: 0 3px 10px rgba(23,32,52,.04);
-      padding:clamp(20px,4vw,40px);
-      margin-top:24px;
-      --beige-bd:#e9dcd7;
-    }
-    .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
+    --radius:22px;
+    --wrap-max: 1160px;
 
-    h1{ font-size:clamp(20px,3.2vw,28px); margin:0 0 18px; display:flex; align-items:center; gap:8px; font-weight:700; }
-    p.lead{ color:var(--muted); margin:8px 0 18px; }
+    /* 별 위젯 색상 */
+    --star-on:#FDE68A;
+    --star-off:#F3F4F6;
+    --star-hover:#FDE68A;
 
-    .block{ margin:0; padding:18px 0; }
-    .sheet .block:first-of-type{ padding-top:0; }
+    /* 버튼 색 */
+    --navy:#172034;
+  }
 
-    /* 섹션 제목/리드 가운데 */
-    .sheet .block-title,
-    .sheet .lead { text-align:center; }
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+    padding:0;
+  }
 
-    .block-title{
-      font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink);
-    }
+  .page{ display:flex; justify-content:center; padding:8px 12px; }
 
-    /* 칩 */
-    .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
-    .sheet .chip{
-      justify-content:center; width:var(--pill-w);
-      padding:12px 14px; border:1px solid var(--beige-bd);
-      background:#fff; color:var(--ink);
-      border-radius:999px; font-weight:600;
-    }
-    .sheet .chip.on{ background:var(--chip-on); color:var(--chip-on-ink); border-color:var(--beige-bd); }
+  /* ── 헤더 ── */
+  .header{
+    position: sticky; top:0; z-index:10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .header .inner{
+    max-width: var(--wrap-max); margin:0 auto; padding:14px 22px;
+    display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
+  }
+  .back-btn{
+    position: absolute; left:16px; width:22px; height:22px;
+    border-radius:50%;
+    border:1px solid var(--border); background:#fff; color:#bbb;
+    font-size:16px; display:grid; place-items:center; cursor:pointer;
+  }
+  .back-btn:hover{ background: #f8f4ef; }
+  .logo-dot{
+    width:10px; height:10px; border-radius:9999px;
+    background: var(--rose-300);
+    box-shadow: 0 0 0 6px var(--rose-100);
+  }
+  .title{ font-weight:650; }
 
-    /* 패널(베이지 테두리 유지) */
-    .sheet .panel{
-      border:1px solid var(--beige-bd);
-      background:#fff; border-radius:16px; padding:16px;
-      max-width:280px; margin:0 auto; text-align:center;
-    }
-    .sheet .panel-head{ margin-bottom:12px; }
+  /* 시트 */
+  .sheet{
+    width:100%; max-width: clamp(220px, 68vw, 260px);
+    background:var(--card);
+    border: 1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow: 0 3px 10px rgba(23,32,52,.04);
+    padding:clamp(20px,4vw,40px);
+    margin-top:24px;
+  }
+  .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
 
-    /* 읽기값 캡슐 */
-    .sheet .readout{
-      border:1px solid var(--beige-bd);
-      background:#F7F7F8; color:#6b7280;
-      padding:6px 10px; border-radius:999px; font-size:12.5px;
-      display:inline-block;
-    }
+  h1{
+    font-size:clamp(20px,3.2vw,28px); margin:0 0 18px;
+    display:flex; align-items:center; gap:8px; font-weight:700;
+  }
+  p.lead{ color:var(--muted); margin:8px 0 18px; }
 
-    /* 별 위젯 */
-    .stars{
-      display:inline-flex;
-      flex-direction: row-reverse;
-      gap:6px; user-select:none; padding:4px 2px;
-    }
-    .stars input{ position:absolute; opacity:0; pointer-events:none; }
-    .stars label{
-      font-size:28px; line-height:1; cursor:pointer;
-      color:var(--star-off);
-      transition: color .12s ease, transform .08s ease;
-    }
-    .stars label:hover,
-    .stars label:hover ~ label{ color:var(--star-hover); }
-    .stars input:checked ~ label{ color:var(--star-on); }
-    .stars label:active{ transform: scale(.96); }
-    .stars input:focus-visible + label{
-      outline:3px solid rgba(59,130,246,.35);
-      border-radius:6px; outline-offset:2px;
-    }
+  .block{ margin:0; padding:18px 0; }
+  .sheet .block:first-of-type{ padding-top:0; }
 
-    .scale-hint{ display:flex; justify-content:space-between; font-size:.82rem; color:#9aa0a6; margin-top:6px; }
+  /* 섹션 제목/리드 가운데 */
+  .sheet .block-title, .sheet .lead { text-align:center; }
+  .block-title{ font-size:1rem; font-weight:600; margin:0 0 12px; color:var(--ink); }
 
-    /* 입력 */
-    .sheet .goal-input{
-      border:1px solid var(--beige-bd);
-      background:#fff; border-radius:12px;
-      padding:12px 14px; font-size:15px;
-      display:block; margin:0 auto; text-align:center; max-width:280px;
-    }
-    .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
+  /* ===============================
+     카테고리 칩 (첫 페이지 선택 스타일 이식)
+     - 기본 테두리: 카드 테두리 색(--border)
+     - 선택 상태: 내부 연베이지(#faf7f2), 테두리 --rose-100, 글자색 --ink,
+                  라디오 점은 로즈-300에 중앙 흰 점
+  =============================== */
+  .sheet .chips{
+    display:grid; grid-template-columns: repeat(2,1fr); gap:12px;
+  }
+  .sheet .chip{
+    justify-content:center; width:var(--pill-w);
+    padding:12px 14px;
+    border:1px solid var(--border);            /* ← 카드 테두리 색으로 통일 */
+    background:#fff;
+    color:var(--muted);                         /* 기본은 회색 텍스트 */
+    border-radius:999px; font-weight:600;
+    display:inline-flex; align-items:center; gap:8px;
+    cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    white-space:nowrap;
+  }
+  /* 내부 라디오 점 (첫 페이지와 동일한 표현) */
+  .sheet .chip input{
+    appearance:none; width:14px; height:14px;
+    border:2px solid var(--border);            /* 기본 점 테두리도 카드 테두리 색 */
+    border-radius:50%; position:relative;
+  }
+  .sheet .chip input:checked{
+    border-color: var(--rose-300);
+    background: var(--rose-300);
+  }
+  .sheet .chip input:checked::after{
+    content:''; position:absolute; inset:4px; background:#fff; border-radius:50%;
+  }
+  /* 선택됨: 첫 페이지 캡슐의 클릭 후 상태를 그대로 적용 */
+  #catField .chip.on{
+    background: var(--chip-on-bg);             /* #faf7f2 */
+    color: var(--chip-on-ink);                 /* --ink */
+    border-color: var(--chip-on-bd);           /* --rose-100 */
+    box-shadow: 0 6px 16px rgba(23,32,52,.06);
+    transform: translateY(-1px);
+  }
 
-    /* 섹션 제목 3개 마루부리 */
-    #b1.block-title,#b2.block-title,#b3.block-title{
-      font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
-      font-weight: 700;
-    }
+  /* 패널/읽기값/입력 테두리도 카드 테두리 색으로 통일 */
+  .sheet .panel{
+    border:1px solid var(--border);
+    background:#fff; border-radius:16px; padding:16px;
+    max-width:280px; margin:0 auto; text-align:center;
+  }
+  .sheet .panel-head{ margin-bottom:12px; }
+  .sheet .readout{
+    border:1px solid var(--border);
+    background:#F7F7F8; color:#6b7280;
+    padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block;
+  }
 
-    /* 점선 구분선 */
-    .dotted-sep{
-      width:100%;
-      height:0;
-      border:0;
-      border-top:1px dashed var(--beige-bd, var(--border, #ece6df));
-      margin:12px 0;
-    }
+  /* 별 위젯 */
+  .stars{ display:inline-flex; flex-direction: row-reverse; gap:6px; user-select:none; padding:4px 2px; }
+  .stars input{ position:absolute; opacity:0; pointer-events:none; }
+  .stars label{ font-size:28px; line-height:1; cursor:pointer; color:var(--star-off); transition: color .12s ease, transform .08s ease; }
+  .stars label:hover, .stars label:hover ~ label{ color:var(--star-hover); }
+  .stars input:checked ~ label{ color:var(--star-on); }
+  .stars label:active{ transform: scale(.96); }
+  .stars input:focus-visible + label{ outline:3px solid rgba(59,130,246,.35); border-radius:6px; outline-offset:2px; }
+  .scale-hint{ display:flex; justify-content:space-between; font-size:.82rem; color:#9aa0a6; margin-top:6px; }
 
-    /* === CTA(버튼 위 선 + 버튼)만 추출 === */
-    :root{
-      /* 이미 --border, --wrap-max가 있으므로 --navy만 필요시 기본값으로 동작 */
-      --navy: #172034;
-    }
-    .cta{
-      border-top: 1px solid var(--border, #ece6df);  /* 버튼 위 선 */
-      padding: 14px clamp(14px, 3vw, 26px);
-      background: none;
-    }
-    .cta-inner{
-      max-width: var(--wrap-max, 1160px);
-      margin: 0 auto;
-      text-align: center;
-    }
-    .btn{
+  /* 입력 */
+  .sheet .goal-input{
+    border:1px solid var(--border);            /* 카드 테두리 색 */
+    background:#fff; border-radius:12px; padding:12px 14px; font-size:15px;
+    display:block; margin:0 auto; text-align:center; max-width:280px;
+  }
+  .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
+
+  /* 섹션 제목 3개 마루부리 */
+  #b1.block-title,#b2.block-title,#b3.block-title{
+    font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+  }
+
+  /* 점선 구분선 → 카드 테두리 색으로 */
+  .dotted-sep{
+    width:100%; height:0; border:0;
+    border-top:1px dashed var(--border);
+    margin:12px 0;
+  }
+
+  /* === CTA(버튼 위 선 + 버튼) (그대로) === */
+  .cta{
+    border-top: 1px solid var(--border);
+    padding: 14px clamp(14px, 3vw, 26px);
+    background: none;
+  }
+  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
+  .btn{
     font-family: 'Pretendard', sans-serif;
-      width: 200px;
-      padding: 16px 0;
-      background: var(--navy, #172034);
-      color: #fff;
-      border: 1px solid rgba(23,32,52,.12);
-      border-radius: 18px;
-      font-weight: 650;
-      letter-spacing: .2px;
-      box-shadow: 0 10px 24px rgba(23,32,52,.22);
-      font-size: .9rem;
-      cursor: pointer;
-    }
-    .btn:active{ transform: translateY(1px); }
-    .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35); }
-    @supports (padding: max(0px)){
-      .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
-    }
+    width: 200px; padding: 16px 0;
+    background: var(--navy); color: #fff;
+    border: 1px solid rgba(23,32,52,.12);
+    border-radius: 18px; font-weight: 650; letter-spacing: .2px;
+    box-shadow: 0 10px 24px rgba(23,32,52,.22);
+    font-size: .9rem; cursor: pointer;
+  }
+  .btn:active{ transform: translateY(1px); }
+  .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35); }
 
-/* 카테고리 칩 기본 텍스트를 회색으로 */
-#catField .chip{ color: var(--muted); }   /* 예: #6B7280 */
-
-/* 선택된 칩은 기존 대비 유지(어두운 배경 위 흰색) */
-#catField .chip.on{ color: var(--chip-on-ink); } /* 보통 #fff */
-
+  @supports (padding: max(0px)){
+    .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  }
   </style>
 </head>
 <body>
+  <header class="header">
+    <div class="inner">
+      <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button>
+      <span class="logo-dot" aria-hidden="true"></span>
+      <div class="title">오늘의 목표</div>
+    </div>
+  </header>
 
-<header class="header">
-  <div class="inner">
-    <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button>
-    <span class="logo-dot" aria-hidden="true"></span>
-    <div class="title">오늘의 목표</div>
-  </div>
-</header>
-
-<div class="page">
-  <main class="sheet" role="main" aria-labelledby="pageTitle">
-
-    <!-- 유형 -->
-    <section class="block" aria-labelledby="b1">
-      <h2 id="b1" class="block-title">나에게 필요한 몰입</h2>
-      <div class="chips" id="catField">
-        <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
-        <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
-        <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
-        <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
-        <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
-        <label class="chip"><input type="radio" name="cat" value="성찰"> ✨ 성찰</label>
-      </div>
-    </section>
-
-    <!-- ▽ 구분선 ①: 카테고리 아래 -->
-    <div class="dotted-sep" role="separator" aria-hidden="true"></div>
-
-    <!-- 난이도 -->
-    <section class="block" aria-labelledby="b2">
-      <h2 id="b2" class="block-title">현재 실행 가능한 난이도</h2>
-
-      <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
-        <div class="panel-head">
-          <span id="readout" class="readout">미정 (0/5)</span>
+  <div class="page">
+    <main class="sheet" role="main" aria-labelledby="pageTitle">
+      <!-- 유형 -->
+      <section class="block" aria-labelledby="b1">
+        <h2 id="b1" class="block-title">나에게 필요한 몰입</h2>
+        <div class="chips" id="catField">
+          <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
+          <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
+          <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
+          <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
+          <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
+          <label class="chip"><input type="radio" name="cat" value="성찰"> ✨ 성찰</label>
         </div>
+      </section>
 
-        <!-- ★ 별 위젯 -->
-        <div class="stars" id="starsGroup">
-          <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전" />
-          <label for="diff-5" title="5">★</label>
+      <!-- ▽ 구분선 ①: 카테고리 아래 -->
+      <div class="dotted-sep" role="separator" aria-hidden="true"></div>
 
-          <input type="radio" name="difficulty" id="diff-4" value="4" aria-label="4 - 집중" />
-          <label for="diff-4" title="4">★</label>
+      <!-- 난이도 -->
+      <section class="block" aria-labelledby="b2">
+        <h2 id="b2" class="block-title">현재 실행 가능한 난이도</h2>
+        <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
+          <div class="panel-head">
+            <span id="readout" class="readout">미정 (0/5)</span>
+          </div>
 
-          <input type="radio" name="difficulty" id="diff-3" value="3" aria-label="3 - 보통" />
-          <label for="diff-3" title="3">★</label>
-
-          <input type="radio" name="difficulty" id="diff-2" value="2" aria-label="2 - 쉬움" />
-          <label for="diff-2" title="2">★</label>
-
-          <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 가볍게" />
-          <label for="diff-1" title="1">★</label>
+          <!-- ★ 별 위젯 -->
+          <div class="stars" id="starsGroup">
+            <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전" />
+            <label for="diff-5" title="5">★</label>
+            <input type="radio" name="difficulty" id="diff-4" value="4" aria-label="4 - 집중" />
+            <label for="diff-4" title="4">★</label>
+            <input type="radio" name="difficulty" id="diff-3" value="3" aria-label="3 - 보통" />
+            <label for="diff-3" title="3">★</label>
+            <input type="radio" name="difficulty" id="diff-2" value="2" aria-label="2 - 쉬움" />
+            <label for="diff-2" title="2">★</label>
+            <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 가볍게" />
+            <label for="diff-1" title="1">★</label>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ▽ 구분선 ②: 난이도 섹션 아래 -->
-    <div class="dotted-sep" role="separator" aria-hidden="true"></div>
+      <!-- ▽ 구분선 ②: 난이도 섹션 아래 -->
+      <div class="dotted-sep" role="separator" aria-hidden="true"></div>
 
-    <!-- 목표 -->
-    <section class="block" aria-labelledby="b3">
-      <h2 id="b3" class="block-title">실행 가능한 상세 목표(수치)</h2>
-      <input id="goalInput" class="goal-input" type="text"
-             placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
-    </section>
-
-    <!-- (기존 actions/startBtn 삭제) -->
-  </main>
-</div>
-
-<!-- ▼ 카드 시트 바깥, 바로 아래 CTA 삽입 -->
-<div class="cta">
-  <div class="cta-inner">
-    <button class="btn" id="nextBtn">몰입 시작하기 →</button>
+      <!-- 목표 -->
+      <section class="block" aria-labelledby="b3">
+        <h2 id="b3" class="block-title">실행 가능한 상세 목표(수치)</h2>
+        <input id="goalInput" class="goal-input" type="text" placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
+      </section>
+      <!-- (기존 actions/startBtn 삭제) -->
+    </main>
   </div>
-</div>
 
-<script>
+  <!-- ▼ 카드 시트 바깥, 바로 아래 CTA -->
+  <div class="cta">
+    <div class="cta-inner">
+      <button class="btn" id="nextBtn">몰입 시작하기 →</button>
+    </div>
+  </div>
+
+  <script>
   const NS='thisdive';
   const K_P2_CURRENT=`${NS}.p2:current`;
   const K_Q_DATA=`${NS}.q:data`;
@@ -366,7 +360,7 @@
 
   function updateReadout(v){
     const val = Number(v) || 0;
-    readout.textContent = `${diffText[val]} (${val}/5)`;   // 분 표시는 제거
+    readout.textContent = `${diffText[val]} (${val}/5)`; // 분 표시는 제거
   }
 
   (function restore(){
@@ -375,9 +369,13 @@
       const raw=localStorage.getItem(K_G_DATA);
       if(!raw) return;
       const d=JSON.parse(raw);
+
       if(d.cat){
         const chip=[...catField.querySelectorAll('label.chip input')].find(i=>i.value===d.cat);
-        if(chip){ chip.checked=true; chip.closest('.chip')?.classList.add('on'); }
+        if(chip){
+          chip.checked=true;
+          chip.closest('.chip')?.classList.add('on');
+        }
       }
       if(d.diff){
         const r=document.getElementById('diff-'+d.diff);
@@ -390,8 +388,11 @@
 
   // 카테고리 칩
   catField.addEventListener('click', (e)=>{
-    const label=e.target.closest('.chip'); if(!label) return;
-    const input=label.querySelector('input[type="radio"]'); if(!input) return;
+    const label=e.target.closest('.chip');
+    if(!label) return;
+    const input=label.querySelector('input[type="radio"]');
+    if(!input) return;
+
     input.checked=true;
     catField.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
     label.classList.add('on');
@@ -401,10 +402,8 @@
   // ★ 난이도(별) 위젯
   (function initDifficulty(){
     const radios = document.querySelectorAll('input[name="difficulty"]');
-    function setVal(v){
-      updateReadout(v);
-      save();
-    }
+    function setVal(v){ updateReadout(v); save(); }
+
     radios.forEach(r=>{
       r.addEventListener('change', e=> setVal(e.target.value));
       r.addEventListener('keydown', e=>{
@@ -434,20 +433,26 @@
     const data={cat,diff,goal,at:Date.now()};
     try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
   }
+
   goalEl.addEventListener('input', save);
 
   // 새 CTA 버튼(시트 바깥)
   nextBtn.addEventListener('click',()=>{
     const cat=(catField.querySelector('input:checked')||{}).value||'';
     const goal=(goalEl.value||'').trim();
+
     try{
       if(!sessionStorage.getItem(K_SELECTED)){
         const p2raw=localStorage.getItem(K_P2_CURRENT);
-        if(p2raw){ const obj=JSON.parse(p2raw); if(obj&&obj.value) sessionStorage.setItem(K_SELECTED,obj.value); }
+        if(p2raw){
+          const obj=JSON.parse(p2raw);
+          if(obj&&obj.value) sessionStorage.setItem(K_SELECTED,obj.value);
+        }
       }
       sessionStorage.setItem(`${NS}.goal`,goal);
       sessionStorage.setItem(`${NS}.cat`,cat);
     }catch(e){}
+
     location.href=`t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
   });
 
@@ -456,7 +461,9 @@
     location.href='q-test.html?v='+Date.now();
   });
 
-  window.addEventListener('pageshow',(e)=>{ if(e.persisted){ /* BFCache 복귀 */ }});
-</script>
+  window.addEventListener('pageshow',(e)=>{
+    if(e.persisted){ /* BFCache 복귀 */ }
+  });
+  </script>
 </body>
 </html>

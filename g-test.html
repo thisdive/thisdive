@@ -30,21 +30,44 @@
         href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
 
   <style>
+ /* =========================
+     FONTS (local)
+  ==========================*/
+  @font-face{
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'MaruBuri';
+    src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family: 'Pretendard';
+    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
     :root{
-      --bg:#f8f5f0; --card:#fff; --ink:#1f2937; --muted:#6b7280;
+      --bg:#f7f3ee; --card:#fff; --ink:#1f2937; --muted:#6b7280;
       --accent:#0f172a; --chip-bd:#e5e7eb; --chip-bg:#fff;
       --chip-on:#0f172a; --chip-on-ink:#fff;
       --radius:22px;
-      --divider:#f0ebe6;         /* 헤더/기본 구분선 */
+      --divider:#f0ebe6;
       --wrap-max: 1160px;
       --border: var(--divider, #ece6df);
       --rose-100:#f4e6e2;
       --rose-300:#d7a8b5;
 
-      /* 별 위젯 색상 (goal2 스타일) */
-      --star-on:#f59e0b;    /* 채워진 별 */
-      --star-off:#e5e7eb;   /* 비활성 별 */
-      --star-hover:#fbbf24; /* 호버 시 */
+      /* 별 위젯 색상 */
+      --star-on:#FDE68A;    --star-off:#F3F4F6;   --star-hover:#FDE68A;
     }
 
     html,body{height:100%}
@@ -53,7 +76,7 @@
       font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       padding:0;
     }
-    .page{ display:flex; justify-content:center; padding:28px 12px; }
+    .page{ display:flex; justify-content:center; padding:8px 12px; }
 
     /* ── 헤더 ── */
     .header{
@@ -84,8 +107,8 @@
       border-radius:var(--radius);
       box-shadow: 0 3px 10px rgba(23,32,52,.04);
       padding:clamp(20px,4vw,40px);
-      margin-top:14px;
-      --beige-bd:#e9dcd7;   /* 카드 내부 공용 베이지 라인 */
+      margin-top:24px;
+      --beige-bd:#e9dcd7;
     }
     .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
 
@@ -106,7 +129,7 @@
     /* 칩 */
     .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
     .sheet .chip{
-      justify-content:center; width:100%;
+      justify-content:center; width:var(--pill-w);
       padding:12px 14px; border:1px solid var(--beige-bd);
       background:#fff; color:var(--ink);
       border-radius:999px; font-weight:600;
@@ -121,18 +144,18 @@
     }
     .sheet .panel-head{ margin-bottom:12px; }
 
-    /* 읽기값 캡슐(캡슐 형태 유지) */
+    /* 읽기값 캡슐 */
     .sheet .readout{
       border:1px solid var(--beige-bd);
-      background:#fff; color:#6b7280;
+      background:#F7F7F8; color:#6b7280;
       padding:6px 10px; border-radius:999px; font-size:12.5px;
       display:inline-block;
     }
 
-    /* 별 위젯 (goal2에서 가져옴) */
+    /* 별 위젯 */
     .stars{
       display:inline-flex;
-      flex-direction: row-reverse; /* 5→1 순서 선택 가능 */
+      flex-direction: row-reverse;
       gap:6px; user-select:none; padding:4px 2px;
     }
     .stars input{ position:absolute; opacity:0; pointer-events:none; }
@@ -161,12 +184,62 @@
     }
     .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
 
-    /* CTA */
-    .actions{ margin-top:16px; display:flex; justify-content:center; }
-    .cta{
-      background:#2a3249; color:#fff; border:none; border-radius:12px;
-      padding:12px 16px; font-weight:700; cursor:pointer; opacity:.92;
+    /* 섹션 제목 3개 마루부리 */
+    #b1.block-title,#b2.block-title,#b3.block-title{
+      font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
+      font-weight: 700;
     }
+
+    /* 점선 구분선 */
+    .dotted-sep{
+      width:100%;
+      height:0;
+      border:0;
+      border-top:1px dashed var(--beige-bd, var(--border, #ece6df));
+      margin:12px 0;
+    }
+
+    /* === CTA(버튼 위 선 + 버튼)만 추출 === */
+    :root{
+      /* 이미 --border, --wrap-max가 있으므로 --navy만 필요시 기본값으로 동작 */
+      --navy: #172034;
+    }
+    .cta{
+      border-top: 1px solid var(--border, #ece6df);  /* 버튼 위 선 */
+      padding: 14px clamp(14px, 3vw, 26px);
+      background: none;
+    }
+    .cta-inner{
+      max-width: var(--wrap-max, 1160px);
+      margin: 0 auto;
+      text-align: center;
+    }
+    .btn{
+    font-family: 'Pretendard', sans-serif;
+      width: 200px;
+      padding: 16px 0;
+      background: var(--navy, #172034);
+      color: #fff;
+      border: 1px solid rgba(23,32,52,.12);
+      border-radius: 18px;
+      font-weight: 650;
+      letter-spacing: .2px;
+      box-shadow: 0 10px 24px rgba(23,32,52,.22);
+      font-size: .9rem;
+      cursor: pointer;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35); }
+    @supports (padding: max(0px)){
+      .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+    }
+
+/* 카테고리 칩 기본 텍스트를 회색으로 */
+#catField .chip{ color: var(--muted); }   /* 예: #6B7280 */
+
+/* 선택된 칩은 기존 대비 유지(어두운 배경 위 흰색) */
+#catField .chip.on{ color: var(--chip-on-ink); } /* 보통 #fff */
+
   </style>
 </head>
 <body>
@@ -191,19 +264,23 @@
         <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
         <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
         <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
+        <label class="chip"><input type="radio" name="cat" value="성찰"> ✨ 성찰</label>
       </div>
     </section>
 
-    <!-- 난이도 (goal2 별 UI 이식, 패널/캡슐은 goal1 스타일 유지) -->
+    <!-- ▽ 구분선 ①: 카테고리 아래 -->
+    <div class="dotted-sep" role="separator" aria-hidden="true"></div>
+
+    <!-- 난이도 -->
     <section class="block" aria-labelledby="b2">
-      <h2 id="b2" class="block-title">실행 가능한 난이도</h2>
+      <h2 id="b2" class="block-title">현재 실행 가능한 난이도</h2>
 
       <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
         <div class="panel-head">
           <span id="readout" class="readout">미정 (0/5)</span>
         </div>
 
-        <!-- ★ 별 위젯 (goal2) -->
+        <!-- ★ 별 위젯 -->
         <div class="stars" id="starsGroup">
           <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전" />
           <label for="diff-5" title="5">★</label>
@@ -220,10 +297,11 @@
           <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 가볍게" />
           <label for="diff-1" title="1">★</label>
         </div>
-
-        <div class="scale-hint"><span>가볍게</span><span>도전</span></div>
       </div>
     </section>
+
+    <!-- ▽ 구분선 ②: 난이도 섹션 아래 -->
+    <div class="dotted-sep" role="separator" aria-hidden="true"></div>
 
     <!-- 목표 -->
     <section class="block" aria-labelledby="b3">
@@ -232,11 +310,15 @@
              placeholder="예) 난이도(★★) — 메일 20분 정리하기 / 코드 리뷰 3건 처리" />
     </section>
 
-    <!-- CTA -->
-    <div class="actions">
-      <button id="startBtn" class="cta" type="button">몰입 시작하기 →</button>
-    </div>
+    <!-- (기존 actions/startBtn 삭제) -->
   </main>
+</div>
+
+<!-- ▼ 카드 시트 바깥, 바로 아래 CTA 삽입 -->
+<div class="cta">
+  <div class="cta-inner">
+    <button class="btn" id="nextBtn">몰입 시작하기 →</button>
+  </div>
 </div>
 
 <script>
@@ -265,7 +347,7 @@
   const catField=document.getElementById('catField');
   const readout=document.getElementById('readout');
   const goalEl=document.getElementById('goalInput');
-  const startBtn=document.getElementById('startBtn');
+  const nextBtn=document.getElementById('nextBtn');
 
   const minuteMap={1:10,2:15,3:25,4:40,5:50};
   const diffText={0:'미정',1:'가볍게',2:'쉬움',3:'보통',4:'집중',5:'도전'};
@@ -283,9 +365,8 @@
   })();
 
   function updateReadout(v){
-    const val=Number(v)||0;
-    const extra=minuteMap[val]?` · ${minuteMap[val]}분`:'';   // ← 캡슐 옆에 분 표시 유지
-    readout.textContent=`${diffText[val]} (${val}/5)${extra}`;
+    const val = Number(v) || 0;
+    readout.textContent = `${diffText[val]} (${val}/5)`;   // 분 표시는 제거
   }
 
   (function restore(){
@@ -317,7 +398,7 @@
     save();
   });
 
-  // ★ 난이도(별) 위젯 – goal2 로직 적응
+  // ★ 난이도(별) 위젯
   (function initDifficulty(){
     const radios = document.querySelectorAll('input[name="difficulty"]');
     function setVal(v){
@@ -355,8 +436,8 @@
   }
   goalEl.addEventListener('input', save);
 
-  // 시작 버튼
-  startBtn.addEventListener('click',()=>{
+  // 새 CTA 버튼(시트 바깥)
+  nextBtn.addEventListener('click',()=>{
     const cat=(catField.querySelector('input:checked')||{}).value||'';
     const goal=(goalEl.value||'').trim();
     try{

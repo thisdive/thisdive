@@ -60,10 +60,10 @@
     --rose-100:#f4e6e2;
     --rose-300:#d7a8b5;
 
-    /* 선택 캡슐 내부 배경(첫 페이지 캡슐과 동일 톤) */
-    --chip-on-bg:#faf7f2;    /* 캡슐 내부 연베이지 */
-    --chip-on-bd:var(--rose-100); /* 선택 시 테두리 */
-    --chip-on-ink:var(--ink);     /* 선택 시 글자색 */
+    /* 선택 캡슐 내부 배경 */
+    --chip-on-bg:#faf7f2;
+    --chip-on-bd:var(--rose-100);
+    --chip-on-ink:var(--ink);
 
     --radius:22px;
     --wrap-max: 1160px;
@@ -75,6 +75,9 @@
 
     /* 버튼 색 */
     --navy:#172034;
+
+    /* 섹션 간격 공통 */
+    --section-gap: 12px;
   }
 
   html,body{height:100%}
@@ -129,37 +132,38 @@
   }
   p.lead{ color:var(--muted); margin:8px 0 18px; }
 
-  .block{ margin:0; padding:18px 0; }
+  .block{ margin:0; padding:5px 0; }
   .sheet .block:first-of-type{ padding-top:0; }
 
-  /* 섹션 제목/리드 가운데 */
+  /* 섹션 제목 */
   .sheet .block-title, .sheet .lead { text-align:center; }
-  .block-title{ font-size:1rem; font-weight:600; margin:5 0 10px; color:var(--ink); }
+  .block-title{
+    font-size:1rem; font-weight:600;
+    margin: var(--section-gap) 0 var(--section-gap);
+    color:var(--ink);
+    position:relative;
+  }
 
-  /* ===============================
-     카테고리 칩 (첫 페이지 선택 스타일 이식)
-     - 기본 테두리: 카드 테두리 색(--border)
-     - 선택 상태: 내부 연베이지(#faf7f2), 테두리 --rose-100, 글자색 --ink,
-                  라디오 점은 로즈-300에 중앙 흰 점
-  =============================== */
+
+  /* 카테고리 칩 */
   .sheet .chips{
     display:grid; grid-template-columns: repeat(2,1fr); gap:12px;
   }
   .sheet .chip{
-    justify-content:center; width:var(--pill-w);
+    justify-content:center;
     padding:10px 10px;
-    border:1px solid var(--border);            /* ← 카드 테두리 색으로 통일 */
+    border:1px solid var(--border);
     background:#fff;
-    color:var(--muted);                         /* 기본은 회색 텍스트 */
+    color:var(--muted);
     border-radius:999px; font-weight:600;
     display:inline-flex; align-items:center; gap:8px;
-    cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    cursor:pointer;
+    transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
     white-space:nowrap;
   }
-  /* 내부 라디오 점 (첫 페이지와 동일한 표현) */
   .sheet .chip input{
     appearance:none; width:14px; height:14px;
-    border:2px solid var(--border);            /* 기본 점 테두리도 카드 테두리 색 */
+    border:2px solid var(--border);
     border-radius:50%; position:relative;
   }
   .sheet .chip input:checked{
@@ -169,16 +173,15 @@
   .sheet .chip input:checked::after{
     content:''; position:absolute; inset:4px; background:#fff; border-radius:50%;
   }
-  /* 선택됨: 첫 페이지 캡슐의 클릭 후 상태를 그대로 적용 */
   #catField .chip.on{
-    background: var(--chip-on-bg);             /* #faf7f2 */
-    color: var(--chip-on-ink);                 /* --ink */
-    border-color: var(--chip-on-bd);           /* --rose-100 */
+    background: var(--chip-on-bg);
+    color: var(--chip-on-ink);
+    border-color: var(--chip-on-bd);
     box-shadow: 0 6px 16px rgba(23,32,52,.06);
     transform: translateY(-1px);
   }
 
-  /* 패널/읽기값/입력 테두리도 카드 테두리 색으로 통일 */
+  /* 패널 */
   .sheet .panel{
     border:1px solid var(--border);
     background:#fff; border-radius:16px; padding:16px;
@@ -187,7 +190,7 @@
   .sheet .panel-head{ margin-bottom:12px; }
   .sheet .readout{
     border:1px solid #e5e7eb;
-    background:#F7F7F8; color:#6b7280;
+    background:#f9fafb; color:#6b7280;
     padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block;
   }
 
@@ -203,27 +206,29 @@
 
   /* 입력 */
   .sheet .goal-input{
-    border:1px solid var(--border);            /* 카드 테두리 색 */
+    border:1px solid var(--border);
     background:#fff; border-radius:12px; padding:12px 14px; font-size:15px;
-    display:block; margin:0 auto; text-align:center;   width: 90%;        /* ← 가로 꽉 차게 */
-  max-width: none;    /* ← 280px 제한 해제 */
+    display:block; margin:0 auto; text-align:center;
+    width: 90%; max-width: none;
   }
   .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
 
-  /* 섹션 제목 3개 마루부리 */
-  #b1.block-title,#b2.block-title,#b3.block-title{
-    font-family: 'MaruBuri', Pretendard, 'Noto Sans KR', sans-serif;
-    font-weight: 700; 
+  /* 섹션 제목 3개 프리텐다드 */
+  #b1.block-title,
+  #b2.block-title,
+  #b3.block-title {
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    font-weight: 700;
   }
 
-  /* 점선 구분선 → 카드 테두리 색으로 */
+  /* 점선 구분선 */
   .dotted-sep{
     width:100%; height:0; border:0;
     border-top:1px dashed var(--border);
-    margin:12px 0;
+  margin: 12px 0 1px;  /* 위쪽은 6px, 아래쪽은 12px */
   }
 
-  /* === CTA(버튼 위 선 + 버튼) (그대로) === */
+  /* CTA */
   .cta{
     border-top: 1px solid var(--border);
     padding: 14px clamp(14px, 3vw, 26px);
@@ -260,7 +265,7 @@
     <main class="sheet" role="main" aria-labelledby="pageTitle">
       <!-- 유형 -->
       <section class="block" aria-labelledby="b1">
-        <h2 id="b1" class="block-title">나에게 필요한 몰입은?</h2>
+        <h2 id="b1" class="block-title">나에게 필요한 몰입</h2>
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
           <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
@@ -271,12 +276,11 @@
         </div>
       </section>
 
-      <!-- ▽ 구분선 ①: 카테고리 아래 -->
       <div class="dotted-sep" role="separator" aria-hidden="true"></div>
 
       <!-- 난이도 -->
       <section class="block" aria-labelledby="b2">
-        <h2 id="b2" class="block-title">오늘의 목표 난이도는?</h2>
+        <h2 id="b2" class="block-title">오늘의 목표 난이도</h2>
         <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
           <div class="panel-head">
             <span id="readout" class="readout">미정 (0/5)</span>
@@ -298,7 +302,6 @@
         </div>
       </section>
 
-      <!-- ▽ 구분선 ②: 난이도 섹션 아래 -->
       <div class="dotted-sep" role="separator" aria-hidden="true"></div>
 
       <!-- 목표 -->
@@ -306,11 +309,9 @@
         <h2 id="b3" class="block-title">오늘의 목표</h2>
         <input id="goalInput" class="goal-input" type="text" placeholder="예) 영단어 10개 외우기" />
       </section>
-      <!-- (기존 actions/startBtn 삭제) -->
     </main>
   </div>
 
-  <!-- ▼ 카드 시트 바깥, 바로 아래 CTA -->
   <div class="cta">
     <div class="cta-inner">
       <button class="btn" id="nextBtn">몰입 시작하기 →</button>
@@ -345,24 +346,11 @@
   const goalEl=document.getElementById('goalInput');
   const nextBtn=document.getElementById('nextBtn');
 
-  const minuteMap={1:10,2:15,3:25,4:40,5:50};
   const diffText={0:'미정',1:'가볍게',2:'쉬움',3:'보통',4:'집중',5:'도전'};
-
-  (function compareSnapshotsOnEnter(){
-    try{
-      const curP2=localStorage.getItem(K_P2_CURRENT)||'';
-      const lastP2=localStorage.getItem(K_P4_LASTP2)||'';
-      if(curP2!==lastP2) localStorage.removeItem(K_G_DATA);
-      localStorage.setItem(K_P4_LASTP2,curP2);
-
-      const curQ=localStorage.getItem(K_Q_DATA)||'';
-      localStorage.setItem(K_P4_LASTQ,curQ);
-    }catch(e){}
-  })();
 
   function updateReadout(v){
     const val = Number(v) || 0;
-    readout.textContent = `${diffText[val]} (${val}/5)`; // 분 표시는 제거
+    readout.textContent = `${diffText[val]} (${val}/5)`;
   }
 
   (function restore(){
@@ -382,90 +370,4 @@
       if(d.diff){
         const r=document.getElementById('diff-'+d.diff);
         if(r){ r.checked=true; }
-        updateReadout(d.diff);
-      }
-      if(typeof d.goal==='string') goalEl.value=d.goal;
-    }catch(e){}
-  })();
-
-  // 카테고리 칩
-  catField.addEventListener('click', (e)=>{
-    const label=e.target.closest('.chip');
-    if(!label) return;
-    const input=label.querySelector('input[type="radio"]');
-    if(!input) return;
-
-    input.checked=true;
-    catField.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-    label.classList.add('on');
-    save();
-  });
-
-  // ★ 난이도(별) 위젯
-  (function initDifficulty(){
-    const radios = document.querySelectorAll('input[name="difficulty"]');
-    function setVal(v){ updateReadout(v); save(); }
-
-    radios.forEach(r=>{
-      r.addEventListener('change', e=> setVal(e.target.value));
-      r.addEventListener('keydown', e=>{
-        if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
-          e.preventDefault();
-          const prev=[...radios].findLast(x=> +x.value < +r.value);
-          if(prev){ prev.checked=true; prev.dispatchEvent(new Event('change')); prev.focus(); }
-        }
-        if(e.key==='ArrowRight' || e.key==='ArrowUp'){
-          e.preventDefault();
-          const next=[...radios].find(x=> +x.value > +r.value);
-          if(next){ next.checked=true; next.dispatchEvent(new Event('change')); next.focus(); }
-        }
-      });
-    });
-  })();
-
-  function currentDiff(){
-    const sel=document.querySelector('input[name="difficulty"]:checked');
-    return sel ? Number(sel.value) : 0;
-  }
-
-  function save(){
-    const cat=(catField.querySelector('input:checked')||{}).value||'';
-    const diff=currentDiff();
-    const goal=goalEl.value||'';
-    const data={cat,diff,goal,at:Date.now()};
-    try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
-  }
-
-  goalEl.addEventListener('input', save);
-
-  // 새 CTA 버튼(시트 바깥)
-  nextBtn.addEventListener('click',()=>{
-    const cat=(catField.querySelector('input:checked')||{}).value||'';
-    const goal=(goalEl.value||'').trim();
-
-    try{
-      if(!sessionStorage.getItem(K_SELECTED)){
-        const p2raw=localStorage.getItem(K_P2_CURRENT);
-        if(p2raw){
-          const obj=JSON.parse(p2raw);
-          if(obj&&obj.value) sessionStorage.setItem(K_SELECTED,obj.value);
-        }
-      }
-      sessionStorage.setItem(`${NS}.goal`,goal);
-      sessionStorage.setItem(`${NS}.cat`,cat);
-    }catch(e){}
-
-    location.href=`t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
-  });
-
-  backBtn.addEventListener('click',()=>{
-    if(document.referrer){ history.back(); return; }
-    location.href='q-test.html?v='+Date.now();
-  });
-
-  window.addEventListener('pageshow',(e)=>{
-    if(e.persisted){ /* BFCache 복귀 */ }
-  });
-  </script>
-</body>
-</html>
+        updateReadout

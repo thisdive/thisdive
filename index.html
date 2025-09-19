@@ -1,37 +1,128 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>열리는 중…</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>오늘의 몰입 시작 | thisdive</title>
+  <meta name="color-scheme" content="light" />
+  <style>
+    /* =========================
+       FONTS (local)
+    ==========================*/
+    @font-face{
+      font-family: 'MaruBuri';
+      src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face{
+      font-family: 'MaruBuri';
+      src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face{
+      font-family: 'Pretendard';
+      src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
 
-    <!-- ✅ 검색 차단 -->
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="googlebot" content="noindex, nofollow">
+    :root {
+      --bg: #f7f3ed;
+      --fg: #2a3249;
+      --muted: #6b7280;
+      --rose: #d7a8b5;
 
-  <!-- 보안: CSP -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self';
-    style-src  'self' https://fonts.googleapis.com;
-    img-src    'self' data:;
-    font-src   'self' https://fonts.gstatic.com https://fonts.googleapis.com;
-    connect-src 'self';
-    frame-ancestors 'none';
-    base-uri 'self';
-    upgrade-insecure-requests
-  ">
+      /* 로고 점용 색상 */
+      --rose-100:#f4e6e2;   /* 바깥 은은한 링 */
+      --rose-300:#d7a8b5;   /* 내부 원 */
+    }
 
-  <!-- 자동 이동 -->
-  <meta http-equiv="refresh" content="0; url=e-test.html">
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: 'MaruBuri','Pretendard',sans-serif; }
+
+    body {
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    .wrap { text-align: center; max-width: 420px; }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--fg);
+      font-family: 'MaruBuri', serif;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+.btn{
+  display:inline-flex;           /* 아이콘+텍스트 가로 정렬 */
+  align-items:center;
+  justify-content:center;
+  gap:8px;                       /* 점과 글씨 사이 간격 */
+  
+  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+  min-width:160px;               /* 캡슐 너비 넓히기 */
+  padding:18px 28px;             /* 상하·좌우 여백 넉넉히 */
+  
+  background:#faf7f2;            /* 밝은 베이지 */
+  color:#172034;                 /* 네이비 글씨 */
+  border:1px solid #f4e6e2;      /* 연한 핑크 테두리 */
+  border-radius:9999px;          /* 완전 캡슐형 */
+  
+  font-weight:650; 
+  letter-spacing:.2px; 
+  font-size:1.05rem;             /* 글씨 크게 */
+  
+  text-decoration:none;          /* 밑줄 제거 */
+  box-shadow:none;
+  cursor:pointer;
+  transition: all .2s ease;
+}
+.btn:hover{
+  background:#f3ebe3;
+  color:#172034;
+}
+.btn:active{ transform:translateY(1px) }
+.btn:focus-visible{ outline:0; box-shadow:0 0 0 4px rgba(215,168,181,.35) }
+
+
+    /* ▼ 버튼 안에 들어가는 로고 점 (첨부 이미지 부분) */
+    .logo-dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background: var(--rose-300);                 /* 안쪽 원 */
+      box-shadow: 0 0 0 6px var(--rose-100);       /* 바깥 은은한 링 */
+      display:inline-block;
+      flex: 0 0 auto;
+    }
+  </style>
 </head>
 <body>
-  <!-- 시각적으로는 안 보이지만, 스크린리더/호환성용 안전 링크 -->
-  <p style="position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;">
-    자동 이동이 되지 않는다면 <a href="e-test.html">여기를 눌러 이동</a>하세요.
-  </p>
+  <div class="wrap">
+    <h1>오늘의 몰입 여정을 시작합니다.</h1>
+    <p>천천히, 지금의 마음에서 시작해 보세요 :)</p>
+
+    <!-- '시'자 바로 앞에 아이콘 배치 -->
+    <a href="e-test.html" class="btn">
+      <span class="logo-dot" aria-hidden="true"></span> 시작하기
+    </a>
+  </div>
 </body>
 </html>
-
-
-

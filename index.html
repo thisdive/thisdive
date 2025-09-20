@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>오늘의 몰입 시작 | thisdive</title>
   <meta name="color-scheme" content="light" />
+
   <style>
     /* =========================
        FONTS (local)
@@ -70,39 +71,38 @@
       margin-bottom: 28px;
     }
 
-.btn{
-  display:inline-flex;           /* 아이콘+텍스트 가로 정렬 */
-  align-items:center;
-  justify-content:center;
-  gap:8px;                       /* 점과 글씨 사이 간격 */
-  
-  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-  min-width:160px;               /* 캡슐 너비 넓히기 */
-  padding:18px 28px;             /* 상하·좌우 여백 넉넉히 */
-  
-  background:#faf7f2;            /* 밝은 베이지 */
-  color:#172034;                 /* 네이비 글씨 */
-  border:1px solid #f4e6e2;      /* 연한 핑크 테두리 */
-  border-radius:9999px;          /* 완전 캡슐형 */
-  
-  font-weight:650; 
-  letter-spacing:.2px; 
-  font-size:1.05rem;             /* 글씨 크게 */
-  
-  text-decoration:none;          /* 밑줄 제거 */
-  box-shadow:none;
-  cursor:pointer;
-  transition: all .2s ease;
-}
-.btn:hover{
-  background:#f3ebe3;
-  color:#172034;
-}
-.btn:active{ transform:translateY(1px) }
-.btn:focus-visible{ outline:0; box-shadow:0 0 0 4px rgba(215,168,181,.35) }
+    .btn{
+      display:inline-flex;           /* 아이콘+텍스트 가로 정렬 */
+      align-items:center;
+      justify-content:center;
+      gap:8px;                       /* 점과 글씨 사이 간격 */
 
+      font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+      min-width:160px;               /* 캡슐 너비 넓히기 */
+      padding:18px 28px;             /* 상하·좌우 여백 넉넉히 */
 
-    /* ▼ 버튼 안에 들어가는 로고 점 (첨부 이미지 부분) */
+      background:#faf7f2;            /* 밝은 베이지 */
+      color:#172034;                 /* 네이비 글씨 */
+      border:1px solid #f4e6e2;      /* 연한 핑크 테두리 */
+      border-radius:9999px;          /* 완전 캡슐형 */
+
+      font-weight:650;
+      letter-spacing:.2px;
+      font-size:1.05rem;             /* 글씨 크게 */
+
+      text-decoration:none;          /* 밑줄 제거 */
+      box-shadow:none;
+      cursor:pointer;
+      transition: all .2s ease;
+    }
+    .btn:hover{
+      background:#f3ebe3;
+      color:#172034;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn:focus-visible{ outline:0; box-shadow:0 0 0 4px rgba(215,168,181,.35) }
+
+    /* ▼ 버튼 안에 들어가는 로고 점 */
     .logo-dot{
       width:12px;
       height:12px;
@@ -113,11 +113,30 @@
       flex: 0 0 auto;
     }
   </style>
+
+  <script>
+    // 🔁 QR로 index.html 재진입할 때마다 무조건 초기화
+    (function hardResetOnEntry(){
+      const NS = 'thisdive';
+      const KEYS = [
+        `${NS}.p2:current`,
+        `${NS}.p3:lastSource`,
+        `${NS}.q:data`,
+        `${NS}.g:data`,
+        `${NS}.selectedEmotion`,
+      ];
+      try {
+        sessionStorage.clear();
+        KEYS.forEach(k => localStorage.removeItem(k));
+      } catch (e) {}
+      // 여기서는 화면 표시는 그대로 두고, 자동 이동/메시지는 없음
+    })();
+  </script>
 </head>
 <body>
   <div class="wrap">
     <h1>오늘의 몰입을 시작합니다.</h1>
-    <p>나의 마음에 집중해 보세요 :)</p>
+    <p>지금 나의 마음에 집중해 보세요 :)</p>
 
     <!-- '시'자 바로 앞에 아이콘 배치 -->
     <a href="e-test.html" class="btn">
@@ -126,8 +145,3 @@
   </div>
 </body>
 </html>
-
-
-
-
-

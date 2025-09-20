@@ -1,355 +1,231 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>오늘의 몰입</title>
-<meta name="color-scheme" content="light" />
-<style>
-  /* =========================
-     FONTS (local)
-  ==========================*/
-  @font-face{
-    font-family: 'MaruBuri';
-    src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'MaruBuri';
-    src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face{
-    font-family: 'Pretendard';
-    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
+  <meta charset="UTF-8">
+  <title>오늘 나의 마음은 어떤가요?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    style-src  'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
+    img-src    'self' data:;
+    font-src   'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
-  /* =========================
-     THEME
-  ==========================*/
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
+        integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU="
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css"
+        integrity="sha384-6rQx8ZfE6t7m1pQk4mepm0qkH0N7XvFqH2Lx5GmL0l2bVZzqf2Z4f9r1m5Y1iGmE"
+        crossorigin="anonymous">
+
+  <style>
+  @font-face{font-family:'MaruBuri';src:url('./fonts/MaruBuri-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'MaruBuri';src:url('./fonts/MaruBuri-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pretendard';src:url('./fonts/Pretendard-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+
   :root{
-    --bg: #f7f3ee;          
-    --surface: #ffffff;     
-    --fg: #2a2a2a;          
-    --muted: #7a7a7a;       
-    --border: #ece6df;      
-
-    --wrap-max: clamp(860px, 72vw, 1160px);
-
-    --rose-50:#fbf5f3;
-    --rose-100:#f4e6e2;
-    --rose-300:#d7a8b5;     
-    --navy:#172034;         
-
-    --radius-xl:20px;
-    --radius-lg:16px;
-    --radius-md:12px;
-
-    --shadow: 0 8px 26px rgba(23, 32, 52, .06);
-    --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
-
-    --h2: 1.02rem;       
-    --body: .96rem;
-    --hint: .925rem;
+    --bg:#f7f3ee; --card:#ffffff; --ink:#1e293b; --muted:#6b7280; --accent:#0f172a;
+    --chip:#ffffff; --chip-bd:var(--border); --chip-on:#0f172a; --chip-on-ink:#ffffff;
+    --shadow: 0 8px 26px rgba(23, 32, 52, .06); --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
+    --radius:22px; --wrap-max: clamp(860px, 72vw, 1160px); --card-max: 350px;
+    --border:#ece6df; --rose-50:#fbf5f3; --rose-100:#f4e6e2; --rose-300:#d7a8b5;
+    --chip-on-bg:var(--rose-50); --chip-on-bd:var(--rose-100); --chip-on-ink:var(--ink);
+    --surface:var(--card); --radius-xl:var(--radius); --h2:1.02rem; --hint:.925rem;
+    --navy:#172034;
   }
 
-  *{box-sizing:border-box}
-  html,body{ overflow-x: hidden;}
-  body{
-    margin:0; background:var(--bg); color:var(--fg);
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
-    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-    letter-spacing:.2px;
-  }
-  p, textarea, .btn { font-family: inherit; }
+  *{ box-sizing:border-box } html,body{height:100%}
+  body{ margin:0; font-family:Pretendard,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; padding:0 }
 
-  .app{min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto}
+  .header{ position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--border) }
+  .header .inner{ max-width:var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative }
+  .logo-dot{ width:10px; height:10px; border-radius:9999px; background:var(--rose-300); box-shadow:0 0 0 6px var(--rose-100) }
+  .title{ font-weight:700; letter-spacing:-.2px }
 
-  /* Header */
-  .header{
-    position: sticky; top:0; z-index:10;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-  }
-  .header .inner{
-    max-width: var(--wrap-max); 
-    margin:0 auto; 
-    padding: 14px 22px;
-    display:flex; 
-    align-items:center; 
-    justify-content: center;
-    gap:10px;
-    position: relative;
-  }
-  .logo-dot{
-    width:10px; height:10px; border-radius:9999px;
-    background: var(--rose-300);
-    box-shadow: 0 0 0 6px var(--rose-100);
-  }
-  .title{ font-weight: 650;}
+  .page{ display:flex; flex-direction:column; align-items:center; max-width:var(--wrap-max); margin:0 auto; padding:22px clamp(16px,3vw,28px) 0 }
+  .sheet{ width:100%; max-width:100%; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(20px,4vw,28px); border:1px solid var(--border); margin:0 0 6px }
+  .sub{ color:var(--muted); margin:4px 0 14px; text-align:center; line-height:1.4 }
 
-  /* Back Button (중앙정렬 강화 + 더 작게) */
-  .back-btn{
-    position: absolute;
-    left: 16px;
-    width: 22px;              /* 더 작게 */
-    height: 22px;             /* 더 작게 */
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: #bbb;
-    font-size: 16px;          /* 아이콘 크기도 약간만 */
-    display: grid;            /* 완전 중앙정렬 */
-    place-items: center;      /* 가로·세로 중앙 */
-    line-height: 1;           /* 베이스라인 영향 제거 */
-    cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: all 0.2s ease;
-    font-family: 'Pretendard', sans-serif;
-    padding: 0;               /* 여백 제거로 정확한 중앙 */
-  }
-  .back-btn:hover{
-    background: var(--rose-50);
-    box-shadow: var(--shadow);
-  }
+  .groups{ display:flex; flex-direction:column; gap:14px }
+  .group{ padding:6px 0 2px; border-top:1px dashed var(--border) }
+  .group:first-child{ border-top:0; padding-top:0 }
+  .group h3{ font-family:'MaruBuri',serif; display:flex; align-items:center; justify-content:center; gap:8px; font-size:16px; margin:6px 0 10px; font-weight:700; letter-spacing:-.2px }
 
-  /* Content wrap */
-  .wrap{
-    max-width: var(--wrap-max);
-    margin: 0 auto;
-    padding: 22px clamp(16px, 3vw, 28px) 40px;
-  }
+  .chips{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px }
+  .chip{ font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; border:1px solid var(--chip-bd); background:var(--chip); padding:10px 12px; border-radius:999px; cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease; font-size:15px; white-space:nowrap; color:var(--muted) }
+  .chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative }
+  .chip input:checked{ border-color:var(--rose-300); background:var(--rose-300) }
+  .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50% }
+  .chip.on{ background:#faf7f2; color:var(--chip-on-ink); border-color:var(--chip-on-bd); box-shadow:0 6px 16px rgba(23,32,52,.06); transform:translateY(-1px) }
 
-  /* Card */
-  .card{
-    width:100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
-    padding: 23px clamp(14px, 2.3vw, 26px);
-    margin-bottom: 28px;
-    min-height: clamp(240px, 38vh, 420px);
-    display: flex;
-    flex-direction: column;
-  }
-  .card:hover{ box-shadow: var(--shadow) }
-  .card:last-of-type{ margin-bottom: -15px; }
+  .card{ width:100%; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow-soft); padding:23px clamp(14px,2.3vw,26px); margin-bottom:28px; min-height:clamp(240px,38vh,420px); display:flex; flex-direction:column }
+  .card:hover{ box-shadow:var(--shadow) }
+  .card:last-of-type{ margin-bottom:-15px }
+  .card h2,.card .hint{ font-family:'MaruBuri',serif }
+  .card h2{ margin:0 0 14px; font-size:var(--h2); font-weight:700; display:flex; align-items:center; gap:10px; color:#172034 }
+  .hint{ margin:0 0 14px; font-size:var(--hint); font-weight:400; color:#172034; line-height:1.65; text-align:center }
 
-  .card h2, .card .hint{ font-family: 'MaruBuri', serif; }
-  .card h2{
-    margin: 0 0 14px;
-    font-size: var(--h2);
-    font-weight: 700;
-    display:flex; align-items:center; justify-content: flex-start;
-    text-align:left; gap:10px;
-    color: #172034;
-  }
-  .hint{
-    margin:0 0 14px;
-    font-size: var(--hint);
-    font-weight: 400;
-    color: #172034;
-    line-height: 1.65;
-    text-align:center;
-  }
-
-  /* Emotion badge */
-  .emotion-soft{
-    display: inline-flex;
-    align-items: center;      /* 수직 가운데 */
-    justify-content: center;  /* 수평 가운데 */
-    text-align: center;       /* 내부 텍스트 정중앙 */
-    padding: 6px 14px;
-    background: #fdfaf6;      /* 더 환한 베이지(모바일 포함) */
-    border: 1px solid #e9dcd7;
-    border-radius: 9999px;
-    font-family: 'Pretendard', sans-serif;
-    font-size: 0.95rem;
-    color: #172034;
-    line-height: 1;
-    position: relative;
-    /* 밑줄 색을 테두리와 동기화하기 위한 변수 */
-    --chip-bdc: #e9dcd7;
-  }
-  /* 텍스트 ‘아래만’ 밑줄 (2px) + Pretendard Regular + 중앙정렬 보강 */
-  .emotion-soft .chip-label{
-    display: inline-flex;        /* 자체도 플렉스로 중앙정렬 */
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 2px;
-    border-bottom: 2px solid var(--chip-bdc);
-    font-weight: 400;            /* Regular */
-    width: auto;                 /* 텍스트 너비만 */
-    text-align: center;
-  }
-
-  .emotion-soft::after{
-    content:"";
-    position:absolute; left:8px; right:8px; bottom:4px; height:2px;
-    border-radius: 2px;
-  }
-
-  textarea{
-    width:100%;
-    min-height:112px;
-    padding:14px;
-    font-size: 14px;
-    color: var(--fg);
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    outline: none; resize: vertical;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
-    flex:1;
-  }
-  textarea::placeholder{ color: color-mix(in oklab, var(--muted) 78%, #bbb) }
-  textarea:focus{
-    border-color: var(--rose-300);
-    box-shadow: none;
-    transition: border-color .18s ease;
-  }
-
-  /* CTA */
+  /* ===== CTA (카드 폭과 동일한 선) ===== */
   .cta{
-    position: static;
-    border-top: 1px solid var(--border);
-    padding: 14px clamp(14px,3vw,26px);
-    background: none;
+    width:100%;
+    margin-top:18px;
+    background:none;
+    border-top:none;          /* 기존 선 제거 */
+    padding:0;                /* 좌우 패딩 제거(선이 좁아지는 원인) */
   }
-  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
+  .cta-inner{
+    max-width:var(--wrap-max);
+    margin:0 auto;
+    text-align:center;
+    position:relative;
+    padding:14px 0;          /* 버튼 상하 여백만 */
+  }
+  .cta-inner::before{
+    content:"";
+    position:absolute;
+    top:0; left:50%; transform:translateX(-50%); width:100vw; 
+    height:1px;
+    background:var(--border);
+  }
+
   .btn{
-    width:200px;
-    padding: 16px 0;
-    background: var(--navy);
-    color: #fff;
-    border: 1px solid rgba(23,32,52,.12);
-    border-radius: 18px;
-    font-weight: 650; letter-spacing:.2px;
-    box-shadow: 0 10px 24px rgba(23,32,52,.22);
-    font-size: 0.9rem;
-    cursor: pointer;
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+    width:200px; padding:16px 0; background:var(--navy); color:#fff;
+    border:1px solid rgba(23,32,52,.12); border-radius:18px;
+    font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22);
+    font-size:.9rem; cursor:pointer;
   }
-  .btn:active{ transform: translateY(1px) }
-  .btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35) }
+  .btn:active{ transform:translateY(1px) }
+  .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35) }
 
   @supports (padding: max(0px)){
     .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
   }
 
-  @media (max-width: 480px){
-    :root{ --wrap-max: 100%; }
-    .wrap{ padding-left: 14px; padding-right: 14px; }
+  @media (max-width:480px){
+    :root{ --card-max:100%; }
+    .sheet{ padding-left:27px; padding-right:27px; }
+    .chips{ grid-template-columns:1fr 1fr; }
   }
-
-  /* ▼ 감정 불러오는 캡슐(#emotionValue) - 선택 칩과 동일 스타일 + 밑줄색 동기화 */
-  #emotionValue.emotion-soft{
-    background: #fdfaf6 !important;      /* 더 환한 베이지 */
-    border-color: #f4e6e2 !important;     /* 선택 칩 테두리 */
-    font-family: 'Pretendard', sans-serif !important;
-    color: var(--navy) !important;
-    --chip-bdc: #f4e6e2;                  /* 밑줄색 = 테두리색 */
-  }
-</style>
+  </style>
 </head>
 <body>
-<div class="app">
   <header class="header">
     <div class="inner">
-      <!-- 뒤로가기 버튼 -->
-      <button class="back-btn" aria-label="뒤로가기">←</button>
       <span class="logo-dot" aria-hidden="true"></span>
-      <div class="title">나와의 대화</div>
+      <div class="title">오늘의 감정</div>
     </div>
   </header>
 
-  <main class="wrap">
-    <section class="card" aria-labelledby="h1">
-      <h2 id="h1">🪴 나의 마음은</h2>
-      <p class="hint">
-        오늘의 
-        <!-- 텍스트에만 밑줄을 주기 위해 내부 span 유지 -->
-        <span class="emotion-soft" id="emotionValue"><span class="chip-label">선택 안됨</span></span>
-        라는 감정은 <br>나의 어떤 생각/욕구로 시작되었나요?
-      </p>
-      <textarea placeholder="예) 나를 무시한다고 생각했다 → 팀원으로써 존중 받고 싶은 욕구 (불충족)"></textarea>
-    </section>
+  <div class="page">
+    <main class="sheet" role="main">
+      <p class="sub">지금 나와 <strong>가장 가까운 마음</strong><br>한 가지를 선택해 주세요.</p>
 
-    <section class="card" aria-labelledby="h2">
-      <h2 id="h2">👂🏻 너의 마음은 (선택)</h2>
-      <p class="hint">같은 장면에서 상대방은<br>어떤 생각/욕구가 있었을까요?</p>
-      <textarea placeholder="예) 상대방도 내 행동이 자신을 무시한다고 생각했던 것 같다 → 책임자로서 존중 받고 싶은 욕구 (불충족)"></textarea>
-    </section>
+      <div class="groups">
+        <section class="group" aria-labelledby="g-bright">
+          <h3 id="g-bright">🌿 밝은 마음</h3>
+          <div class="chips" data-group="bright">
+            <label class="chip"><input type="radio" name="emotion" value="기뻐요">기뻐요</label>
+            <label class="chip"><input type="radio" name="emotion" value="설레요">설레요</label>
+            <label class="chip"><input type="radio" name="emotion" value="감사해요">감사해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="평온해요">평온해요</label>
+          </div>
+        </section>
 
-    <section class="card" aria-labelledby="h3">
-      <h2 id="h3">💌 사랑하는 나에게</h2>
-      <p class="hint">새롭게 깨닫게된 점이나<br>지금의 나에게 가장 필요한 말을 전해주세요.</p>
-      <textarea placeholder="예) 상대방 입장이 되어보니 상대방도 나만큼 존중 받고 싶은 마음이 있었던 것 같다. 상대의 태도도 잘못된 부분이 있지만, 나의 행동도 잘못된 부분이 있다는 걸 알게 되었다."></textarea>
-    </section>
-  </main>
+        <section class="group" aria-labelledby="g-low">
+          <h3 id="g-low">🌧️ 가라앉은 마음</h3>
+          <div class="chips" data-group="low">
+            <label class="chip"><input type="radio" name="emotion" value="지쳤어요">지쳤어요</label>
+            <label class="chip"><input type="radio" name="emotion" value="우울해요">우울해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="무기력해요">무기력해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="외로워요">외로워요</label>
+          </div>
+        </section>
 
-  <div class="cta">
-    <div class="cta-inner">
-      <button class="btn" id="nextBtn">오늘의 목표 정하기 →</button>
+        <section class="group" aria-labelledby="g-hot">
+          <h3 id="g-hot">🔥 달아오른 마음</h3>
+          <div class="chips" data-group="hot">
+            <label class="chip"><input type="radio" name="emotion" value="짜증나요">짜증나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="화나요">화나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="질투나요">질투나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="부끄러워요">부끄러워요</label>
+          </div>
+        </section>
+
+        <section class="group" aria-labelledby="g-tight">
+          <h3 id="g-tight">💣 조여오는 마음</h3>
+          <div class="chips" data-group="tight">
+            <label class="chip"><input type="radio" name="emotion" value="불안해요">불안해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="긴장돼요">긴장돼요</label>
+            <label class="chip"><input type="radio" name="emotion" value="두려워요">두려워요</label>
+            <label class="chip"><input type="radio" name="emotion" value="부담돼요">부담돼요</label>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ▼ 카드 아래, 바깥에 위치한 CTA -->
+    <div class="cta">
+      <div class="cta-inner">
+        <button id="goBtn" class="btn" type="button" disabled>이 감정으로 시작하기 →</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  const params = new URLSearchParams(location.search);
-  const emotionRaw = (params.get('emotion') || '선택 안됨').trim();
-  const map = { worry:'걱정돼요', joy:'기뻐요', calm:'평온해요', sad:'슬퍼요', angry:'화가 나요', tired:'지쳐요' };
-  const emotion = map[emotionRaw] || emotionRaw || '선택 안됨';
-  document.getElementById('emotionValue').querySelector('.chip-label').textContent = emotion;
+  <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
 
-  // === PERSIST START ==========================================
-  (function persistState(){
-    const STORAGE_KEY = 'talkPageState'; // 이 페이지 전용 상태 저장 키
-    const textareas = Array.from(document.querySelectorAll('textarea'));
+  <script>
+    const chips = document.querySelectorAll('.chip');
+    const goBtn = document.getElementById('goBtn');
 
-    let saved = null;
-    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e){ saved = null; }
+    function disableCTA(v){ goBtn.disabled = !!v; }
+    disableCTA(true);
 
-    if (saved && saved.emotion && saved.emotion !== emotion) {
-      localStorage.removeItem(STORAGE_KEY);
-      saved = null;
-    }
-
-    if (saved && Array.isArray(saved.values)) {
-      textareas.forEach((ta, i) => {
-        if (typeof saved.values[i] === 'string') ta.value = saved.values[i];
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const input = chip.querySelector('input[type="radio"]');
+        if(!input) return;
+        document.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
+        input.checked = true;
+        chip.classList.add('on');
+        disableCTA(false);
       });
+    });
+
+    goBtn.addEventListener('click', ()=>{
+      const picked = document.querySelector('input[name="emotion"]:checked');
+      if(!picked) return;
+      const url = `q-test.html?emotion=${encodeURIComponent(picked.value)}&v=${Date.now()}`;
+      location.href = url;
+    });
+
+    const net = document.getElementById('net');
+    function showNet(msg){
+      if(!net) return;
+      net.textContent = msg;
+      net.hidden = false;
+      net.classList.add('show');
+      clearTimeout(showNet._t);
+      showNet._t = setTimeout(()=> net.classList.remove('show'), 1600);
     }
+    window.addEventListener('offline', ()=> showNet('오프라인입니다. 네트워크를 확인하세요.'));
+    window.addEventListener('online',  ()=> showNet('온라인에 연결되었습니다.'));
+  </script>
 
-    const save = () => {
-      const values = textareas.map(ta => ta.value || '');
-      const payload = { emotion, values, ts: Date.now() };
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch(e){}
-    };
-
-    textareas.forEach(ta => ta.addEventListener('input', save));
-    window.addEventListener('beforeunload', save);
-  })();
-  // === PERSIST END ============================================
-
-  // CTA 버튼 클릭 시 이동
-  document.getElementById('nextBtn').addEventListener('click', () => {
-    const next = params.get('next') || 'goal.html';
-    const q = new URLSearchParams({ emotion }).toString();
-    location.href = `${next}?${q}`;
-  });
-
-  // Back 버튼 뒤로가기
-  document.querySelector('.back-btn').addEventListener('click', () => {
-    history.back();
-  });
-</script>
+  <noscript>
+    <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
 </body>
 </html>

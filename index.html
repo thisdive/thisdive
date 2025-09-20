@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>
+/* QR/랜딩(index) 재진입마다 전체 상태 초기화 */
+(function resetOnEveryEntry(){
+  const NS = 'thisdive';
+  const KEYS = [
+    `${NS}.p2:current`,      // 감정 스냅샷(2p)
+    `${NS}.p3:lastSource`,   // 3p가 참고했던 감정 스냅샷
+    `${NS}.q:data`,          // 3p 질문/중간데이터 쓰는 경우
+    `${NS}.g:data`,          // 3p 목표 입력 스냅샷
+    `${NS}.selectedEmotion`, // 선택 감정(세션 보강)
+    `${NS}.p4:lastP2`,       // 과거 키 사용 시 호환
+    `${NS}.p4:lastQ`         // 과거 키 사용 시 호환
+  ];
+
+  const wipe = () => {
+    try { sessionStorage.clear(); } catch(e){}
+    try { KEYS.forEach(k => localStorage.removeItem(k)); } catch(e){}
+  };
+
+  // 1) 최초 진입 시
+  wipe();
+  // 2) 뒤로가기로 돌아왔을 때(bfcache 복원 포함)도 확실히 초기화
+  window.addEventListener('pageshow', wipe, { passive: true });
+})();
+</script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>오늘의 몰입 시작 | thisdive</title>
@@ -135,8 +161,8 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>오늘의 몰입을 시작합니다.</h1>
-    <p>지금 나의 마음에 집중해 보세요 :)</p>
+    <h1>오늘의 몰입 여정을 시작합니다.</h1>
+    <p>천천히, 지금의 마음에서 시작해 보세요 :)</p>
 
     <!-- '시'자 바로 앞에 아이콘 배치 -->
     <a href="e-test.html" class="btn">

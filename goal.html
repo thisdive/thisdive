@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>오늘의 몰입 목표</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- CSP 등 기존 메타는 동일 -->
+  <meta charset="UTF-8">
+  <title>오늘 나의 마음은 어떤가요?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'unsafe-inline';
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     style-src  'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
     img-src    'self' data:;
-    font-src   'self' https://fonts.gstatic.com https://fonts.googleapis.com;
+    font-src   'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
     connect-src 'self';
     frame-ancestors 'none';
     base-uri 'self';
@@ -22,387 +20,268 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
+        integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU="
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css"
+        integrity="sha384-6rQx8ZfE6t7m1pQk4mepm0qkH0N7XvFqH2Lx5GmL0l2bVZzqf2Z4f9r1m5Y1iGmE"
+        crossorigin="anonymous">
 
   <style>
-  /* ========================= FONTS (local) ==========================*/
-  @font-face{ font-family:'MaruBuri'; src:url('./fonts/MaruBuri-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'MaruBuri'; src:url('./fonts/MaruBuri-Bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'Pretendard'; src:url('./fonts/Pretendard-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face{font-family:'MaruBuri';src:url('./fonts/MaruBuri-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'MaruBuri';src:url('./fonts/MaruBuri-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pretendard';src:url('./fonts/Pretendard-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 
   :root{
-    --bg:#f7f3ee;
-    --card:#fff;
-    --ink:#1f2937;
-    --muted:#6b7280;
-    --accent:#0f172a;
-
-    /* 카드 테두리(모든 선 통일 색) */
-    --divider:#f0ebe6;
-    --border: var(--divider, #ece6df);
-
-    /* 로즈 팔레트(원본 페이지와 동일) */
-    --rose-50:#fbf5f3;   /* 참고용 */
-    --rose-100:#f4e6e2;  /* 테두리 */
-    --rose-300:#d7a8b5;  /* 라디오 점 */
-
-    /* 선택 캡슐 내부 배경(원본처럼 #faf7f2 고정) */
-    --chip-on-bg:#faf7f2;
-    --chip-on-bd:var(--rose-100);
-    --chip-on-ink:var(--ink);
-
-    --radius:22px;
-    --wrap-max: 1160px;
-
-    /* 별 위젯 색상 */
-    --star-on:#FDE68A;
-    --star-off:#F3F4F6;
-    --star-hover:#FDE68A;
-
-    /* 버튼 색 */
+    --bg:#f7f3ee; --card:#ffffff; --ink:#1e293b; --muted:#6b7280; --accent:#0f172a;
+    --chip:#ffffff; --chip-bd:var(--border); --chip-on:#0f172a; --chip-on-ink:#ffffff;
+    --shadow: 0 8px 26px rgba(23, 32, 52, .06); --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
+    --radius:22px; --wrap-max: clamp(860px, 72vw, 1160px); --card-max: 350px;
+    --border:#ece6df; --rose-50:#fbf5f3; --rose-100:#f4e6e2; --rose-300:#d7a8b5;
+    --chip-on-bg:var(--rose-50); --chip-on-bd:var(--rose-100); --chip-on-ink:var(--ink);
+    --surface:var(--card); --radius-xl:var(--radius); --h2:1.02rem; --hint:.925rem;
     --navy:#172034;
-
-    --section-gap:12px;
   }
 
-  html,body{height:100%}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  *{ box-sizing:border-box } html,body{height:100%}
+  body{ margin:0; font-family:Pretendard,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; padding:0 }
+
+  .header{ position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--border) }
+  .header .inner{ max-width:var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative }
+  .logo-dot{ width:10px; height:10px; border-radius:9999px; background:var(--rose-300); box-shadow:0 0 0 6px var(--rose-100) }
+  .title{ font-weight:700; letter-spacing:-.2px }
+
+  .page{ display:flex; flex-direction:column; align-items:center; max-width:var(--wrap-max); margin:0 auto; padding:22px clamp(16px,3vw,28px) 0 }
+  .sheet{ width:100%; max-width:100%; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(20px,4vw,28px); border:1px solid var(--border); margin:0 0 6px }
+  .sub{ color:var(--muted); margin:4px 0 14px; text-align:center; line-height:1.4 }
+
+  .groups{ display:flex; flex-direction:column; gap:14px }
+  .group{ padding:6px 0 2px; border-top:1px dashed var(--border) }
+  .group:first-child{ border-top:0; padding-top:0 }
+  .group h3{ font-family:'MaruBuri',serif; display:flex; align-items:center; justify-content:center; gap:8px; font-size:16px; margin:6px 0 10px; font-weight:700; letter-spacing:-.2px }
+
+  .chips{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px }
+  .chip{ font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; border:1px solid var(--chip-bd); background:var(--chip); padding:10px 12px; border-radius:999px; cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease; font-size:15px; white-space:nowrap; color:var(--muted) }
+  .chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative }
+  .chip input:checked{ border-color:var(--rose-300); background:var(--rose-300) }
+  .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50% }
+  .chip.on{ background:#faf7f2; color:var(--chip-on-ink); border-color:var(--chip-on-bd); box-shadow:0 6px 16px rgba(23,32,52,.06); transform:translateY(-1px) }
+
+  .card{ width:100%; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow-soft); padding:23px clamp(14px,2.3vw,26px); margin-bottom:28px; min-height:clamp(240px,38vh,420px); display:flex; flex-direction:column }
+  .card:hover{ box-shadow:var(--shadow) }
+  .card:last-of-type{ margin-bottom:-15px }
+  .card h2,.card .hint{ font-family:'MaruBuri',serif }
+  .card h2{ margin:0 0 14px; font-size:var(--h2); font-weight:700; display:flex; align-items:center; gap:10px; color:#172034 }
+  .hint{ margin:0 0 14px; font-size:var(--hint); font-weight:400; color:#172034; line-height:1.65; text-align:center }
+
+  /* ===== CTA (카드 폭과 동일한 선) ===== */
+  .cta{
+    width:100%;
+    margin-top:18px;
+    background:none;
+    border-top:none;
     padding:0;
   }
-
-  .page{ display:flex; justify-content:center; padding:8px 12px; }
-
-  /* ── 헤더 ── */
-  .header{ position: sticky; top:0; z-index:10; background: var(--bg); border-bottom: 1px solid var(--border); }
-  .header .inner{ max-width: var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative; }
-  .back-btn{ position: absolute; left:16px; width:22px; height:22px; border-radius:50%; border:1px solid var(--border); background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer; }
-  .back-btn:hover{ background:#f8f4ef; }
-  .logo-dot{ width:10px; height:10px; border-radius:9999px; background: var(--rose-300); box-shadow: 0 0 0 6px var(--rose-100); }
-  .title{ font-weight:650; }
-
-  /* 시트 */
-  .sheet{
-    width:100%; max-width: clamp(220px, 68vw, 260px);
-    background:var(--card);
-    border: 1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow: 0 3px 10px rgba(23,32,52,.04);
-    padding:clamp(20px,4vw,30px);
-    margin:14px 0;
+  .cta-inner{
+    max-width:var(--wrap-max);
+    margin:0 auto;
+    text-align:center;
+    position:relative;
+    padding:14px 0;
   }
-  .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
-
-  .block{ margin:0; padding:5px 0; }
-  .sheet .block:first-of-type{ padding-top:0; }
-
-  /* 섹션 제목 */
-  .sheet .block-title, .sheet .lead { text-align:center; }
-  .block-title{ font-size:1rem; font-weight:600; margin: var(--section-gap) 0 var(--section-gap); color:var(--ink); }
-
-  /* 카테고리 칩 (기본) */
-  .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
-  .sheet .chip{
-    justify-content:center; padding:10px 12px;
-    border:1px solid var(--border);
-    background:#fff; color:var(--muted);
-    border-radius:999px; font-weight:600;
-    display:inline-flex; align-items:center; gap:8px;
-    cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-    white-space:nowrap;
+  .cta-inner::before{
+    content:"";
+    position:absolute;
+    top:0; left:50%; transform:translateX(-50%); width:100vw;
+    height:1px;
+    background:var(--border);
   }
 
-  /* 라디오 점 (기본/선택) — 원본 페이지와 동일 동작 */
-  .sheet .chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative; }
-  .sheet .chip input:checked{ border-color:var(--rose-300); background:var(--rose-300); }
-  .sheet .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
+  .btn{
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+    width:200px; padding:16px 0; background:var(--navy); color:#fff;
+    border:1px solid rgba(23,32,52,.12); border-radius:18px;
+    font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22);
+    font-size:.9rem; cursor:pointer;
+  }
+  .btn:active{ transform:translateY(1px) }
+  .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35) }
 
-  /* ✅ 선택된 칩 스타일 — 첫 이미지 '그대로' 이식 (우선순위+!important로 확실히 적용) */
-  #catField .chip.on{
-    background:#faf7f2 !important;      /* 테두리 내부색 */
-    border-color:#f4e6e2 !important;     /* 테두리색 */
-    color:var(--ink) !important;         /* 옵션 텍스트색 */
-    box-shadow:0 6px 16px rgba(23,32,52,.06);
-    transform:translateY(-1px);
+  @supports (padding: max(0px)){
+    .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
   }
 
-  /* 패널/읽기값/입력 */
-  .sheet .panel{ border:1px solid var(--border); background:#fff; border-radius:16px; padding:16px; max-width:280px; margin:0 auto; text-align:center; }
-  .sheet .panel-head{ margin-bottom:12px; }
-  .readout{ border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block; }
-
-  /* 별 위젯 */
-  .stars{ display:inline-flex; flex-direction: row-reverse; gap:6px; user-select:none; padding:4px 2px; }
-  .stars input{ position:absolute; opacity:0; pointer-events:none; }
-  .stars label{ font-size:28px; line-height:1; cursor:pointer; color:var(--star-off); transition: color .12s ease, transform .08s ease; }
-  .stars label:hover, .stars label:hover ~ label{ color:var(--star-hover); }
-  .stars input:checked ~ label{ color:var(--star-on); }
-  .stars label:active{ transform: scale(.96); }
-  .stars input:focus-visible + label{ outline:3px solid rgba(59,130,246,.35); border-radius:6px; outline-offset:2px; }
-
-  /* 입력 */
-  .sheet .goal-input{
-    border:1px solid var(--border); background:#fff; border-radius:12px;
-    padding:12px 14px; font-size:15px; display:block; margin:0 auto; text-align:center;
-    width:90%; max-width:none;
+  @media (max-width:480px){
+    :root{ --card-max:100%; }
+    .sheet{ padding-left:27px; padding-right:27px; }
+    .chips{ grid-template-columns:1fr 1fr; }
   }
-  .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
-
-  /* 제목 폰트(프리텐다드) */
-  #b1.block-title,#b2.block-title,#b3.block-title{ font-family:'Pretendard','Noto Sans KR',sans-serif; font-weight:700; }
-
-  /* 점선 구분선 */
-  .dotted-sep{ width:100%; height:0; border:0; border-top:1px dashed var(--border); margin:12px 0 1px; }
-
-  /* CTA */
-  .cta{ border-top:1px solid var(--border); padding:14px clamp(14px,3vw,26px); background:none; }
-  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
-  .btn{ font-family:'Pretendard',sans-serif; width:200px; padding:16px 0; background:var(--navy); color:#fff; border:1px solid rgba(23,32,52,.12); border-radius:18px; font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22); font-size:.9rem; cursor:pointer; }
-  .btn:active{ transform:translateY(1px); }
-  .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
-  @supports (padding: max(0px)){ .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); } }
   </style>
 </head>
 <body>
   <header class="header">
     <div class="inner">
-      <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button>
       <span class="logo-dot" aria-hidden="true"></span>
-      <div class="title">오늘의 목표</div>
+      <div class="title">오늘의 감정</div>
     </div>
   </header>
 
   <div class="page">
-    <main class="sheet" role="main" aria-labelledby="pageTitle">
-      <!-- 유형 -->
-      <section class="block" aria-labelledby="b1">
-        <h2 id="b1" class="block-title">나에게 필요한 몰입</h2>
-        <div class="chips" id="catField">
-          <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
-          <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
-          <label class="chip"><input type="radio" name="cat" value="실행"> 📝 실행</label>
-          <label class="chip"><input type="radio" name="cat" value="정돈"> 🧹 정돈</label>
-          <label class="chip"><input type="radio" name="cat" value="창의"> 🎨 창의</label>
-          <label class="chip"><input type="radio" name="cat" value="성찰"> ✨ 성찰</label>
-        </div>
-      </section>
+    <main class="sheet" role="main">
+      <p class="sub">지금 나와 <strong>가장 가까운 마음</strong><br>한 가지를 선택해 주세요.</p>
 
-      <div class="dotted-sep" role="separator" aria-hidden="true"></div>
-
-      <!-- 난이도 -->
-      <section class="block" aria-labelledby="b2">
-        <h2 id="b2" class="block-title">오늘 목표의 난이도</h2>
-        <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
-          <div class="panel-head">
-            <span id="readout" class="readout">미정 (0/5)</span>
+      <div class="groups">
+        <section class="group" aria-labelledby="g-bright">
+          <h3 id="g-bright">🌿 밝은 마음</h3>
+          <div class="chips" data-group="bright">
+            <label class="chip"><input type="radio" name="emotion" value="기뻐요">기뻐요</label>
+            <label class="chip"><input type="radio" name="emotion" value="설레요">설레요</label>
+            <label class="chip"><input type="radio" name="emotion" value="감사해요">감사해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="평온해요">평온해요</label>
           </div>
+        </section>
 
-          <!-- ★ 별 위젯 -->
-          <div class="stars" id="starsGroup">
-            <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전" />
-            <label for="diff-5" title="5">★</label>
-            <input type="radio" name="difficulty" id="diff-4" value="4" aria-label="4 - 집중" />
-            <label for="diff-4" title="4">★</label>
-            <input type="radio" name="difficulty" id="diff-3" value="3" aria-label="3 - 보통" />
-            <label for="diff-3" title="3">★</label>
-            <input type="radio" name="difficulty" id="diff-2" value="2" aria-label="2 - 쉬움" />
-            <label for="diff-2" title="2">★</label>
-            <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 가볍게" />
-            <label for="diff-1" title="1">★</label>
+        <section class="group" aria-labelledby="g-low">
+          <h3 id="g-low">🌧️ 가라앉은 마음</h3>
+          <div class="chips" data-group="low">
+            <label class="chip"><input type="radio" name="emotion" value="지쳤어요">지쳤어요</label>
+            <label class="chip"><input type="radio" name="emotion" value="우울해요">우울해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="무기력해요">무기력해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="외로워요">외로워요</label>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div class="dotted-sep" role="separator" aria-hidden="true"></div>
+        <section class="group" aria-labelledby="g-hot">
+          <h3 id="g-hot">🔥 달아오른 마음</h3>
+          <div class="chips" data-group="hot">
+            <label class="chip"><input type="radio" name="emotion" value="짜증나요">짜증나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="화나요">화나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="질투나요">질투나요</label>
+            <label class="chip"><input type="radio" name="emotion" value="부끄러워요">부끄러워요</label>
+          </div>
+        </section>
 
-      <!-- 목표 -->
-      <section class="block" aria-labelledby="b3">
-        <h2 id="b3" class="block-title">오늘의 목표</h2>
-        <input id="goalInput" class="goal-input" type="text" placeholder="예) 영단어 10개 외우기" />
-      </section>
+        <section class="group" aria-labelledby="g-tight">
+          <h3 id="g-tight">💣 조여오는 마음</h3>
+          <div class="chips" data-group="tight">
+            <label class="chip"><input type="radio" name="emotion" value="불안해요">불안해요</label>
+            <label class="chip"><input type="radio" name="emotion" value="긴장돼요">긴장돼요</label>
+            <label class="chip"><input type="radio" name="emotion" value="두려워요">두려워요</label>
+            <label class="chip"><input type="radio" name="emotion" value="부담돼요">부담돼요</label>
+          </div>
+        </section>
+      </div>
     </main>
-  </div>
 
-  <div class="cta">
-    <div class="cta-inner">
-      <button class="btn" id="nextBtn">몰입 시작하기 →</button>
+    <!-- ▼ 카드 아래, 바깥에 위치한 CTA -->
+    <div class="cta">
+      <div class="cta-inner">
+        <button id="goBtn" class="btn" type="button" disabled>이 감정으로 시작하기 →</button>
+      </div>
     </div>
   </div>
 
+  <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
+
   <script>
-  const NS='thisdive';
-  const K_P2_CURRENT=`${NS}.p2:current`;
-  const K_Q_DATA=`${NS}.q:data`;
-  const K_P4_LASTP2=`${NS}.p4:lastP2`;
-  const K_P4_LASTQ=`${NS}.p4:lastQ`;
-  const K_G_DATA=`${NS}.g:data`;
-  const K_SELECTED=`${NS}.selectedEmotion`;
+    /* ===== page4 연동용 키 ===== */
+    const NS='thisdive';
+    const K_P2_CURRENT=`${NS}.p2:current`;   // {value, at}
+    const K_P2_VER=`${NS}.p2:ver`;           // "0","1","2",...
+    const K_SELECTED=`${NS}.selectedEmotion`; // sessionStorage 보조
+    const K_BOOT=`${NS}.boot:id`;            // 1페이지가 덮어쓰는 부트 토큰(여기서는 없을 때만 생성)
 
-  // 🔑 부트/버전 키(1,2페이지 스니펫이 기록해줌)
-  const K_BOOT = `${NS}.boot:id`;              // index.html에서 매 진입 시 갱신
-  const K_P2_VER = `${NS}.p2:ver`;             // emotion.html에서 감정 변경 때 +1
-  const K_P4_LAST_BOOT = `${NS}.p4:lastBoot`;  // page4가 마지막으로 본 boot:id
-  const K_P4_LAST_VER  = `${NS}.p4:lastP2ver`; // page4가 마지막으로 본 p2:ver
-
-  (function resetIfHash(){
-    if(location.hash.replace('#','')==='reset'){
+    // 부트토큰이 없을 때만 보조 생성(직접 2페이지로 들어온 경우 대비 / 1페이지에서는 항상 새 값으로 덮어씀)
+    if(!localStorage.getItem(K_BOOT)){
       try{
-        sessionStorage.clear();
-        localStorage.removeItem(K_P2_CURRENT);
-        localStorage.removeItem(K_Q_DATA);
-        localStorage.removeItem(K_P4_LASTP2);
-        localStorage.removeItem(K_P4_LASTQ);
-        localStorage.removeItem(K_G_DATA);
+        const boot=`e${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+        localStorage.setItem(K_BOOT, boot);
       }catch(e){}
     }
-  })();
 
-  const backBtn=document.getElementById('backBtn');
-  const catField=document.getElementById('catField');
-  const readout=document.getElementById('readout');
-  const goalEl=document.getElementById('goalInput');
-  const nextBtn=document.getElementById('nextBtn');
+    // p2 변경 기록 함수: 값이 바뀌면 ver +1
+    function writeP2(nextValue){
+      let prevValue='';
+      try{
+        const raw=localStorage.getItem(K_P2_CURRENT);
+        if(raw) prevValue = JSON.parse(raw)?.value || '';
+      }catch(e){}
 
-  const diffText={0:'미정',1:'가볍게',2:'쉬움',3:'보통',4:'집중',5:'도전'};
+      const payload={ value: nextValue, at: Date.now() };
+      try{ localStorage.setItem(K_P2_CURRENT, JSON.stringify(payload)); }catch(e){}
+      try{ sessionStorage.setItem(K_SELECTED, nextValue); }catch(e){}
 
-  function updateReadout(v){
-    const val = Number(v) || 0;
-    readout.textContent = `${diffText[val]} (${val}/5)`;
-  }
-
-  /* 🧹 페이지4 상태 초기화 */
-  function clearPage4State() {
-    try { localStorage.removeItem(K_G_DATA); } catch(e){}
-    try {
-      // 카테고리 칩 초기화
-      catField.querySelectorAll('.chip').forEach(c => {
-        c.classList.remove('on');
-        const r = c.querySelector('input[type="radio"]');
-        if (r) r.checked = false;
-      });
-      // 별(난이도) 초기화
-      document.querySelectorAll('input[name="difficulty"]').forEach(r => r.checked = false);
-      updateReadout(0);
-      // 목표 입력 초기화
-      goalEl.value = '';
-    } catch(e){}
-  }
-
-  /* 🚩 부트토큰 / 감정버전 비교 → 필요 시 초기화 (restore 이전에 실행) */
-  (function resetOnBootOrP2Changed(){
-    let didReset=false;
-    try{
-      const curBoot = localStorage.getItem(K_BOOT) || '';
-      const lastBoot = localStorage.getItem(K_P4_LAST_BOOT) || '';
-      if (curBoot && curBoot !== lastBoot) {
-        clearPage4State();
-        didReset = true;
-        localStorage.setItem(K_P4_LAST_BOOT, curBoot);
+      if(nextValue !== prevValue){
+        try{
+          const cur = parseInt(localStorage.getItem(K_P2_VER) || '0', 10);
+          localStorage.setItem(K_P2_VER, String(isNaN(cur)? 1 : cur+1));
+        }catch(e){}
       }
-      const curVer  = localStorage.getItem(K_P2_VER) || '0';
-      const lastVer = localStorage.getItem(K_P4_LAST_VER) || '0';
-      if (curVer !== lastVer) {
-        if (!didReset) clearPage4State();
-        didReset = true;
-        localStorage.setItem(K_P4_LAST_VER, curVer);
+    }
+
+    // URL ?emotion= 미리 선택되어 온 경우 반영
+    (function presetFromQuery(){
+      const p=new URLSearchParams(location.search);
+      const em=p.get('emotion');
+      if(!em) return;
+      const input=[...document.querySelectorAll('input[name="emotion"]')].find(i=>i.value===em);
+      if(input){
+        input.checked=true;
+        input.closest('.chip')?.classList.add('on');
+        writeP2(em);          // ver 증가(필요 시)
+        disableCTA(false);
       }
-    }catch(e){}
-  })();
+    })();
 
-  /* 복원 */
-  (function restore(){
-    updateReadout(0);
-    try{
-      const raw=localStorage.getItem(K_G_DATA);
-      if(!raw) return;
-      const d=JSON.parse(raw);
+    const chips = document.querySelectorAll('.chip');
+    const goBtn = document.getElementById('goBtn');
 
-      if(d.cat){
-        const chip=[...catField.querySelectorAll('label.chip input')].find(i=>i.value===d.cat);
-        if(chip){
-          chip.checked=true;
-          chip.closest('.chip')?.classList.add('on');
-        }
-      }
-      if(d.diff){
-        const r=document.getElementById('diff-'+d.diff);
-        if(r){ r.checked=true; }
-        updateReadout(d.diff);
-      }
-      if(typeof d.goal==='string') goalEl.value=d.goal;
-    }catch(e){}
-  })();
+    function disableCTA(v){ goBtn.disabled = !!v; }
+    disableCTA(true);
 
-  // 카테고리 칩
-  catField.addEventListener('click', (e)=>{
-    const label=e.target.closest('.chip');
-    if(!label) return;
-    const input=label.querySelector('input[type="radio"]');
-    if(!input) return;
+    // 감정칩 클릭 → 즉시 기록(writeP2)
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const input = chip.querySelector('input[type="radio"]');
+        if(!input) return;
+        document.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
+        input.checked = true;
+        chip.classList.add('on');
 
-    input.checked=true;
-    catField.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-    label.classList.add('on');
-    save();
-  });
-
-  // 별 위젯
-  (function initDifficulty(){
-    const radios = document.querySelectorAll('input[name="difficulty"]');
-    function setVal(v){ updateReadout(v); save(); }
-    radios.forEach(r=>{
-      r.addEventListener('change', e=> setVal(e.target.value));
-      r.addEventListener('keydown', e=>{
-        if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
-          e.preventDefault();
-          const prev=[...radios].findLast(x=> +x.value < +r.value);
-          if(prev){ prev.checked=true; prev.dispatchEvent(new Event('change')); prev.focus(); }
-        }
-        if(e.key==='ArrowRight' || e.key==='ArrowUp'){
-          e.preventDefault();
-          const next=[...radios].find(x=> +x.value > +r.value);
-          if(next){ next.checked=true; next.dispatchEvent(new Event('change')); next.focus(); }
-        }
+        writeP2(input.value); // ★ 여기서 ver 증가(값이 바뀌었을 때만)
+        disableCTA(false);
       });
     });
-  })();
 
-  function currentDiff(){
-    const sel=document.querySelector('input[name="difficulty"]:checked');
-    return sel ? Number(sel.value) : 0;
-  }
+    // 시작 버튼 → 안전하게 한 번 더 기록(사용자가 빠르게 넘어갈 때 대비)
+    goBtn.addEventListener('click', ()=>{
+      const picked = document.querySelector('input[name="emotion"]:checked');
+      if(!picked) return;
+      writeP2(picked.value);  // 보강 기록
 
-  function save(){
-    const cat=(catField.querySelector('input:checked')||{}).value||'';
-    const diff=currentDiff();
-    const goal=goalEl.value||'';
-    const data={cat,diff,goal,at:Date.now()};
-    try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
-  }
+      const url = `q-test.html?emotion=${encodeURIComponent(picked.value)}&v=${Date.now()}`;
+      location.href = url;
+    });
 
-  nextBtn.addEventListener('click',()=>{
-    const cat=(catField.querySelector('input:checked')||{}).value||'';
-    const goal=(goalEl.value||'').trim();
-    try{
-      if(!sessionStorage.getItem(K_SELECTED)){
-        const p2raw=localStorage.getItem(K_P2_CURRENT);
-        if(p2raw){
-          const obj=JSON.parse(p2raw);
-          if(obj&&obj.value) sessionStorage.setItem(K_SELECTED,obj.value);
-        }
-      }
-      sessionStorage.setItem(`${NS}.goal`,goal);
-      sessionStorage.setItem(`${NS}.cat`,cat);
-    }catch(e){}
-    location.href=`t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
-  });
-
-  backBtn.addEventListener('click',()=>{
-    if(document.referrer){ history.back(); return; }
-    location.href='q-test.html?v='+Date.now();
-  });
+    // 네트워크 알림
+    const net = document.getElementById('net');
+    function showNet(msg){
+      if(!net) return;
+      net.textContent = msg;
+      net.hidden = false;
+      net.classList.add('show');
+      clearTimeout(showNet._t);
+      showNet._t = setTimeout(()=> net.classList.remove('show'), 1600);
+    }
+    window.addEventListener('offline', ()=> showNet('오프라인입니다. 네트워크를 확인하세요.'));
+    window.addEventListener('online',  ()=> showNet('온라인에 연결되었습니다.'));
   </script>
+
+  <noscript>
+    <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
 </body>
 </html>

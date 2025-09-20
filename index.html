@@ -140,29 +140,30 @@
     }
   </style>
 
-  <script>
-    // 🔁 QR로 index.html 재진입할 때마다 무조건 초기화
-    (function hardResetOnEntry(){
-      const NS = 'thisdive';
-      const KEYS = [
-        `${NS}.p2:current`,
-        `${NS}.p3:lastSource`,
-        `${NS}.q:data`,
-        `${NS}.g:data`,
-        `${NS}.selectedEmotion`,
-      ];
-      try {
-        sessionStorage.clear();
-        KEYS.forEach(k => localStorage.removeItem(k));
-      } catch (e) {}
-      // 여기서는 화면 표시는 그대로 두고, 자동 이동/메시지는 없음
-    })();
-  </script>
+<script>
+/* QR/랜딩(index) 재진입마다 전체 상태 초기화 + 토큰 남기기 */
+(function resetOnEveryEntry(){
+  const NS = 'thisdive';
+  const K_RESET = `${NS}.resetEpoch`;
+
+  const wipe = () => {
+    try { sessionStorage.clear(); } catch(e){}
+    try { localStorage.clear(); } catch(e){}
+    // 🔑 초기화가 실제로 일어났다는 신호(토큰)를 남긴다
+    try { localStorage.setItem(K_RESET, String(Date.now())); } catch(e){}
+  };
+
+  // 1) 최초 진입
+  wipe();
+  // 2) 뒤로가기로 돌아온 경우(bfcache 복원)도 다시 초기화
+  window.addEventListener('pageshow', wipe);
+})();
+</script>
 </head>
 <body>
   <div class="wrap">
-    <h1>오늘의 몰입 여정을 시작합니다.</h1>
-    <p>천천히, 지금의 마음에서 시작해 보세요 :)</p>
+    <h1>오늘의 몰입을 시작합니다.</h1>
+    <p>나의 마음에 집중해 보세요 :)</p>
 
     <!-- '시'자 바로 앞에 아이콘 배치 -->
     <a href="e-test.html" class="btn">

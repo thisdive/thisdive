@@ -163,6 +163,37 @@
   .btn:active{ transform:translateY(1px); }
   .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
   @supports (padding: max(0px)){ .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); } }
+
+/* =========================
+   [FIX] 칩 선택 시 배경 유지
+   - 일부 브라우저/웹뷰에서 라디오 체크가 캡슐 배경을 다시 흰색으로 덮는 현상 방지
+   - 높은 특이성 + !important 로 강제
+   ========================= */
+
+/* 선택 상태(.on)와 라디오가 체크된 상태 모두 커버 */
+#catField > label.chip.on,
+#catField > label.chip:is(:focus, :focus-visible, :active).on,
+#catField > label.chip:has(input[type="radio"]:checked) {
+  background-color: #faf7f2 !important;   /* 캡슐 배경 유지 */
+  border-color: #f4e6e2 !important;       /* 테두리 */
+  color: var(--ink) !important;            /* 글자색 */
+  box-shadow: 0 6px 16px rgba(23,32,52,.06);
+  transform: translateY(-1px);
+}
+
+/* 라디오 점 색상은 유지 */
+#catField > label.chip input[type="radio"]:checked {
+  border-color: var(--rose-300) !important;
+  background: var(--rose-300) !important;
+}
+
+/* 호버/포커스에도 배경 안 날아가도록 보호 */
+#catField > label.chip.on:hover,
+#catField > label.chip.on:focus,
+#catField > label.chip.on:active {
+  background-color: #faf7f2 !important;
+}
+
   </style>
 </head>
 <body>
@@ -232,236 +263,132 @@
   </div>
 
   <script>
-<script>
-/* =========================
-   네임스페이스 & 키
-   ========================= */
-const NS = 'thisdive';
-// page2(감정) 현재, page3(question) 데이터
-const K_P2_CURRENT = `${NS}.p2:current`;
-const K_Q_DATA     = `${NS}.q:data`;
-// page4(goal) 전용: 직전에 참고했던 p2, q 스냅샷
-const K_P4_LASTP2  = `${NS}.p4:lastP2`;
-const K_P4_LASTQ   = `${NS}.p4:lastQ`;
-// goal 입력 스냅샷
-const K_G_DATA     = `${NS}.g:data`;
-// 세션 보강용
-const K_SELECTED   = `${NS}.selectedEmotion`;
-// ✅ 새 세션(탭/창) 최초 진입 감지용
-const K_SESSION_BOOT = `${NS}.p4:sessionBoot`;
+  /* =========================
+     기본 상수/요소
+     ========================= */
+  const NS = 'thisdive';
+  const K_G_DATA   = `${NS}.g:data`;
+  const K_SELECTED = `${NS}.selectedEmotion`;
 
-/* =========================
-   유틸: 페이지4 UI/데이터 초기화
-   ========================= */
-function clearPage4State() {
-  try { localStorage.removeItem(K_G_DATA); } catch(e){}
-  try {
-    // 카테고리 칩
-    const catField = document.getElementById('catField');
-    if (catField) {
-      catField.querySelectorAll('.chip').forEach(c => {
-        c.classList.remove('on');
-        const r = c.querySelector('input[type="radio"]');
-        if (r) r.checked = false;
-      });
-    }
-    // 별(난이도)
-    document.querySelectorAll('input[name="difficulty"]').forEach(r => r.checked = false);
-    updateReadout(0);
-    // 목표 입력
-    const goalEl = document.getElementById('goalInput');
-    if (goalEl) goalEl.value = '';
-  } catch(e){}
-}
+  const backBtn   = document.getElementById('backBtn');
+  const catField  = document.getElementById('catField');
+  const readout   = document.getElementById('readout');
+  const goalEl    = document.getElementById('goalInput');
+  const nextBtn   = document.getElementById('nextBtn');
+  const starsWrap = document.getElementById('starsGroup');
 
-/* =========================
-   QR 재인식(#reset) → 전체 초기화
-   ========================= */
-(function resetIfHash(){
-  try{
-    if (location.hash.replace('#','') === 'reset') {
-      sessionStorage.clear();
-      localStorage.removeItem(K_P2_CURRENT);
-      localStorage.removeItem(K_Q_DATA);
-      localStorage.removeItem(K_P4_LASTP2);
-      localStorage.removeItem(K_P4_LASTQ);
-      localStorage.removeItem(K_G_DATA);
-    }
-  }catch(e){}
-})();
+  const minuteMap = {1:10, 2:15, 3:25, 4:40, 5:50};
+  const diffText  = {0:'미정', 1:'가볍게', 2:'쉬움', 3:'보통', 4:'집중', 5:'도전'};
 
-/* =========================
-   요소
-   ========================= */
-const backBtn  = document.getElementById('backBtn');
-const catField = document.getElementById('catField');
-const readout  = document.getElementById('readout');
-const goalEl   = document.getElementById('goalInput');
-const nextBtn  = document.getElementById('nextBtn');
-const starsWrap= document.getElementById('starsGroup');
-
-/* 난이도별 권장 시간/라벨 */
-const minuteMap = {1:10, 2:15, 3:25, 4:40, 5:50};
-const diffText  = {0:'미정', 1:'가볍게', 2:'쉬움', 3:'보통', 4:'집중', 5:'도전'};
-
-function updateReadout(v){
-  const val = Number(v)||0;
-  const extra = minuteMap[val] ? ` · ${minuteMap[val]}분` : '';
-  readout.textContent = `${diffText[val]} (${val}/5)${extra}`;
-}
-function currentDiff(){
-  const sel = document.querySelector('input[name="difficulty"]:checked');
-  return sel ? Number(sel.value) : 0;
-}
-
-/* =========================
-   ✅ 새 세션(창/탭) 감지 → 무조건 초기화
-   ========================= */
-(function resetOnNewSession(){
-  try{
-    if (!sessionStorage.getItem(K_SESSION_BOOT)) {
-      clearPage4State();                         // ← 여기서 강제 초기화
-      sessionStorage.setItem(K_SESSION_BOOT,'1'); // 같은 세션 내 재방문은 유지
-    }
-  }catch(e){}
-})();
-
-/* =========================
-   진입 시 스냅샷 비교
-   - emotion 변경(p2)만 추가 초기화 트리거
-   - question 변경은 기록만 갱신
-   ========================= */
-(function compareSnapshotsOnEnter(){
-  try{
-    const curP2 = localStorage.getItem(K_P2_CURRENT) || '';
-    const lastP2= localStorage.getItem(K_P4_LASTP2)  || '';
-    if (curP2 !== lastP2) {
-      clearPage4State(); // 감정 바뀌면 목표/난이도/카테고리 초기화
-    }
-    localStorage.setItem(K_P4_LASTP2, curP2);
-
-    const curQ = localStorage.getItem(K_Q_DATA) || '';
-    localStorage.setItem(K_P4_LASTQ, curQ);
-  }catch(e){}
-})();
-
-/* =========================
-   복원(초기화가 되지 않은 경우에만)
-   ========================= */
-(function restore(){
-  updateReadout(0);
-  try{
-    const raw = localStorage.getItem(K_G_DATA);
-    if(!raw) return;                 // 초기화 되었으면 복원 스킵
-    const d = JSON.parse(raw);
-
-    // 카테고리
-    if (d.cat) {
-      const chip = [...catField.querySelectorAll('label.chip input')]
-        .find(i=>i.value===d.cat);
-      if (chip) { chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
-    }
-    // 난이도
-    if (d.diff) {
-      const r = document.getElementById('diff-' + d.diff);
-      if (r){ r.checked = true; updateReadout(d.diff); }
-    }
-    // 목표
-    if (typeof d.goal === 'string') goalEl.value = d.goal;
-  }catch(e){}
-})();
-
-/* =========================
-   카테고리 선택
-   ========================= */
-catField.addEventListener('click', (e)=>{
-  const label = e.target.closest('.chip');
-  if(!label) return;
-  const input = label.querySelector('input[type="radio"]');
-  if(!input) return;
-  input.checked = true;
-  catField.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
-  label.classList.add('on');
-  save();
-});
-
-/* =========================
-   별점
-   ========================= */
-starsWrap.addEventListener('change', (e)=>{
-  if (e.target && e.target.name === 'difficulty') {
-    updateReadout(e.target.value);
-    save();
+  // ✅ 난이도 텍스트만 표시 (괄호/분 제거)
+  function updateReadout(v){
+    const val = Number(v) || 0;
+    readout.textContent = diffText[val] || '미정';
   }
-});
-// 키보드 접근성
-(function initDifficultyA11y(){
-  const radios = [...document.querySelectorAll('input[name="difficulty"]')];
-  radios.forEach(r=>{
-    r.addEventListener('keydown', e=>{
-      if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
-        e.preventDefault();
-        const prev = [...radios].reverse().find(x=> +x.value < +r.value);
-        if(prev){ prev.checked = true; prev.dispatchEvent(new Event('change')); prev.focus(); }
-      }
-      if(e.key==='ArrowRight' || e.key==='ArrowUp'){
-        e.preventDefault();
-        const next = [...radios].find(x=> +x.value > +r.value);
-        if(next){ next.checked = true; next.dispatchEvent(new Event('change')); next.focus(); }
-      }
-    });
+
+  function currentDiff(){
+    const sel = document.querySelector('input[name="difficulty"]:checked');
+    return sel ? Number(sel.value) : 0;
+  }
+  function save(){
+    const cat  = (catField.querySelector('input:checked')||{}).value || '';
+    const diff = currentDiff();
+    const goal = goalEl.value || '';
+    const data = {cat, diff, goal, at: Date.now()};
+    try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
+  }
+
+  /* =========================
+     카테고리 칩
+     ========================= */
+  catField.addEventListener('click', (e)=>{
+    const label = e.target.closest('.chip');
+    if(!label) return;
+    const input = label.querySelector('input[type="radio"]');
+    if(!input) return;
+    input.checked = true;
+    catField.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
+    label.classList.add('on');
+    save();
   });
-})();
 
-/* =========================
-   저장
-   ========================= */
-function save(){
-  const cat  = (catField.querySelector('input:checked')||{}).value || '';
-  const diff = currentDiff();
-  const goal = goalEl.value || '';
-  const data = {cat, diff, goal, at: Date.now()};
-  try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
-  // 감정 스냅샷 최신화(있을 경우)
-  try{
-    const curP2Raw = localStorage.getItem(K_P2_CURRENT);
-    if (curP2Raw) localStorage.setItem(K_P4_LASTP2, curP2Raw);
-  }catch(e){}
-}
-goalEl.addEventListener('input', save);
+  /* =========================
+     [FIX] 별점: 라벨 클릭/터치에서도 확실히 반응
+     ========================= */
+  (function initStars(){
+    const radios = [...document.querySelectorAll('#starsGroup input[name="difficulty"]')];
+    const labels = [...document.querySelectorAll('#starsGroup label[for]')];
 
-/* =========================
-   CTA → t-test.html (기존 유지)
-   ========================= */
-nextBtn.addEventListener('click', ()=>{
-  const cat  = (catField.querySelector('input:checked')||{}).value || '';
-  const goal = (goalEl.value||'').trim();
-
-  // 감정 세션 보강(없을 때만)
-  try{
-    if (!sessionStorage.getItem(K_SELECTED)) {
-      const p2raw = localStorage.getItem(K_P2_CURRENT);
-      if (p2raw) {
-        const obj = JSON.parse(p2raw);
-        if (obj && obj.value) sessionStorage.setItem(K_SELECTED, obj.value);
-      }
+    function setDifficulty(v){
+      updateReadout(v);
+      save();
     }
-    sessionStorage.setItem(`${NS}.goal`, goal);
-    sessionStorage.setItem(`${NS}.cat`,  cat);
-  }catch(e){}
 
-  location.href = `t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
-});
+    // 라디오 자체 변경 시
+    radios.forEach(r=>{
+      r.addEventListener('change', ()=> setDifficulty(r.value));
+    });
 
-/* =========================
-   뒤로가기 (기존 유지: q-test.html)
-   ========================= */
-backBtn.addEventListener('click', ()=>{
-  if (document.referrer){ history.back(); return; }
-  location.href = 'q-test.html?v=' + Date.now();
-});
-</script>
+    // 라벨 클릭 시 강제로 change 발생 (모바일/웹뷰 일부 케이스 대응)
+    labels.forEach(l=>{
+      l.addEventListener('click', ()=>{
+        const id = l.getAttribute('for');
+        const el = document.getElementById(id);
+        if (el){
+          el.checked = true;
+          el.dispatchEvent(new Event('change', { bubbles:true })); // readout 갱신 보장
+        }
+      });
+    });
 
+    // 키보드 접근성 (좌우/상하)
+    radios.forEach(r=>{
+      r.addEventListener('keydown', e=>{
+        if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
+          e.preventDefault();
+          const prev = [...radios].reverse().find(x=> +x.value < +r.value);
+          if(prev){ prev.checked = true; prev.dispatchEvent(new Event('change', {bubbles:true})); prev.focus(); }
+        }
+        if(e.key==='ArrowRight' || e.key==='ArrowUp'){
+          e.preventDefault();
+          const next = [...radios].find(x=> +x.value > +r.value);
+          if(next){ next.checked = true; next.dispatchEvent(new Event('change', {bubbles:true})); next.focus(); }
+        }
+      });
+    });
+
+    // 페이지 진입 시 현재 선택 반영(없으면 0) → "미정"으로 덮어써서 (0/5) 제거
+    setDifficulty((document.querySelector('#starsGroup input[name="difficulty"]:checked')||{}).value || 0);
+  })();
+
+  /* =========================
+     입력 저장
+     ========================= */
+  goalEl.addEventListener('input', save);
+
+  /* =========================
+     CTA 이동 (기존 파일명 유지: t-test.html)
+     ========================= */
+  nextBtn.addEventListener('click', ()=>{
+    const cat  = (catField.querySelector('input:checked')||{}).value || '';
+    const goal = (goalEl.value||'').trim();
+
+    try{
+      // 선택 감정은 다른 페이지에서 다룰 수 있으므로 여기서는 목표/카테고리만 세션 보강
+      sessionStorage.setItem(`${NS}.goal`, goal);
+      sessionStorage.setItem(`${NS}.cat`,  cat);
+    }catch(e){}
+
+    location.href = `t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
+  });
+
+  /* =========================
+     뒤로가기 (기존 유지: q-test.html)
+     ========================= */
+  backBtn.addEventListener('click', ()=>{
+    if (document.referrer){ history.back(); return; }
+    location.href = 'q-test.html?v=' + Date.now();
+  });
   </script>
 </body>
 </html>

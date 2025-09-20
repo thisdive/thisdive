@@ -240,8 +240,11 @@
   const K_G_DATA=`${NS}.g:data`;
   const K_SELECTED=`${NS}.selectedEmotion`;
 
-  /* ── 추가: 새 세션/초기화 감지용 키 ── */
-  const K_SESSION_BOOT = `${NS}.p4:sessionBoot`;   // 세션 최초 진입 감지용
+  // 🔑 부트/버전 키(1,2페이지 스니펫이 기록해줌)
+  const K_BOOT = `${NS}.boot:id`;              // index.html에서 매 진입 시 갱신
+  const K_P2_VER = `${NS}.p2:ver`;             // emotion.html에서 감정 변경 때 +1
+  const K_P4_LAST_BOOT = `${NS}.p4:lastBoot`;  // page4가 마지막으로 본 boot:id
+  const K_P4_LAST_VER  = `${NS}.p4:lastP2ver`; // page4가 마지막으로 본 p2:ver
 
   (function resetIfHash(){
     if(location.hash.replace('#','')==='reset'){
@@ -269,10 +272,9 @@
     readout.textContent = `${diffText[val]} (${val}/5)`;
   }
 
-  /* ── 추가: 페이지4 상태 초기화 함수 ── */
+  /* 🧹 페이지4 상태 초기화 */
   function clearPage4State() {
     try { localStorage.removeItem(K_G_DATA); } catch(e){}
-    // UI도 즉시 초기 상태로 되돌림
     try {
       // 카테고리 칩 초기화
       catField.querySelectorAll('.chip').forEach(c => {
@@ -288,31 +290,28 @@
     } catch(e){}
   }
 
-  /* ── 추가: 새 세션(=QR 재접속) 및 p2 변경 감지 ── */
-  (function resetOnNewSession(){
-    if (!sessionStorage.getItem(K_SESSION_BOOT)) {
-      // 새 세션이므로 4페이지 상태 초기화
-      clearPage4State();
-      // 같은 세션에서 재방문해도 재초기화되지 않도록 플래그 설정
-      try { sessionStorage.setItem(K_SESSION_BOOT, '1'); } catch(e){}
-    }
-  })();
-
-  (function resetWhenP2Changed(){
-    try {
-      const curP2Raw = localStorage.getItem(K_P2_CURRENT);   // emotion.html이 저장한 현재 값(JSON)
-      const lastP2Raw = localStorage.getItem(K_P4_LASTP2);   // 4페이지에서 마지막으로 확인했던 값(JSON)
-      // 감정 값이 바뀌었으면 4페이지 상태 초기화
-      if (curP2Raw && curP2Raw !== lastP2Raw) {
+  /* 🚩 부트토큰 / 감정버전 비교 → 필요 시 초기화 (restore 이전에 실행) */
+  (function resetOnBootOrP2Changed(){
+    let didReset=false;
+    try{
+      const curBoot = localStorage.getItem(K_BOOT) || '';
+      const lastBoot = localStorage.getItem(K_P4_LAST_BOOT) || '';
+      if (curBoot && curBoot !== lastBoot) {
         clearPage4State();
+        didReset = true;
+        localStorage.setItem(K_P4_LAST_BOOT, curBoot);
       }
-      // 스냅샷 갱신
-      if (curP2Raw !== lastP2Raw) {
-        localStorage.setItem(K_P4_LASTP2, curP2Raw || '');
+      const curVer  = localStorage.getItem(K_P2_VER) || '0';
+      const lastVer = localStorage.getItem(K_P4_LAST_VER) || '0';
+      if (curVer !== lastVer) {
+        if (!didReset) clearPage4State();
+        didReset = true;
+        localStorage.setItem(K_P4_LAST_VER, curVer);
       }
-    } catch(e){}
+    }catch(e){}
   })();
 
+  /* 복원 */
   (function restore(){
     updateReadout(0);
     try{
@@ -381,11 +380,6 @@
     const goal=goalEl.value||'';
     const data={cat,diff,goal,at:Date.now()};
     try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
-    // 추가: 감정 스냅샷도 최신으로 유지(있을 경우)
-    try{
-      const curP2Raw = localStorage.getItem(K_P2_CURRENT);
-      if (curP2Raw) localStorage.setItem(K_P4_LASTP2, curP2Raw);
-    }catch(e){}
   }
 
   nextBtn.addEventListener('click',()=>{

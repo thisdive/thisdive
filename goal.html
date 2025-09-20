@@ -220,7 +220,7 @@
         </div>
       </section>
 
-      <div class="dotted-sep" role="separator" aria-hidden="true"></div>
+      <div class="dotted-sep" role="separator"></div>
 
       <!-- 난이도 -->
       <section class="block" aria-labelledby="b2">
@@ -246,7 +246,7 @@
         </div>
       </section>
 
-      <div class="dotted-sep" role="separator" aria-hidden="true"></div>
+      <div class="dotted-sep" role="separator"></div>
 
       <!-- 목표 -->
       <section class="block" aria-labelledby="b3">
@@ -267,8 +267,11 @@
      기본 상수/요소
      ========================= */
   const NS = 'thisdive';
-  const K_G_DATA   = `${NS}.g:data`;
-  const K_SELECTED = `${NS}.selectedEmotion`;
+  const K_G_DATA      = `${NS}.g:data`;
+  const K_SELECTED    = `${NS}.selectedEmotion`;
+  /* ▼ 추가: p2 스냅샷 비교용 키 */
+  const K_P2_CURRENT  = `${NS}.p2:current`;
+  const K_P3_LASTSRC  = `${NS}.p3:lastSource`;
 
   const backBtn   = document.getElementById('backBtn');
   const catField  = document.getElementById('catField');
@@ -297,6 +300,74 @@
     const data = {cat, diff, goal, at: Date.now()};
     try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
   }
+
+  /* =========================
+     ▼ 추가:  p2:current vs p3:lastSource 비교
+     - 다르면 3페이지 값 초기화
+     - 같으면 저장된 값 복원
+     - 이후 lastSource 갱신
+     ========================= */
+  function clearPage3State(){
+    try { localStorage.removeItem(K_G_DATA); } catch(e){}
+    // UI 초기화
+    try{
+      // 카테고리
+      catField.querySelectorAll('.chip').forEach(c=>{
+        c.classList.remove('on');
+        const r = c.querySelector('input[type="radio"]');
+        if (r) r.checked = false;
+      });
+      // 난이도
+      document.querySelectorAll('input[name="difficulty"]').forEach(r=> r.checked = false);
+      updateReadout(0);
+      // 목표
+      goalEl.value = '';
+    }catch(e){}
+  }
+
+  function restoreFromStorage(){
+    try{
+      const raw = localStorage.getItem(K_G_DATA);
+      if(!raw) { updateReadout(0); return; }
+      const d = JSON.parse(raw);
+      // 카테고리
+      if (d.cat){
+        const chip = [...catField.querySelectorAll('label.chip input')].find(i=> i.value === d.cat);
+        if (chip){ chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
+      }
+      // 난이도
+      if (d.diff){
+        const r = document.getElementById('diff-' + d.diff);
+        if (r){ r.checked = true; }
+        updateReadout(d.diff);
+      }else{
+        updateReadout(0);
+      }
+      // 목표
+      if (typeof d.goal === 'string') goalEl.value = d.goal;
+    }catch(e){
+      updateReadout(0);
+    }
+  }
+
+  (function compareAndInit(){
+    try{
+      const cur = localStorage.getItem(K_P2_CURRENT) || '';
+      const last= localStorage.getItem(K_P3_LASTSRC) || '';
+      if (cur !== last){
+        // 감정이 바뀜 → 3페이지 상태 초기화
+        clearPage3State();
+      }else{
+        // 동일 → 이전 값 복원
+        restoreFromStorage();
+      }
+      // 언제나 최신 스냅샷 저장
+      localStorage.setItem(K_P3_LASTSRC, cur);
+    }catch(e){
+      // 문제가 있어도 기본표시
+      updateReadout(0);
+    }
+  })();
 
   /* =========================
      카테고리 칩
@@ -336,7 +407,7 @@
         const el = document.getElementById(id);
         if (el){
           el.checked = true;
-          el.dispatchEvent(new Event('change', { bubbles:true })); // readout 갱신 보장
+          el.dispatchEvent(new Event('change', { bubbles:true }));
         }
       });
     });
@@ -357,8 +428,8 @@
       });
     });
 
-    // 페이지 진입 시 현재 선택 반영(없으면 0) → "미정"으로 덮어써서 (0/5) 제거
-    setDifficulty((document.querySelector('#starsGroup input[name="difficulty"]:checked')||{}).value || 0);
+    // 진입 시 현재 선택 표시(restore/clear 이후에도 보정)
+    updateReadout(currentDiff());
   })();
 
   /* =========================
@@ -374,7 +445,6 @@
     const goal = (goalEl.value||'').trim();
 
     try{
-      // 선택 감정은 다른 페이지에서 다룰 수 있으므로 여기서는 목표/카테고리만 세션 보강
       sessionStorage.setItem(`${NS}.goal`, goal);
       sessionStorage.setItem(`${NS}.cat`,  cat);
     }catch(e){}

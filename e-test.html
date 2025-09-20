@@ -77,28 +77,9 @@
   .card h2{ margin:0 0 14px; font-size:var(--h2); font-weight:700; display:flex; align-items:center; gap:10px; color:#172034 }
   .hint{ margin:0 0 14px; font-size:var(--hint); font-weight:400; color:#172034; line-height:1.65; text-align:center }
 
-  /* ===== CTA (카드 폭과 동일한 선) ===== */
-  .cta{
-    width:100%;
-    margin-top:18px;
-    background:none;
-    border-top:none;          /* 기존 선 제거 */
-    padding:0;                /* 좌우 패딩 제거(선이 좁아지는 원인) */
-  }
-  .cta-inner{
-    max-width:var(--wrap-max);
-    margin:0 auto;
-    text-align:center;
-    position:relative;
-    padding:14px 0;          /* 버튼 상하 여백만 */
-  }
-  .cta-inner::before{
-    content:"";
-    position:absolute;
-    top:0; left:50%; transform:translateX(-50%); width:100vw; 
-    height:1px;
-    background:var(--border);
-  }
+  .cta{ width:100%; margin-top:18px; background:none; border-top:none; padding:0; }
+  .cta-inner{ max-width:var(--wrap-max); margin:0 auto; text-align:center; position:relative; padding:14px 0; }
+  .cta-inner::before{ content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:100vw; height:1px; background:var(--border); }
 
   .btn{
     font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
@@ -176,7 +157,6 @@
       </div>
     </main>
 
-    <!-- ▼ 카드 아래, 바깥에 위치한 CTA -->
     <div class="cta">
       <div class="cta-inner">
         <button id="goBtn" class="btn" type="button" disabled>이 감정으로 시작하기 →</button>
@@ -187,23 +167,38 @@
   <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
 
   <script>
+  (function(){
+    const NS = 'thisdive';
+    const K_P2_CURRENT = `${NS}.p2:current`;
+
     const chips = document.querySelectorAll('.chip');
     const goBtn = document.getElementById('goBtn');
 
     function disableCTA(v){ goBtn.disabled = !!v; }
     disableCTA(true);
 
+    // 칩 클릭 시: UI 반영 + p2:current 저장
     chips.forEach(chip=>{
       chip.addEventListener('click', ()=>{
         const input = chip.querySelector('input[type="radio"]');
         if(!input) return;
+
         document.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
         input.checked = true;
         chip.classList.add('on');
         disableCTA(false);
+
+        // ✅ 감정 스냅샷 저장 (3페이지가 이 값을 보고 초기화 여부 판단)
+        try{
+          localStorage.setItem(
+            K_P2_CURRENT,
+            JSON.stringify({ value: input.value, at: Date.now() })
+          );
+        }catch(e){}
       });
     });
 
+    // 이동(기존 동작 유지)
     goBtn.addEventListener('click', ()=>{
       const picked = document.querySelector('input[name="emotion"]:checked');
       if(!picked) return;
@@ -211,6 +206,7 @@
       location.href = url;
     });
 
+    // 네트워크 안내(기존 유지)
     const net = document.getElementById('net');
     function showNet(msg){
       if(!net) return;
@@ -222,7 +218,8 @@
     }
     window.addEventListener('offline', ()=> showNet('오프라인입니다. 네트워크를 확인하세요.'));
     window.addEventListener('online',  ()=> showNet('온라인에 연결되었습니다.'));
-  </script>
+  })();
+    </script>
 
   <noscript>
     <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>

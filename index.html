@@ -159,6 +159,28 @@
   window.addEventListener('pageshow', wipe);
 })();
 </script>
+
+<!-- ✅ 요청하신 “초기화 신호 토큰” 스니펫 추가 -->
+<script>
+(function hardResetOnEntry(){
+  const NS='thisdive';
+  const KEYS=[
+    `${NS}.p2:current`,
+    `${NS}.p3:lastSource`,
+    `${NS}.q:data`,
+    `${NS}.g:data`,
+    `${NS}.selectedEmotion`,
+    `${NS}.p4:lastP2`,
+    `${NS}.p4:lastQ`
+  ];
+  try {
+    sessionStorage.clear();
+    KEYS.forEach(k=>localStorage.removeItem(k));
+  } catch(e){}
+  /* ✅ 초기화 신호(토큰) 기록 — 다른 모든 페이지가 이 값 변화를 보고 즉시 초기화 */
+  try { localStorage.setItem(`${NS}.resetEpoch`, String(Date.now())); } catch(e){}
+})();
+</script>
 </head>
 <body>
   <div class="wrap">

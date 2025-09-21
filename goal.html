@@ -167,7 +167,7 @@
   <div class="page">
     <main class="sheet" role="main" aria-labelledby="pageTitle">
       <section class="block" aria-labelledby="b1">
-        <h2 id="b1" class="block-title">나에게 필요한 몰입</h2>
+        <h2 id="b1" class="block-title">오늘의 몰입 유형</h2>
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
           <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
@@ -181,7 +181,7 @@
       <div class="dotted-sep" role="separator"></div>
 
       <section class="block" aria-labelledby="b2">
-        <h2 id="b2" class="block-title">오늘 목표의 난이도</h2>
+        <h2 id="b2" class="block-title">오늘의 목표 난이도</h2>
         <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
           <div class="panel-head">
             <span id="readout" class="readout">미정</span>
@@ -190,11 +190,11 @@
           <div class="stars" id="starsGroup">
             <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전" />
             <label for="diff-5" title="5">★</label>
-            <input type="radio" name="difficulty" id="diff-4" value="4" aria-label="4 - 집중" />
+            <input type="radio" name="difficulty" id="diff-4" value="4" aria-label="4 - 약간 어렵게" />
             <label for="diff-4" title="4">★</label>
             <input type="radio" name="difficulty" id="diff-3" value="3" aria-label="3 - 보통" />
             <label for="diff-3" title="3">★</label>
-            <input type="radio" name="difficulty" id="diff-2" value="2" aria-label="2 - 쉬움" />
+            <input type="radio" name="difficulty" id="diff-2" value="2" aria-label="2 - 쉽게" />
             <label for="diff-2" title="2">★</label>
             <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 가볍게" />
             <label for="diff-1" title="1">★</label>
@@ -234,7 +234,7 @@
   const starsWrap = document.getElementById('starsGroup');
 
   const minuteMap = {1:10, 2:15, 3:25, 4:40, 5:50};
-  const diffText  = {0:'미정', 1:'가볍게', 2:'쉬움', 3:'보통', 4:'집중', 5:'도전'};
+  const diffText  = {0:'미정', 1:'가볍게', 2:'쉽게', 3:'보통', 4:'약간 어렵게', 5:'도전'};
 
   /* =========================
      진입 시: p2:current vs p3:lastSource 비교

@@ -164,6 +164,23 @@
       }
     })();
 
+    /* =========================
+       (추가 1) 공용 초기화 함수
+       ========================= */
+    function hardResetStores(){
+      try{
+        // 타이머/목표 관련 로컬 저장소 전부 정리
+        localStorage.removeItem(K_T_DATA);
+        localStorage.removeItem(K_P4_LAST);
+        localStorage.removeItem(K_G_DATA);
+        sessionStorage.removeItem(K_T_MUSTRESET);
+        // 세션 키 전반 초기화(세션 기반 플로우 리셋 목적)
+        sessionStorage.clear();
+      }catch(e){}
+      // 화면 상태도 리셋
+      resetVisual();
+    }
+
     let timerInterval = null;
     let totalSeconds = 0;
     let remainingSeconds = 0;
@@ -206,6 +223,21 @@
 
       updateTimeDisplay();
       updateProgressCircle();
+    })();
+
+    /* =========================
+       (추가 2) QR 재인식(직접 진입) 감지 시 강제 초기화
+       - referrer가 없고 navigation type이 'navigate'면
+         사용자가 QR 등으로 바로 들어온 경우로 간주
+       ========================= */
+    (function forceResetOnDirectEntry(){
+      try{
+        const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
+        const isDirectNavigate = (!document.referrer) && nav && nav.type === 'navigate';
+        if (isDirectNavigate){
+          hardResetStores(); // 저장소 + 화면 즉시 초기화
+        }
+      }catch(e){}
     })();
 
     function startTimer(minutes) {
@@ -329,13 +361,14 @@
 
     // ✅ 완료 버튼: 텍스트 변경 + 스타일(done) + 토스트
     (function(){
-      if(!completeBtn) return;
-      completeBtn.addEventListener('click', (e)=>{
+      const cbtn = document.getElementById('completeBtn');
+      if(!cbtn) return;
+      cbtn.addEventListener('click', (e)=>{
         e.preventDefault();
-        completeBtn.classList.add('done');               // 남색 배경 & 연한 베이지 텍스트
-        completeBtn.textContent = '💫몰입 성공💫';        // 라벨 교체
+        cbtn.classList.add('done');               // 남색 배경 & 연한 베이지 텍스트
+        cbtn.textContent = '💫몰입 성공💫';        // 라벨 교체
 
-        const toast = document.getElementById('toast');  // 토스트 표시(기존 동작)
+        const toast = document.getElementById('toast');  // 토스트 표시
         if(toast){
           toast.hidden = false;
           requestAnimationFrame(()=> toast.classList.add('show'));
@@ -344,7 +377,7 @@
             setTimeout(()=> toast.hidden = true, 200);
           }, 3000);
         }
-      }, { once:true }); // 한번만 변화 주고 고정 (원하면 제거)
+      }, { once:true });
     })();
 
     (function initGoalBanner(){
@@ -359,14 +392,14 @@
       updateProgressCircle();
     })();
 
-    // 뒤로가기 → goal로
+    // 🔁 뒤로가기 → 항상 초기화 (이동 없이 현재 페이지도 리셋)
     (function(){
       const btn = document.getElementById('backBtn');
       if(!btn) return;
       btn.addEventListener('click', ()=>{
-        try{ sessionStorage.setItem(K_T_MUSTRESET, '1'); }catch(e){}
-        if (document.referrer) { history.back(); return; }
-        location.href = 'g-test.html?v=' + Date.now();
+        hardResetStores(); // 저장소 & 화면 초기화 (필수)
+        // 필요 시 뒤로 이동을 원하시면 아래 한 줄의 주석을 해제하세요.
+        // if (document.referrer) history.back();
       });
     })();
 

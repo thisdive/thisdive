@@ -71,11 +71,11 @@
     }
     .reflection button:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ✅ 완료 상태(요청) : 남색 배경 + 시간선택시 글자색(#F3ECE2) */
+    /* ✅ 완료 상태 */
     .reflection button.done {
       background-color: #2A3249;
       color: #F3ECE2;
-      pointer-events: none; /* 중복 클릭 방지 (원하면 제거 가능) */
+      pointer-events: none;
     }
 
     /* 선택 시간 하이라이트 */
@@ -164,23 +164,6 @@
       }
     })();
 
-    /* =========================
-       (추가 1) 공용 초기화 함수
-       ========================= */
-    function hardResetStores(){
-      try{
-        // 타이머/목표 관련 로컬 저장소 전부 정리
-        localStorage.removeItem(K_T_DATA);
-        localStorage.removeItem(K_P4_LAST);
-        localStorage.removeItem(K_G_DATA);
-        sessionStorage.removeItem(K_T_MUSTRESET);
-        // 세션 키 전반 초기화(세션 기반 플로우 리셋 목적)
-        sessionStorage.clear();
-      }catch(e){}
-      // 화면 상태도 리셋
-      resetVisual();
-    }
-
     let timerInterval = null;
     let totalSeconds = 0;
     let remainingSeconds = 0;
@@ -190,55 +173,47 @@
     const timeButtonsWrap = document.getElementById('timeButtons');
     const completeBtn = document.getElementById('completeBtn');
 
-    (function checkSourceAndInit(){
-      const sp = new URLSearchParams(location.search);
-      let goal = (sp.get('goal') || '').trim();
-      if(!goal){ try{ goal = sessionStorage.getItem(`${NS}.goal`) || ''; }catch(e){} }
-      if(goal){
-        document.getElementById('goalText').textContent = goal;
-        document.getElementById('goalBanner').hidden = false;
-      }
+    function resetVisual(){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      totalSeconds = 0;
+      remainingSeconds = 0;
+      timeEl.textContent = '00:00';
+      const radius = 100, circumference = 2 * Math.PI * radius;
+      progressEl.style.strokeDasharray = `${circumference}`;
+      progressEl.style.strokeDashoffset = `${0}`;
+      completeBtn.disabled = true;
+      completeBtn.classList.remove('done');
+      completeBtn.textContent = '✔️ 몰입 완료';
+      document.querySelectorAll('.timer-controls button').forEach(b=> b.classList.remove('active'));
+    }
 
-      let mustReset = false;
+    function snapshotGet(){
       try{
-        if (sessionStorage.getItem(K_T_MUSTRESET) === '1') {
-          mustReset = true;
-          sessionStorage.removeItem(K_T_MUSTRESET);
-        }
-      }catch(e){}
-
-      let gRaw=null, p4Raw=null;
+        const raw = localStorage.getItem(K_T_DATA);
+        return raw ? JSON.parse(raw) : {};
+      }catch(e){ return {}; }
+    }
+    function snapshotSave(part){
       try{
-        gRaw  = localStorage.getItem(K_G_DATA);
-        p4Raw = localStorage.getItem(K_P4_LAST);
+        const cur = snapshotGet();
+        const next = { ...cur, ...part };
+        localStorage.setItem(K_T_DATA, JSON.stringify(next));
       }catch(e){}
+    }
 
-      if (mustReset || gRaw !== p4Raw) {
-        try{ localStorage.removeItem(K_T_DATA); }catch(e){}
-        try{ localStorage.setItem(K_P4_LAST, gRaw ?? ''); }catch(e){}
-        resetVisual();
-      } else {
-        restoreTimer();
-      }
-
-      updateTimeDisplay();
-      updateProgressCircle();
-    })();
-
-    /* =========================
-       (추가 2) QR 재인식(직접 진입) 감지 시 강제 초기화
-       - referrer가 없고 navigation type이 'navigate'면
-         사용자가 QR 등으로 바로 들어온 경우로 간주
-       ========================= */
-    (function forceResetOnDirectEntry(){
-      try{
-        const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
-        const isDirectNavigate = (!document.referrer) && nav && nav.type === 'navigate';
-        if (isDirectNavigate){
-          hardResetStores(); // 저장소 + 화면 즉시 초기화
-        }
-      }catch(e){}
-    })();
+    function updateTimeDisplay() {
+      const min = String(Math.floor((remainingSeconds||0) / 60)).padStart(2, '0');
+      const sec = String((remainingSeconds||0) % 60).padStart(2, '0');
+      timeEl.textContent = `${min}:${sec}`;
+    }
+    function updateProgressCircle() {
+      const radius = 100;
+      const circumference = 2 * Math.PI * radius;
+      const ratio = totalSeconds ? (1 - (remainingSeconds / totalSeconds)) : 0;
+      progressEl.style.strokeDasharray = `${circumference}`;
+      progressEl.style.strokeDashoffset = `${circumference * ratio}`;
+    }
 
     function startTimer(minutes) {
       clearInterval(timerInterval);
@@ -262,48 +237,6 @@
           snapshotSave({ finished:true, finishedAt: Date.now() });
         }
       }, 1000);
-    }
-
-    function updateTimeDisplay() {
-      const min = String(Math.floor((remainingSeconds||0) / 60)).padStart(2, '0');
-      const sec = String((remainingSeconds||0) % 60).padStart(2, '0');
-      timeEl.textContent = `${min}:${sec}`;
-    }
-
-    function updateProgressCircle() {
-      const radius = 100;
-      const circumference = 2 * Math.PI * radius;
-      const ratio = totalSeconds ? (1 - (remainingSeconds / totalSeconds)) : 0;
-      progressEl.style.strokeDasharray = `${circumference}`;
-      progressEl.style.strokeDashoffset = `${circumference * ratio}`;
-    }
-
-    function resetVisual(){
-      clearInterval(timerInterval);
-      timerInterval = null;
-      totalSeconds = 0;
-      remainingSeconds = 0;
-      timeEl.textContent = '00:00';
-      updateTimeDisplay();
-      updateProgressCircle();
-      completeBtn.disabled = true;
-      completeBtn.classList.remove('done');
-      completeBtn.textContent = '✔️ 몰입 완료';
-      document.querySelectorAll('.timer-controls button').forEach(b=> b.classList.remove('active'));
-    }
-
-    function snapshotGet(){
-      try{
-        const raw = localStorage.getItem(K_T_DATA);
-        return raw ? JSON.parse(raw) : {};
-      }catch(e){ return {}; }
-    }
-    function snapshotSave(part){
-      try{
-        const cur = snapshotGet();
-        const next = { ...cur, ...part };
-        localStorage.setItem(K_T_DATA, JSON.stringify(next));
-      }catch(e){}
     }
 
     function restoreTimer(){
@@ -346,7 +279,45 @@
       }
     }
 
-    // 시간 버튼 클릭 → 시작
+    /* ============ 초기 진입 시 준비 ============ */
+    (function checkSourceAndInit(){
+      const sp = new URLSearchParams(location.search);
+      let goal = (sp.get('goal') || '').trim();
+      if(!goal){ try{ goal = sessionStorage.getItem(`${NS}.goal`) || ''; }catch(e){} }
+      if(goal){
+        document.getElementById('goalText').textContent = goal;
+        document.getElementById('goalBanner').hidden = false;
+      }
+
+      // goal.html 다녀온 뒤 복귀 시 강제 초기화 플래그
+      let mustReset = false;
+      try{
+        if (sessionStorage.getItem(K_T_MUSTRESET) === '1') {
+          mustReset = true;
+          sessionStorage.removeItem(K_T_MUSTRESET);
+        }
+      }catch(e){}
+
+      let gRaw=null, p4Raw=null;
+      try{
+        gRaw  = localStorage.getItem(K_G_DATA);
+        p4Raw = localStorage.getItem(K_P4_LAST);
+      }catch(e){}
+
+      if (mustReset || gRaw !== p4Raw) {
+        try{ localStorage.removeItem(K_T_DATA); }catch(e){}
+        try{ localStorage.setItem(K_P4_LAST, gRaw ?? ''); }catch(e){}
+        resetVisual();
+      } else {
+        restoreTimer();
+      }
+
+      updateTimeDisplay();
+      updateProgressCircle();
+    })();
+
+    /* ============ 시간 버튼 ============ */
+    const timeButtonsWrap = document.getElementById('timeButtons');
     timeButtonsWrap.addEventListener('click', (e)=>{
       const btn = e.target.closest('button');
       if(!btn) return;
@@ -359,16 +330,16 @@
       }
     });
 
-    // ✅ 완료 버튼: 텍스트 변경 + 스타일(done) + 토스트
+    /* ============ 완료 버튼 ============ */
     (function(){
       const cbtn = document.getElementById('completeBtn');
       if(!cbtn) return;
       cbtn.addEventListener('click', (e)=>{
         e.preventDefault();
-        cbtn.classList.add('done');               // 남색 배경 & 연한 베이지 텍스트
-        cbtn.textContent = '💫몰입 성공💫';        // 라벨 교체
+        cbtn.classList.add('done');
+        cbtn.textContent = '💫몰입 성공💫';
 
-        const toast = document.getElementById('toast');  // 토스트 표시
+        const toast = document.getElementById('toast');
         if(toast){
           toast.hidden = false;
           requestAnimationFrame(()=> toast.classList.add('show'));
@@ -380,35 +351,30 @@
       }, { once:true });
     })();
 
-    (function initGoalBanner(){
-      const sp = new URLSearchParams(location.search);
-      let goal = (sp.get('goal') || '').trim();
-      if(!goal){ try{ goal = sessionStorage.getItem(`${NS}.goal`) || ''; }catch(e){} }
-      if(goal){
-        document.getElementById('goalText').textContent = goal;
-        document.getElementById('goalBanner').hidden = false;
-      }
-      updateTimeDisplay();
-      updateProgressCircle();
-    })();
-
-    // 🔁 뒤로가기 → 항상 초기화 (이동 없이 현재 페이지도 리셋)
+    /* ============ 뒤로가기: goal.html로 이동 + 복귀 시 초기화 플래그 설정 ============ */
     (function(){
       const btn = document.getElementById('backBtn');
       if(!btn) return;
       btn.addEventListener('click', ()=>{
-        hardResetStores(); // 저장소 & 화면 초기화 (필수)
-        // 필요 시 뒤로 이동을 원하시면 아래 한 줄의 주석을 해제하세요.
-        // if (document.referrer) history.back();
+        try{ sessionStorage.setItem(K_T_MUSTRESET, '1'); }catch(e){}
+        // 필요하면 추가로 현재 진행 상태도 지움
+        try{
+          localStorage.removeItem(K_T_DATA);
+        }catch(e){}
+        // goal.html로 이동
+        location.href = 'goal.html?v=' + Date.now();
       });
     })();
 
-    // 히스토리 복귀(BFCache) 시에도 초기화
+    /* ============ BFCache로 돌아왔을 때도 항상 초기화 ============ */
     window.addEventListener('pageshow', (e)=>{
       const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
       const isBF = e.persisted || (nav && nav.type === 'back_forward');
       if (isBF) {
-        try{ localStorage.removeItem(K_T_DATA); }catch(e){}
+        try{
+          localStorage.removeItem(K_T_DATA);
+          sessionStorage.removeItem(K_T_MUSTRESET);
+        }catch(e){}
         resetVisual();
       }
     });

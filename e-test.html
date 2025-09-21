@@ -177,6 +177,24 @@
     function disableCTA(v){ goBtn.disabled = !!v; }
     disableCTA(true);
 
+    /* ✅ 저장된 선택 복원: 뒤페이지 갔다가 돌아와도 유지 (옵션을 바꾸기 전까지) */
+    (function restoreSelection(){
+      try{
+        const raw = localStorage.getItem(K_P2_CURRENT);
+        if(!raw) return;
+        const data = JSON.parse(raw);
+        const val = data && data.value;
+        if(!val) return;
+
+        const input = document.querySelector(`input[name="emotion"][value="${val}"]`);
+        if(!input) return;
+        input.checked = true;
+        const chip = input.closest('.chip');
+        if(chip) chip.classList.add('on');
+        disableCTA(false);
+      }catch(e){}
+    })();
+
     // 칩 클릭 시: UI 반영 + p2:current 저장
     chips.forEach(chip=>{
       chip.addEventListener('click', ()=>{

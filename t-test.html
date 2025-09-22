@@ -75,7 +75,7 @@
     .reflection button.done {
       background-color: #2A3249;
       color: #F3ECE2;
-      pointer-events: none; /* 중복 클릭 방지 (원하면 제거 가능) */
+      pointer-events: none;
     }
 
     /* 선택 시간 하이라이트 */
@@ -173,7 +173,26 @@
     const timeButtonsWrap = document.getElementById('timeButtons');
     const completeBtn = document.getElementById('completeBtn');
 
+    /* ---------------------------------------------------
+       🔒 강화된 초기화 조건
+       - mustReset 플래그가 있거나
+       - referrer가 존재하고, referrer가 현재 타이머 페이지가 아니면(=다른 페이지에서 넘어옴)
+         → 무조건 초기화
+       --------------------------------------------------- */
+    function cameFromOtherPage(){
+      try{
+        if (!document.referrer) return false;
+        const ref = new URL(document.referrer);
+        const here = new URL(location.href);
+        // 같은 파일로의 리로드가 아니면 "다른 페이지에서 진입"으로 간주
+        return (ref.origin === here.origin) && (ref.pathname !== here.pathname);
+      }catch(e){
+        return !!document.referrer; // 파싱 실패 시 referrer가 있으면 다른 페이지로 간주
+      }
+    }
+
     (function checkSourceAndInit(){
+      // 목표문구 표시
       const sp = new URLSearchParams(location.search);
       let goal = (sp.get('goal') || '').trim();
       if(!goal){ try{ goal = sessionStorage.getItem(`${NS}.goal`) || ''; }catch(e){} }
@@ -182,13 +201,17 @@
         document.getElementById('goalBanner').hidden = false;
       }
 
+      // 초기화 필요성 판단
       let mustReset = false;
       try{
-        if (sessionStorage.getItem(K_T_MUSTRESET) === '1') {
-          mustReset = true;
-          sessionStorage.removeItem(K_T_MUSTRESET);
-        }
+        if (sessionStorage.getItem(K_T_MUSTRESET) === '1') mustReset = true;
       }catch(e){}
+
+      // 👇 목표페이지 등 "다른 페이지에서 막 들어온 경우"도 강제 초기화
+      if (cameFromOtherPage()) mustReset = true;
+
+      // 플래그는 일회용
+      try{ sessionStorage.removeItem(K_T_MUSTRESET); }catch(e){}
 
       let gRaw=null, p4Raw=null;
       try{
@@ -332,10 +355,10 @@
       if(!completeBtn) return;
       completeBtn.addEventListener('click', (e)=>{
         e.preventDefault();
-        completeBtn.classList.add('done');               // 남색 배경 & 연한 베이지 텍스트
-        completeBtn.textContent = '💫몰입 성공💫';        // 라벨 교체
+        completeBtn.classList.add('done');
+        completeBtn.textContent = '💫몰입 성공💫';
 
-        const toast = document.getElementById('toast');  // 토스트 표시(기존 동작)
+        const toast = document.getElementById('toast');
         if(toast){
           toast.hidden = false;
           requestAnimationFrame(()=> toast.classList.add('show'));
@@ -344,7 +367,7 @@
             setTimeout(()=> toast.hidden = true, 200);
           }, 3000);
         }
-      }, { once:true }); // 한번만 변화 주고 고정 (원하면 제거)
+      }, { once:true });
     })();
 
     (function initGoalBanner(){
@@ -359,7 +382,7 @@
       updateProgressCircle();
     })();
 
-    // 뒤로가기 → goal로
+    // 뒤로가기 → 목표페이지로 (복귀 시 초기화를 위해 mustReset 세팅)
     (function(){
       const btn = document.getElementById('backBtn');
       if(!btn) return;

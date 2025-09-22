@@ -32,7 +32,7 @@
       background-color: #f7f3ee;
       color: #2a3249;
       display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      min-height: 100vh; padding: 8px 16px 24px; margin: 0;
+      min-height: 100vh; padding: 0px 16px 24px; margin: 0;
     }
     h1 { margin-bottom: 15px; font-size: 24px; font-weight: bold; }
 
@@ -44,11 +44,23 @@
       border-radius:4px;
     }
 
-    .timer-controls { display: flex; gap: 12px; margin-bottom: 42px; flex-wrap: wrap; justify-content: center; }
-    .timer-controls button {
+.timer-controls {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;   /* 🔸 이 부분 */
+  gap: 14px; /* 두 줄 간격 */
+}
+.timer-controls .row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}    .timer-controls button {
       background-color: #F3ECE2; color: #2a3249; border: none;
-      padding: 10px 16px; border-radius: 8px; font-size: 16px; cursor: pointer;
+      padding: 5px 10px; border-radius: 8px; font-size: 16px; cursor: pointer;
       transition: transform .06s ease, box-shadow .12s ease;
+  width: 70px;        /* 버튼 고정 폭 */
+  text-align: center; /* 글자 가운데 정렬 */
+}
     }
     .timer-controls button:active{ transform: translateY(1px); }
 
@@ -101,7 +113,7 @@
       appearance:none; border:1px solid #e5e7eb; background:#fff; color:#374151;
       width:36px; height:36px; border-radius:10px; font-size:18px; line-height:1;
       display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
-      margin:0 8px 8px 0; align-self:flex-start;
+      margin:0 18px 8px 0; align-self:flex-start;
     }
     .back-btn:active{ transform: translateY(1px); }
   </style>
@@ -118,13 +130,19 @@
     <span id="goalText" class="hl"></span>
   </div>
 
-  <div class="timer-controls" id="timeButtons">
+<div class="timer-controls" id="timeButtons">
+  <div class="row">
     <button>1분</button>
+    <button>5분</button>
     <button>15분</button>
+
+  </div>
+  <div class="row">
     <button>30분</button>
     <button>45분</button>
     <button>60분</button>
   </div>
+</div>
 
   <div class="circle-timer">
     <svg width="220" height="220" aria-hidden="true">

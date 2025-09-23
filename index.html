@@ -1,198 +1,59 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script>
-/* QR/랜딩(index) 재진입마다 전체 상태 초기화 */
-(function resetOnEveryEntry(){
-  const NS = 'thisdive';
-  const KEYS = [
-    `${NS}.p2:current`,      // 감정 스냅샷(2p)
-    `${NS}.p3:lastSource`,   // 3p가 참고했던 감정 스냅샷
-    `${NS}.q:data`,          // 3p 질문/중간데이터 쓰는 경우
-    `${NS}.g:data`,          // 3p 목표 입력 스냅샷
-    `${NS}.selectedEmotion`, // 선택 감정(세션 보강)
-    `${NS}.p4:lastP2`,       // 과거 키 사용 시 호환
-    `${NS}.p4:lastQ`         // 과거 키 사용 시 호환
-  ];
-
-  const wipe = () => {
-    try { sessionStorage.clear(); } catch(e){}
-    try { KEYS.forEach(k => localStorage.removeItem(k)); } catch(e){}
-  };
-
-  // 1) 최초 진입 시
-  wipe();
-  // 2) 뒤로가기로 돌아왔을 때(bfcache 복원 포함)도 확실히 초기화
-  window.addEventListener('pageshow', wipe, { passive: true });
-})();
-</script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>오늘의 몰입 시작 | thisdive</title>
   <meta name="color-scheme" content="light" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <!-- (선택) 검색 차단 -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
 
-  <style>
-    /* =========================
-       FONTS (local)
-    ==========================*/
-    @font-face{
-      font-family: 'MaruBuri';
-      src: url('./fonts/MaruBuri-Regular.woff2') format('woff2');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face{
-      font-family: 'MaruBuri';
-      src: url('./fonts/MaruBuri-Bold.woff2') format('woff2');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face{
-      font-family: 'Pretendard';
-      src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
+  <!-- ✅ 강한 CSP: inline 금지, self만 허용 (CDN 사용 시 주석 참고) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src  'self';
+    style-src   'self';
+    img-src     'self' data:;
+    font-src    'self';
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
 
-    :root {
-      --bg: #f7f3ed;
-      --fg: #2a3249;
-      --muted: #6b7280;
-      --rose: #d7a8b5;
+  <!-- 만약 CDN을 쓴다면 위 CSP 대신 다음 형태를 사용 + SRI 필수
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src  'self' https://cdn.jsdelivr.net;
+    style-src   'self' https://cdn.jsdelivr.net https://fonts.googleapis.com;
+    img-src     'self' data:;
+    font-src    'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    upgrade-insecure-requests
+  ">
+  -->
 
-      /* 로고 점용 색상 */
-      --rose-100:#f4e6e2;   /* 바깥 은은한 링 */
-      --rose-300:#d7a8b5;   /* 내부 원 */
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; font-family: 'MaruBuri','Pretendard',sans-serif; }
-
-    body {
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 28px;
-    }
-
-    .wrap { text-align: center; max-width: 420px; }
-
-    h1 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--fg);
-      font-family: 'MaruBuri', serif;
-    }
-
-    p {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--muted);
-      margin-bottom: 28px;
-    }
-
-    .btn{
-      display:inline-flex;           /* 아이콘+텍스트 가로 정렬 */
-      align-items:center;
-      justify-content:center;
-      gap:8px;                       /* 점과 글씨 사이 간격 */
-
-      font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-      min-width:160px;               /* 캡슐 너비 넓히기 */
-      padding:18px 28px;             /* 상하·좌우 여백 넉넉히 */
-
-      background:#faf7f2;            /* 밝은 베이지 */
-      color:#172034;                 /* 네이비 글씨 */
-      border:1px solid #f4e6e2;      /* 연한 핑크 테두리 */
-      border-radius:9999px;          /* 완전 캡슐형 */
-
-      font-weight:650;
-      letter-spacing:.2px;
-      font-size:1.05rem;             /* 글씨 크게 */
-
-      text-decoration:none;          /* 밑줄 제거 */
-      box-shadow:none;
-      cursor:pointer;
-      transition: all .2s ease;
-    }
-    .btn:hover{
-      background:#f3ebe3;
-      color:#172034;
-    }
-    .btn:active{ transform:translateY(1px) }
-    .btn:focus-visible{ outline:0; box-shadow:0 0 0 4px rgba(215,168,181,.35) }
-
-    /* ▼ 버튼 안에 들어가는 로고 점 */
-    .logo-dot{
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      background: var(--rose-300);                 /* 안쪽 원 */
-      box-shadow: 0 0 0 6px var(--rose-100);       /* 바깥 은은한 링 */
-      display:inline-block;
-      flex: 0 0 auto;
-    }
-  </style>
-
-<script>
-/* QR/랜딩(index) 재진입마다 전체 상태 초기화 + 토큰 남기기 */
-(function resetOnEveryEntry(){
-  const NS = 'thisdive';
-  const K_RESET = `${NS}.resetEpoch`;
-
-  const wipe = () => {
-    try { sessionStorage.clear(); } catch(e){}
-    try { localStorage.clear(); } catch(e){}
-    // 🔑 초기화가 실제로 일어났다는 신호(토큰)를 남긴다
-    try { localStorage.setItem(K_RESET, String(Date.now())); } catch(e){}
-  };
-
-  // 1) 최초 진입
-  wipe();
-  // 2) 뒤로가기로 돌아온 경우(bfcache 복원)도 다시 초기화
-  window.addEventListener('pageshow', wipe);
-})();
-</script>
-
-<!-- ✅ 요청하신 “초기화 신호 토큰” 스니펫 추가 -->
-<script>
-(function hardResetOnEntry(){
-  const NS='thisdive';
-  const KEYS=[
-    `${NS}.p2:current`,
-    `${NS}.p3:lastSource`,
-    `${NS}.q:data`,
-    `${NS}.g:data`,
-    `${NS}.selectedEmotion`,
-    `${NS}.p4:lastP2`,
-    `${NS}.p4:lastQ`
-  ];
-  try {
-    sessionStorage.clear();
-    KEYS.forEach(k=>localStorage.removeItem(k));
-  } catch(e){}
-  /* ✅ 초기화 신호(토큰) 기록 — 다른 모든 페이지가 이 값 변화를 보고 즉시 초기화 */
-  try { localStorage.setItem(`${NS}.resetEpoch`, String(Date.now())); } catch(e){}
-})();
-</script>
+  <!-- 외부 스타일 (inline 금지) -->
+  <link rel="stylesheet" href="./index.css" />
+  <!-- (선택) normalize를 CDN에서 쓸 경우 SRI + CSP에 도메인 추가 필요
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
+        integrity="/* 정확한 해시로 교체 */" crossorigin="anonymous">
+  -->
 </head>
 <body>
   <div class="wrap">
     <h1>오늘의 몰입을 시작합니다.</h1>
     <p>🕯️ 내 마음에 집중해 보세요.</p>
-
-    <!-- '시'자 바로 앞에 아이콘 배치 -->
     <a href="e-test.html" class="btn">
       <span class="logo-dot" aria-hidden="true"></span> 시작하기
     </a>
   </div>
+
+  <!-- 외부 스크립트 (inline 금지) -->
+  <script src="./index.js" defer></script>
 </body>
 </html>
-
-

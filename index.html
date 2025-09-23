@@ -5,55 +5,35 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>오늘의 몰입 시작 | thisdive</title>
   <meta name="color-scheme" content="light" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <!-- (선택) 검색 차단 -->
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="googlebot" content="noindex, nofollow" />
 
-  <!-- ✅ 강한 CSP: inline 금지, self만 허용 (CDN 사용 시 주석 참고) -->
+  <!-- 검색 차단 (원하면 제거) -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  <!-- CSP: inline 금지, 자가호스팅 + (필요 시) jsDelivr/Google Fonts 허용 -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src  'self';
-    style-src   'self';
-    img-src     'self' data:;
-    font-src    'self';
+    script-src 'self' https://cdn.jsdelivr.net;
+    style-src  'self' https://cdn.jsdelivr.net https://fonts.googleapis.com;
+    img-src    'self' data:;
+    font-src   'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
     connect-src 'self';
-    frame-ancestors 'none';
     base-uri 'self';
     upgrade-insecure-requests
   ">
 
-  <!-- 만약 CDN을 쓴다면 위 CSP 대신 다음 형태를 사용 + SRI 필수
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src  'self' https://cdn.jsdelivr.net;
-    style-src   'self' https://cdn.jsdelivr.net https://fonts.googleapis.com;
-    img-src     'self' data:;
-    font-src    'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
-    connect-src 'self';
-    frame-ancestors 'none';
-    base-uri 'self';
-    upgrade-insecure-requests
-  ">
-  -->
-
-  <!-- 외부 스타일 (inline 금지) -->
-  <link rel="stylesheet" href="./index.css" />
-  <!-- (선택) normalize를 CDN에서 쓸 경우 SRI + CSP에 도메인 추가 필요
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"
-        integrity="/* 정확한 해시로 교체 */" crossorigin="anonymous">
-  -->
+  <link rel="stylesheet" href="./css/index.css?v=1">
 </head>
 <body>
   <div class="wrap">
     <h1>오늘의 몰입을 시작합니다.</h1>
     <p>🕯️ 내 마음에 집중해 보세요.</p>
+
     <a href="e-test.html" class="btn">
       <span class="logo-dot" aria-hidden="true"></span> 시작하기
     </a>
   </div>
 
-  <!-- 외부 스크립트 (inline 금지) -->
-  <script src="./index.js" defer></script>
+  <script src="./js/index.js" defer></script>
 </body>
 </html>

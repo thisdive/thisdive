@@ -273,7 +273,7 @@
 
   <main class="wrap">
     <section class="card" aria-labelledby="h1">
-      <h2 id="h1">🪴 나의 마음은</h2>
+      <h2 id="h1">🪴 나의 이야기</h2>
       <p class="hint">
         오늘의 
         <!-- 텍스트에만 밑줄을 주기 위해 내부 span 유지 -->
@@ -284,7 +284,7 @@
     </section>
 
     <section class="card" aria-labelledby="h2">
-      <h2 id="h2">👂🏻 너의 마음은 (선택)</h2>
+      <h2 id="h2">👂🏻 너의 이야기 (선택)</h2>
       <p class="hint">같은 장면에서 상대방은<br>어떤 생각/바램이 있었을까요?</p>
       <textarea placeholder="예) 상대방도 내 행동이 자신을 무시한다고 생각했을 것 같다 → 책임자로 존중 받고 싶은 바램 [충족 X]"></textarea>
     </section>
@@ -372,7 +372,7 @@
 
   // CTA 버튼 클릭 시 이동
   document.getElementById('nextBtn').addEventListener('click', () => {
-    const next = params.get('next') || 'goal.html';
+    const next = params.get('next') || 'f-test4.html';
     const q = new URLSearchParams({ emotion }).toString();
     location.href = `${next}?${q}`;
   });

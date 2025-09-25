@@ -267,7 +267,7 @@
          <!--    <button class="back-btn" aria-label="뒤로가기">←</button> -->
 
       <span class="logo-dot" aria-hidden="true"></span>
-      <div class="title">나와의 대화</div>
+      <div class="title">오늘의 정돈</div>
     </div>
   </header>
 
@@ -372,7 +372,7 @@
 
   // CTA 버튼 클릭 시 이동
   document.getElementById('nextBtn').addEventListener('click', () => {
-    const next = params.get('next') || 'f-test4.html';
+    const next = params.get('next') || 'goal.html';
     const q = new URLSearchParams({ emotion }).toString();
     location.href = `${next}?${q}`;
   });
@@ -384,11 +384,6 @@
 </script>
 </body>
 </html>
-
-
-
-
-
 
 
 

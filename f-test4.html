@@ -183,7 +183,7 @@
         <!-- 미리보기 2: 감각 문장 -->
         <section class="section" aria-labelledby="sec-preview-sense">
           <h2 id="sec-preview-sense" class="sr-only">감각 미리보기</h2>
-          <div class="preview" id="preview-sense">지금 내 눈 앞에는<strong>____</strong>이 보이고, <strong>____</strong>이 들리고, <strong>____</strong>이 느껴진다.</div>
+          <div class="preview" id="preview-sense">지금 내 눈 앞에는 <strong>____</strong>이 보이고, <strong>____</strong>이 들리고, <strong>____</strong>이 느껴진다.</div>
         </section>
 
         <!-- 시각화 체크 -->
@@ -192,8 +192,8 @@
           <label class="visualize">
             <input type="checkbox" id="visualized" />
             <div>
-              <div><strong>눈을 감고 10초간 그 장면을 떠올려 보았어요</strong></div>
-              <small>호흡 3번 + 몸의 감각(온도/자세/미세한 표정)까지 느껴보기</small>
+              <div><strong>눈을 감고 1분간 그 장면을 떠올려 보았어요</strong></div>
+              <small>몸의 감각(온도/자세/미세한 표정)까지 느껴보세요.</small>
             </div>
           </label>
         </section>
@@ -259,7 +259,7 @@
       const s = fmt(state.see)||'____';
       const h = fmt(state.hear)||'____';
       const f = fmt(state.feel)||'____';
-      previewSense.innerHTML = `<strong>${s}</strong>이 보이고, <strong>${h}</strong>이 들리고, <strong>${f}</strong>이 느껴진다.`;
+      previewSense.innerHTML = `지금 내 눈 앞에는 <strong>${s}</strong>이 보이고, <strong>${h}</strong>이 들리고, <strong>${f}</strong>이 느껴진다.`;
 
       // 필수 체크
       const ok = fmt(state.year) && fmt(state.month) && fmt(state.day) && fmt(state.place) && fmt(state.with) && fmt(state.doing);
@@ -313,3 +313,4 @@
   </script>
 </body>
 </html>
+

@@ -44,24 +44,24 @@
       border-radius:4px;
     }
 
-.timer-controls {
-  display: flex;
-  flex-direction: column;
-  margin-top: 8px;      /* 🔸 여기 추가 */
-  margin-bottom: 35px;   /* 🔸 이 부분 */
-  gap: 14px; /* 두 줄 간격 */
-}
-.timer-controls .row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}    .timer-controls button {
+    .timer-controls {
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+      margin-bottom: 35px;
+      gap: 14px; /* 두 줄 간격 */
+    }
+    .timer-controls .row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .timer-controls button {
       background-color: #F3ECE2; color: #2a3249; border: none;
       padding: 5px 10px; border-radius: 8px; font-size: 16px; cursor: pointer;
       transition: transform .06s ease, box-shadow .12s ease;
-  width: 70px;        /* 버튼 고정 폭 */
-  text-align: center; /* 글자 가운데 정렬 */
-}
+      width: 70px;        /* 버튼 고정 폭 */
+      text-align: center; /* 글자 가운데 정렬 */
     }
     .timer-controls button:active{ transform: translateY(1px); }
 
@@ -84,7 +84,7 @@
     }
     .reflection button:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ✅ 완료 상태(요청) : 남색 배경 + 시간선택시 글자색(#F3ECE2) */
+    /* ✅ 완료 상태 */
     .reflection button.done {
       background-color: #2A3249;
       color: #F3ECE2;
@@ -110,21 +110,10 @@
       .goal-banner .hl{ font-size:17px; }
     }
 
-<!-- .back-btn{
-      appearance:none; border:1px solid #e5e7eb; background:#fff; color:#374151;
-      width:36px; height:36px; border-radius:10px; font-size:18px; line-height:1;
-      display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
-      margin:0 18px 8px 0; align-self:flex-start;
-    }
-    .back-btn:active{ transform: translateY(1px); } -->
-
+    /* (주석 처리된 back-btn 스타일 유지) */
   </style>
 </head>
 <body>
-
-<!-- ▼▼ timer.html: BACK BUTTON -->
-<!-- <button id="backBtn" class="back-btn" type="button" aria-label="뒤로가기">←</button>-->
-
 
   <h1>오늘의 몰입</h1>
 
@@ -133,19 +122,18 @@
     <span id="goalText" class="hl"></span>
   </div>
 
-<div class="timer-controls" id="timeButtons">
-  <div class="row">
-    <button>1분</button>
-    <button>5분</button>
-    <button>15분</button>
-
+  <div class="timer-controls" id="timeButtons">
+    <div class="row">
+      <button>1분</button>
+      <button>5분</button>
+      <button>15분</button>
+    </div>
+    <div class="row">
+      <button>30분</button>
+      <button>45분</button>
+      <button>60분</button>
+    </div>
   </div>
-  <div class="row">
-    <button>30분</button>
-    <button>45분</button>
-    <button>60분</button>
-  </div>
-</div>
 
   <div class="circle-timer">
     <svg width="220" height="220" aria-hidden="true">
@@ -156,8 +144,7 @@
   </div>
 
   <div class="reflection">
-
-    <button id="completeBtn" disabled>✔️ 몰입 완료</button>
+    <button id="completeBtn" disabled>✔️ 보상 받기</button>
   </div>
 
   <!-- 토스트 -->
@@ -172,6 +159,7 @@
     const K_P4_LAST  = `${NS}.p4:lastSource`;
     const K_T_DATA   = `${NS}.t:data`;
     const K_T_MUSTRESET = `${NS}.t:mustReset`;
+    const K_REWARD   = `${NS}.reward`; // ← 보상 저장 키
 
     (function resetIfHash(){
       if (location.hash.replace('#','') === 'reset') {
@@ -181,6 +169,7 @@
           localStorage.removeItem(K_P4_LAST);
           localStorage.removeItem(K_T_DATA);
           sessionStorage.removeItem(K_T_MUSTRESET);
+          sessionStorage.removeItem(K_REWARD);
         }catch(e){}
       }
     })();
@@ -191,24 +180,18 @@
 
     const timeEl = document.getElementById('time');
     const progressEl = document.querySelector('.progress');
-    const timeButtonsWrap = document.getElementById('timeButtons');
+   // const timeButtonsWrap = document.getElementById('timeButtons');
     const completeBtn = document.getElementById('completeBtn');
 
-    /* ---------------------------------------------------
-       🔒 강화된 초기화 조건
-       - mustReset 플래그가 있거나
-       - referrer가 존재하고, referrer가 현재 타이머 페이지가 아니면(=다른 페이지에서 넘어옴)
-         → 무조건 초기화
-       --------------------------------------------------- */
+    /* --------------------------------------------------- */
     function cameFromOtherPage(){
       try{
         if (!document.referrer) return false;
         const ref = new URL(document.referrer);
         const here = new URL(location.href);
-        // 같은 파일로의 리로드가 아니면 "다른 페이지에서 진입"으로 간주
         return (ref.origin === here.origin) && (ref.pathname !== here.pathname);
       }catch(e){
-        return !!document.referrer; // 파싱 실패 시 referrer가 있으면 다른 페이지로 간주
+        return !!document.referrer;
       }
     }
 
@@ -222,16 +205,19 @@
         document.getElementById('goalBanner').hidden = false;
       }
 
+      // 🔸 보상 파라미터가 들어왔으면 sessionStorage에도 캐싱(선택)
+      const rewardFromQS = (sp.get('reward') || '').trim();
+      if (rewardFromQS) {
+        try{ sessionStorage.setItem(K_REWARD, rewardFromQS); }catch(e){}
+      }
+
       // 초기화 필요성 판단
       let mustReset = false;
       try{
         if (sessionStorage.getItem(K_T_MUSTRESET) === '1') mustReset = true;
       }catch(e){}
 
-      // 👇 목표페이지 등 "다른 페이지에서 막 들어온 경우"도 강제 초기화
       if (cameFromOtherPage()) mustReset = true;
-
-      // 플래그는 일회용
       try{ sessionStorage.removeItem(K_T_MUSTRESET); }catch(e){}
 
       let gRaw=null, p4Raw=null;
@@ -300,7 +286,7 @@
       updateProgressCircle();
       completeBtn.disabled = true;
       completeBtn.classList.remove('done');
-      completeBtn.textContent = '✔️ 몰입 완료';
+      completeBtn.textContent = '✔️ 보상 받기';
       document.querySelectorAll('.timer-controls button').forEach(b=> b.classList.remove('active'));
     }
 
@@ -359,6 +345,7 @@
     }
 
     // 시간 버튼 클릭 → 시작
+    const timeButtonsWrap = document.getElementById('timeButtons');
     timeButtonsWrap.addEventListener('click', (e)=>{
       const btn = e.target.closest('button');
       if(!btn) return;
@@ -371,7 +358,24 @@
       }
     });
 
-    // ✅ 완료 버튼: 텍스트 변경 + 스타일(done) + 토스트
+    // ▶ 보상 텍스트 가져오기 (URL ?reward=... 우선, 없으면 sessionStorage)
+    function getRewardText(){
+      try{
+        const sp = new URLSearchParams(location.search);
+        let reward = (sp.get('reward') || '').trim();
+        if (!reward){
+          reward = (sessionStorage.getItem(K_REWARD) || '').trim();
+        } else {
+          // URL로 온 보상은 세션에 캐싱
+          sessionStorage.setItem(K_REWARD, reward);
+        }
+        return reward;
+      }catch(e){
+        try{ return (sessionStorage.getItem(K_REWARD) || '').trim(); }catch(_){ return ''; }
+      }
+    }
+
+    // ✅ 완료 버튼: 텍스트 변경 + 스타일(done) + 토스트(요청 사양)
     (function(){
       if(!completeBtn) return;
       completeBtn.addEventListener('click', (e)=>{
@@ -381,6 +385,15 @@
 
         const toast = document.getElementById('toast');
         if(toast){
+          // 보상 문구 구성
+          const reward = getRewardText();
+          const message = reward
+            ? `☕ 약속한 보상: ${reward}, 지금요.`
+            : `스스로에게 작은 칭찬 한 줄 😊`;
+
+          // 안전하게 textContent로 세팅
+          toast.textContent = message;
+
           toast.hidden = false;
           requestAnimationFrame(()=> toast.classList.add('show'));
           setTimeout(()=>{
@@ -401,17 +414,6 @@
       }
       updateTimeDisplay();
       updateProgressCircle();
-    })();
-
-    // 뒤로가기 → 목표페이지로 (복귀 시 초기화를 위해 mustReset 세팅)
-    (function(){
-      const btn = document.getElementById('backBtn');
-      if(!btn) return;
-      btn.addEventListener('click', ()=>{
-        try{ sessionStorage.setItem(K_T_MUSTRESET, '1'); }catch(e){}
-        if (document.referrer) { history.back(); return; }
-        location.href = 'g-test.html?v=' + Date.now();
-      });
     })();
 
     // 히스토리 복귀(BFCache) 시에도 초기화

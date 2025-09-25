@@ -124,7 +124,8 @@
   }
   .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
 
-  #b1.block-title,#b2.block-title,#b3.block-title{ font-family:'Pretendard','Noto Sans KR',sans-serif; font-weight:700; }
+  #b1.block-title,#b2.block-title,#b3.block-title{   font-family:'MaruBuri', serif;
+  font-weight:700; }
   .dotted-sep{ width:100%; height:0; border:0; border-top:1px dashed var(--border); margin:12px 0 1px; }
 
   .cta{ border-top:1px solid var(--border); padding:14px clamp(14px,3vw,26px); background:none; }
@@ -153,6 +154,17 @@
   #catField > label.chip.on:active {
     background-color: #faf7f2 !important;
   }
+
+.block-desc {
+  font-size: 1rem;      /* 글씨 크기 작게 */
+  color: var(--muted);    /* 회색 (이미 정의된 --muted 활용) */
+  text-align: center;     /* 가운데 정렬 */
+  margin: 0 0 25px;        /* 제목과 간격 */
+  line-height: 1.4;   /* 줄간격 (기본은 1.2~1.4 정도) */
+  letter-spacing: 0.2px; /* 필요시 글자 간격도 함께 */
+}
+}
+
   </style>
 </head>
 <body>
@@ -167,6 +179,7 @@
   <div class="page">
     <main class="sheet" role="main" aria-labelledby="pageTitle">
       <section class="block" aria-labelledby="b1">
+  <p class="block-desc"><strong>미래의 하루</strong>를 떠올리며<br>오늘의 <strong>몰입 방향</strong>을 선택해 보세요.</p>
         <h2 id="b1" class="block-title">오늘의 몰입</h2>
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>

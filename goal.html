@@ -62,8 +62,8 @@
   .page{ display:flex; justify-content:center; padding:8px 12px; }
   .header{ position: sticky; top:0; z-index:10; background: var(--bg); border-bottom: 1px solid var(--border); }
   .header .inner{ max-width: var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative; }
- <!-- .back-btn{ position: absolute; left:16px; width:22px; height:22px; border-radius:50%; border:1px solid var(--border); background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer; }
-  .back-btn:hover{ background:#f8f4ef; } -->
+  /* .back-btn{ position: absolute; left:16px; width:22px; height:22px; border-radius:50%; border:1px solid var(--border); background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer; }
+  .back-btn:hover{ background:#f8f4ef; } */
   .logo-dot{ width:10px; height:10px; border-radius:9999px; background: var(--rose-300); box-shadow: 0 0 0 6px var(--rose-100); }
   .title{ font-weight:650; }
 
@@ -124,8 +124,9 @@
   }
   .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
 
-  #b1.block-title,#b2.block-title,#b3.block-title{   font-family:'MaruBuri', serif;
-  font-weight:700; }
+  #b1.block-title,#b2.block-title,#b3.block-title,#b4.block-title{
+    font-family:'MaruBuri', serif; font-weight:700;
+  }
   .dotted-sep{ width:100%; height:0; border:0; border-top:1px dashed var(--border); margin:12px 0 1px; }
 
   .cta{ border-top:1px solid var(--border); padding:14px clamp(14px,3vw,26px); background:none; }
@@ -155,22 +156,20 @@
     background-color: #faf7f2 !important;
   }
 
-.block-desc {
-  font-size: 1rem;      /* 글씨 크기 작게 */
-  color: var(--muted);    /* 회색 (이미 정의된 --muted 활용) */
-  text-align: center;     /* 가운데 정렬 */
-  margin: 0 0 25px;        /* 제목과 간격 */
-  line-height: 1.4;   /* 줄간격 (기본은 1.2~1.4 정도) */
-  letter-spacing: 0.2px; /* 필요시 글자 간격도 함께 */
-}
-}
-
+  .block-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    text-align: center;
+    margin: 0 0 25px;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+  }
   </style>
 </head>
 <body>
   <header class="header">
     <div class="inner">
-    <!--  <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button> -->
+      <!-- <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button> -->
       <span class="logo-dot" aria-hidden="true"></span>
       <div class="title">오늘의 목표</div>
     </div>
@@ -179,7 +178,7 @@
   <div class="page">
     <main class="sheet" role="main" aria-labelledby="pageTitle">
       <section class="block" aria-labelledby="b1">
-  <p class="block-desc"><strong>미래의 하루</strong>를 떠올리며<br>오늘의 <strong>몰입 방향</strong>을 선택해 보세요.</p>
+        <p class="block-desc"><strong>행복한 미래의 하루</strong>를 떠올려 보며<br>오늘의 <strong>몰입 방향</strong>을 선택해 보세요.</p>
         <h2 id="b1" class="block-title">오늘의 몰입</h2>
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
@@ -221,6 +220,13 @@
         <h2 id="b3" class="block-title">오늘의 목표</h2>
         <input id="goalInput" class="goal-input" type="text" placeholder="예) ★ : 프랑스어 1개 외우기" />
       </section>
+
+      <div class="dotted-sep" role="separator"></div>
+
+      <section class="block" aria-labelledby="b4">
+        <h2 id="b4" class="block-title">오늘의 보상</h2>
+        <input id="rewardInput" class="goal-input" type="text" placeholder="예) 좋아하는 차 한 잔 마시기" />
+      </section>
     </main>
   </div>
 
@@ -238,11 +244,13 @@
   const K_P2_CURRENT    = `${NS}.p2:current`;     // 2페이지(감정) 현재 스냅샷
   const K_P3_LASTSOURCE = `${NS}.p3:lastSource`;  // 3페이지가 직전에 참고했던 2페이지 스냅샷
   const K_G_DATA        = `${NS}.g:data`;         // 3페이지(목표) 입력 스냅샷
+  const K_REWARD        = `${NS}.reward`;         // ▶ 오늘의 보상 (timer와 공유)
 
   const backBtn   = document.getElementById('backBtn');
   const catField  = document.getElementById('catField');
   const readout   = document.getElementById('readout');
   const goalEl    = document.getElementById('goalInput');
+  const rewardEl  = document.getElementById('rewardInput');
   const nextBtn   = document.getElementById('nextBtn');
   const starsWrap = document.getElementById('starsGroup');
 
@@ -259,27 +267,24 @@
       const last= localStorage.getItem(K_P3_LASTSOURCE) || '';
 
       if (cur !== last) {
-        // ✅ 저장값 삭제
+        // 저장값 삭제
         try{ localStorage.removeItem(K_G_DATA); }catch(e){}
 
-        // ✅ UI 즉시 초기화
+        // UI 즉시 초기화
         try{
-          // 카테고리 칩
           catField.querySelectorAll('.chip').forEach(c=>{
             c.classList.remove('on');
             const r = c.querySelector('input[type="radio"]');
             if (r) r.checked = false;
           });
-          // 별점
           document.querySelectorAll('input[name="difficulty"]').forEach(r=> r.checked = false);
-          // 읽기값
           updateReadout(0);
-          // 목표 입력
           goalEl.value = '';
+          rewardEl.value = '';
         }catch(e){}
       }
 
-      // 이번에 들어왔을 때 참고한 감정 스냅샷을 기록
+      // 이번에 참고한 감정 스냅샷 기록
       localStorage.setItem(K_P3_LASTSOURCE, cur);
     }catch(e){}
   })();
@@ -288,9 +293,9 @@
      표시 & 저장 유틸
      ========================= */
   function updateReadout(v){
-  const val = Number(v) || 0;
-  readout.textContent = diffText[val];   // 예: "가볍게", "보통"만 표시
-}
+    const val = Number(v) || 0;
+    readout.textContent = diffText[val];
+  }
   function currentDiff(){
     const sel = document.querySelector('input[name="difficulty"]:checked');
     return sel ? Number(sel.value) : 0;
@@ -299,33 +304,42 @@
     const cat  = (catField.querySelector('input:checked')||{}).value || '';
     const diff = currentDiff();
     const goal = goalEl.value || '';
-    const data = {cat, diff, goal, at: Date.now()};
-    try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
+    const reward = rewardEl.value || '';
+
+    const data = {cat, diff, goal, reward, at: Date.now()};
+    try{
+      localStorage.setItem(K_G_DATA, JSON.stringify(data));
+      sessionStorage.setItem(`${NS}.goal`, goal);
+      sessionStorage.setItem(`${NS}.cat`,  cat);
+      sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 사용
+    }catch(e){}
   }
 
   /* =========================
-     과거 저장값 복원(감정이 동일한 경우에만 남아있음)
+     과거 저장값 복원(감정 동일 시)
      ========================= */
   (function restore(){
     updateReadout(0);
     try{
       const raw = localStorage.getItem(K_G_DATA);
-      if(!raw) return;
-      const d = JSON.parse(raw);
-
-      // 카테고리
-      if (d.cat) {
-        const chip = [...catField.querySelectorAll('label.chip input')]
-          .find(i=>i.value===d.cat);
-        if (chip) { chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
+      if(raw){
+        const d = JSON.parse(raw);
+        if (d.cat) {
+          const chip = [...catField.querySelectorAll('label.chip input')]
+            .find(i=>i.value===d.cat);
+          if (chip) { chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
+        }
+        if (d.diff) {
+          const r = document.getElementById('diff-' + d.diff);
+          if (r){ r.checked = true; updateReadout(d.diff); }
+        }
+        if (typeof d.goal === 'string')   goalEl.value = d.goal;
+        if (typeof d.reward === 'string') rewardEl.value = d.reward;
+      } else {
+        // 세션에 reward만 남아있을 수 있으므로 보조 복원
+        const sr = (sessionStorage.getItem(K_REWARD) || '').trim();
+        if (sr) rewardEl.value = sr;
       }
-      // 난이도
-      if (d.diff) {
-        const r = document.getElementById('diff-' + d.diff);
-        if (r){ r.checked = true; updateReadout(d.diff); }
-      }
-      // 목표
-      if (typeof d.goal === 'string') goalEl.value = d.goal;
     }catch(e){}
   })();
 
@@ -344,7 +358,7 @@
   });
 
   /* =========================
-     별점: 라벨 클릭/터치에서도 확실히 반응
+     별점 접근성
      ========================= */
   (function initStars(){
     const radios = [...document.querySelectorAll('#starsGroup input[name="difficulty"]')];
@@ -355,12 +369,9 @@
       save();
     }
 
-    // 라디오 자체 변경 시
     radios.forEach(r=>{
       r.addEventListener('change', ()=> setDifficulty(r.value));
     });
-
-    // 라벨 클릭 시 강제로 change 발생
     labels.forEach(l=>{
       l.addEventListener('click', ()=>{
         const id = l.getAttribute('for');
@@ -372,7 +383,6 @@
       });
     });
 
-    // 키보드 접근성
     radios.forEach(r=>{
       r.addEventListener('keydown', e=>{
         if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
@@ -388,7 +398,6 @@
       });
     });
 
-    // 진입 시 선택 반영(없으면 0)
     setDifficulty((document.querySelector('#starsGroup input[name="difficulty"]:checked')||{}).value || 0);
   })();
 
@@ -396,31 +405,37 @@
      입력 저장
      ========================= */
   goalEl.addEventListener('input', save);
+  rewardEl.addEventListener('input', save);
 
   /* =========================
-     CTA 이동 (기존 파일명 유지: t-test.html)
+     CTA 이동 (timer: t-test.html)
      ========================= */
   nextBtn.addEventListener('click', ()=>{
-    const cat  = (catField.querySelector('input:checked')||{}).value || '';
-    const goal = (goalEl.value||'').trim();
+    const goal   = (goalEl.value||'').trim();
+    const reward = (rewardEl.value||'').trim();
     try{
       sessionStorage.setItem(`${NS}.goal`, goal);
-      sessionStorage.setItem(`${NS}.cat`,  cat);
+      sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 우선 사용
     }catch(e){}
-    location.href = `t-test.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
+
+    const qs = new URLSearchParams({
+      goal,
+      reward,                 // ▶ timer로 전달
+      v: String(Date.now())
+    });
+    location.href = `tt.html?${qs.toString()}`;
   });
 
   /* =========================
-     뒤로가기 (기존 유지: q-test.html)
+     뒤로가기 (q-test.html) — 버튼이 없으면 무시
      ========================= */
-  backBtn.addEventListener('click', ()=>{
-    if (document.referrer){ history.back(); return; }
-    location.href = 'q-test.html?v=' + Date.now();
-  });
+  if (backBtn){
+    backBtn.addEventListener('click', ()=>{
+      if (document.referrer){ history.back(); return; }
+      location.href = 'q-test.html?v=' + Date.now();
+    });
+  }
   </script>
 
 </body>
 </html>
-
-
-

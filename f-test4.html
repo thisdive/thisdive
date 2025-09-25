@@ -192,7 +192,7 @@
           <label class="visualize">
             <input type="checkbox" id="visualized" />
             <div>
-              <div><strong>눈을 감고 1분간 그 장면을 떠올려 보았어요</strong></div>
+              <div><strong>눈을 감고 1분간 그 장면을 떠올려 보세요.</strong></div>
               <small>몸의 감각(온도/자세/미세한 표정)까지 느껴보세요.</small>
             </div>
           </label>
@@ -259,7 +259,7 @@
       const s = fmt(state.see)||'____';
       const h = fmt(state.hear)||'____';
       const f = fmt(state.feel)||'____';
-      previewSense.innerHTML = `👁️<strong>${s}</strong>이(가) 보이고, <br>👂🏻<strong>${h}</strong>이(가) 들리고, <br>✨<strong>${f}</strong>이(가) 느껴진다.`;
+      previewSense.innerHTML = `👁️ <strong>${s}</strong>이(가) 보이고, <br><br>👂🏻 <strong>${h}</strong>이(가) 들리고, <br><br>✨ <strong>${f}</strong>이(가) 느껴진다.`;
 
       // 필수 체크
       const ok = fmt(state.year) && fmt(state.month) && fmt(state.day) && fmt(state.place) && fmt(state.with) && fmt(state.doing);

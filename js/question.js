@@ -1,133 +1,140 @@
-/* =========================
-   네임스페이스/스토리지 키
-   ========================= */
-const NS = "thisdive";
-const K_P2_CURRENT = `${NS}.p2:current`;     // emotion 선택 스냅샷 {value, at}
-const K_P3_LASTSRC = `${NS}.p3:lastSource`;  // question이 참고한 p2 상태
-const K_Q_DATA     = `${NS}.q:data`;         // 현재 입력 저장
-const K_SELECTED   = `${NS}.selectedEmotion`;// sessionStorage emotion 백업
+// ==========================
+// Security & constants
+// ==========================
+const NS = 'thisdive';
+const K_RESET  = `${NS}.resetEpoch`;      // (선택) index 등에서 세션 리셋용으로 기록
+const K_SEEN   = `${NS}.seenEpoch:talk`;  // 이 페이지가 마지막으로 본 토큰
+const K_STATE  = 'talkPageState';         // 이 페이지 로컬 상태 저장 키
 
-// 감정 화이트리스트(허용 값만 표시)
-const EMO_ALLOW = new Set([
-  "기뻐요","설레요","감사해요","평온해요",
-  "지쳤어요","우울해요","무기력해요","외로워요",
-  "짜증나요","화나요","질투나요","부끄러워요",
-  "불안해요","긴장돼요","두려워요","부담돼요"
+// ▣ 감정 화이트리스트 (URL 파라미터 엄격 처리)
+const ALLOWED = new Set([
+  // 한글 값(이전 페이지가 한글을 넘기는 케이스)
+  "기쁘다","설렌다","감사하다","평온하다",
+  "지친다","우울하다","무기력하다","외롭다",
+  "짜증난다","화가난다","질투난다","부끄럽다",
+  "불안하다","긴장된다","두렵다","부담된다",
+  // 키 기반(영문 키 → 한글 매핑을 허용하려면 아래 map과 함께 사용)
+  "joy","spark","gratitude","calm",
+  "tired","blue","lethargy","lonely",
+  "annoyed","angry","jealous","shy",
+  "anxious","tense","afraid","burdened"
 ]);
+// 영문 키를 한글로 매핑(필요 시 확장)
+const KEY_TO_KO = Object.freeze({
+  joy:"기쁘다", spark:"설렌다", gratitude:"감사하다", calm:"평온하다",
+  tired:"지친다", blue:"우울하다", lethargy:"무기력하다", lonely:"외롭다",
+  annoyed:"짜증난다", angry:"화가난다", jealous:"질투난다", shy:"부끄럽다",
+  anxious:"불안하다", tense:"긴장된다", afraid:"두렵다", burdened:"부담된다"
+});
 
-/* =========================
-   엘리먼트
-   ========================= */
-const q1 = document.getElementById('q1');
-const q2 = document.getElementById('q2');
-const q3 = document.getElementById('q3');
-const pill = document.getElementById('pickedEmotion');
-
-/* =========================
-   QR 재인식(#reset) 초기화
-   ========================= */
-(function resetIfHash(){
-  try{
-    if(location.hash.replace('#','') === 'reset'){
-      sessionStorage.clear();
-      localStorage.removeItem(K_Q_DATA);
-    }
-  }catch(e){}
-})();
-
-/* =========================
-   p2 스냅샷 비교 → 변경 시 초기화
-   ========================= */
-(function snapshotCheck(){
-  try{
-    const p2   = localStorage.getItem(K_P2_CURRENT) || '';
-    const last = localStorage.getItem(K_P3_LASTSRC) || '';
-    if (p2 !== last) {
-      localStorage.removeItem(K_Q_DATA); // 감정이 바뀜 → 입력 리셋
-    }
-    localStorage.setItem(K_P3_LASTSRC, p2);
-  }catch(e){}
-})();
-
-/* =========================
-   emotion 표시(화이트리스트 적용)
-   ========================= */
-(function showPickedEmotion(){
-  let emo = '';
-  try{
-    // 1) URL 파라미터
-    const sp = new URLSearchParams(location.search);
-    emo = (sp.get('emotion') || '').trim();
-
-    // 2) sessionStorage
-    if (!emo) emo = sessionStorage.getItem(K_SELECTED) || '';
-
-    // 3) localStorage
-    if (!emo) {
-      const raw = localStorage.getItem(K_P2_CURRENT);
-      if (raw) { const obj = JSON.parse(raw); emo = (obj && obj.value) || ''; }
-    }
-  }catch(e){}
-
-  if (!EMO_ALLOW.has(emo)) emo = '';
-
-  if (emo) {
-    pill.textContent = emo;
-    pill.classList.add('on');
-  } else {
-    pill.textContent = '선택 안됨';
-    pill.classList.remove('on');
+// ▣ 프레임 버스트(클릭재킹 억제; GitHub Pages에서 frame-ancestors 대안)
+(function frameBust(){
+  if (window.top !== window.self) {
+    try { window.top.location = window.location; } catch (_) { /* cross-origin이면 실패 가능 */ }
   }
 })();
 
-/* =========================
-   입력 저장/복원
-   ========================= */
-function save(){
-  const data = { q1:q1.value, q2:q2.value, q3:q3.value, at:Date.now() };
-  try{ localStorage.setItem(K_Q_DATA, JSON.stringify(data)); }catch(e){}
-}
-function restore(){
-  try{
-    const raw = localStorage.getItem(K_Q_DATA);
-    if(!raw) return;
-    const d = JSON.parse(raw);
-    q1.value = d.q1 || '';
-    q2.value = d.q2 || '';
-    q3.value = d.q3 || '';
-  }catch(e){}
-}
-[q1,q2,q3].forEach(el => el?.addEventListener('input', save));
-restore();
+// ==========================
+// Helpers
+// ==========================
+function $(sel, root=document){ return root.querySelector(sel); }
+function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
-// BFCache 복귀 시에도 복원
-window.addEventListener('pageshow', (ev)=>{ if (ev.persisted) restore(); });
+// (선택) 인덱스 재진입 초기화 토큰 감지 → 이 페이지 UI 초기화
+function enforceResetFromIndex(){
+  function uiReset(){
+    try { localStorage.removeItem(K_STATE); } catch(_){}
+    try {
+      ['#meText','#youText','#loveText'].forEach(id=>{
+        const el = $(id); if(el) el.value = '';
+      });
+    } catch(_){}
+  }
+  function maybeReset(){
+    const resetEpoch = localStorage.getItem(K_RESET) || '';
+    const seenEpoch  = sessionStorage.getItem(K_SEEN) || '';
+    if (resetEpoch && resetEpoch !== seenEpoch) {
+      uiReset();
+      try { sessionStorage.setItem(K_SEEN, resetEpoch); } catch(_){}
+    }
+  }
+  maybeReset();
+  window.addEventListener('pageshow', maybeReset);
+}
 
-/* =========================
-   CTA 이동
-   ========================= */
-document.getElementById('goGoal')?.addEventListener('click', ()=>{
-  // 파일명이 goal2.html이라면 아래를 'goal2.html'로 변경하세요.
-  location.href = `goal.html?v=${Date.now()}`;
+// 상태 저장/복원
+function bindPersistence(emotionLabel){
+  const textareas = ['#meText','#youText','#loveText'].map(sel => $(sel)).filter(Boolean);
+
+  // 복원
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(K_STATE) || 'null'); } catch(_){}
+  if (saved && saved.emotion && saved.emotion !== emotionLabel) {
+    // 다른 감정이면 해당 저장은 무효화
+    try { localStorage.removeItem(K_STATE); } catch(_){}
+    saved = null;
+  }
+  if (saved && Array.isArray(saved.values)) {
+    textareas.forEach((ta, i) => {
+      if (typeof saved.values[i] === 'string') ta.value = saved.values[i];
+    });
+  }
+
+  // 저장
+  const save = () => {
+    const values = textareas.map(ta => (ta && ta.value) ? ta.value : '');
+    const payload = { emotion: emotionLabel, values, ts: Date.now() };
+    try { localStorage.setItem(K_STATE, JSON.stringify(payload)); } catch(_){}
+  };
+
+  textareas.forEach(ta => ta && ta.addEventListener('input', save));
+  window.addEventListener('beforeunload', save);
+}
+
+// ==========================
+// Init
+// ==========================
+document.addEventListener('DOMContentLoaded', () => {
+  // URL 파라미터에서 emotion 추출(화이트리스트)
+  const params = new URLSearchParams(location.search);
+  let raw = (params.get('emotion') || '').trim();
+  let label = '선택 안됨';
+
+  if (raw && ALLOWED.has(raw)) {
+    // 영문 키면 한글로
+    label = KEY_TO_KO[raw] || raw;
+  } else {
+    // 혹시 q=emotion 등 다른 키로 들어온 경우를 대비해 보정(선택)
+    const alt = (params.get('emo') || params.get('e') || '').trim();
+    if (alt && ALLOWED.has(alt)) label = KEY_TO_KO[alt] || alt;
+  }
+
+  // 렌더
+  const emoEl = $('#emotionValue .chip-label');
+  if (emoEl) emoEl.textContent = label;
+
+  // 인덱스 재진입 토큰 체크 → 필요 시 UI 초기화
+  enforceResetFromIndex();
+
+  // 상태 저장/복원
+  bindPersistence(label);
+
+  // CTA 이동
+  const nextBtn = $('#nextBtn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      // 다음 페이지 파일명은 파라미터로 오버라이드 가능 (없으면 기본 goal.html)
+      const next = params.get('next') || 'goal.html';
+      const q = new URLSearchParams({ emotion: label }).toString();
+      location.href = `${next}?${q}`;
+    });
+  }
+
+  // 뒤로가기 버튼(옵션)
+  const backBtn = $('.back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      history.back();
+    });
+  }
 });
-
-/* =========================
-   뒤로가기
-   ========================= */
-(function(){
-  const btn = document.getElementById('backBtn');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    if (document.referrer) { history.back(); return; }
-    // 파일명이 emotion2.html이라면 아래를 'emotion2.html'로 변경하세요.
-    location.href = 'emotion.html?v=' + Date.now();
-  });
-})();
-
-/* =========================
-   (선택) 안전한 스토리지 접근 유틸
-   ========================= */
-function safeSetSession(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} }
-function safeGetSession(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
-function safeSetLocal(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-function safeGetLocal(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }

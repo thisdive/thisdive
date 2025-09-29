@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const value = String(picked.value || '');
     if(!ALLOWED.has(value)) return;
 
-    const url = `q-test.html?emotion=${encodeURIComponent(value)}&v=${Date.now()}`;
+    const url = `question.html?emotion=${encodeURIComponent(value)}&v=${Date.now()}`;
     location.href = url;
   });
 

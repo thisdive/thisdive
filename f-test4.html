@@ -8,7 +8,7 @@
   <!-- 단일 파일 데모용 CSP (배포 시 app.css/app.js 분리 + 'unsafe-inline' 제거 권장) -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    img-src 'self' data:; 
+    img-src 'self' data:;
     style-src 'self' 'unsafe-inline';
     script-src 'self' 'unsafe-inline';
     font-src 'self';
@@ -33,7 +33,7 @@
       --beige-200:#ece6df; /* 라인 */
       --beige-300:#e5ddd3; /* hover */
       --ok:#2a7a4b;        /* 확인 색 */
-      --wrap:310px;        /* ◀ 카드 너비 확 줄임 (기존 980px → 560px) */
+      --wrap:310px;        /* 카드 너비 */
       --r-xl:22px; --r-md:14px;
     }
     *{box-sizing:border-box}
@@ -58,8 +58,7 @@
     .section + .section{margin-top:18px}
 
     /* 필드 */
-    .grid{display:grid; grid-template-columns:1fr; gap:12px} /* ◀ 한 줄 레이아웃 고정 */
-    /* @media 제거로 항상 1열 유지 */
+    .grid{display:grid; grid-template-columns:1fr; gap:12px}
     .field{display:flex; flex-direction:column}
     .label{font-size:13px; color:var(--muted); margin-bottom:6px}
     .input, .select{
@@ -117,7 +116,7 @@
   <main id="main" class="wrap">
     <article class="card" aria-labelledby="h1">
       <div class="card-head">
-           <div class="subtitle">미래의 나의 하루는 어떨까요? 내가 원하는 하루를 구체적으로 적고, 1분간 그 장면 속에 머물러 보세요.</div>
+        <div class="subtitle">미래의 나의 하루는 어떨까요? 내가 원하는 하루를 구체적으로 적고, 1분간 그 장면 속에 머물러 보세요.</div>
       </div>
 
       <div class="card-body">
@@ -183,7 +182,7 @@
         <!-- 미리보기 2: 감각 문장 -->
         <section class="section" aria-labelledby="sec-preview-sense">
           <h2 id="sec-preview-sense" class="sr-only">감각 미리보기</h2>
-          <div class="preview" id="preview-sense">지금 내 눈 앞에는 <strong>____</strong>이 보이고, <strong>____</strong>이 들리고, <strong>____</strong>이 느껴진다.</div>
+          <div class="preview" id="preview-sense">지금 내 눈 앞에는 <strong>____</strong>이 보이고, <br><br>👂🏻 <strong>____</strong>이 들리고, <br><br>✨ <strong>____</strong>이 느껴진다.</div>
         </section>
 
         <!-- 시각화 체크 -->
@@ -200,10 +199,10 @@
       </div>
 
       <div class="card-foot">
-        <div class="small" id="hint">필수 항목(연/월/일/장소/누구/무엇) 입력 시 다음 단계로 이동 가능</div>
+        <div class="small" id="hint">언제든 다음 단계로 이동할 수 있어요.</div>
         <div style="display:flex; gap:10px">
           <button class="btn btn-secondary" id="btn-clear" type="button">초기화</button>
-          <button class="btn" id="btn-next" type="button" disabled>다음 → 목표설정</button>
+          <button class="btn" id="btn-next" type="button">다음 → 목표설정</button>
         </div>
       </div>
     </article>
@@ -212,7 +211,13 @@
   <div class="toast" id="toast" role="status" aria-live="polite">저장되었습니다</div>
 
   <script>
+    /* 기존 시나리오 저장 키 */
     const KEY = 'thisdive_affirmation_scenario_v1';
+
+    /* ▣ 공통 네임스페이스/키 (감정 변경/QR 재진입 감지용) */
+    const NS = 'thisdive';
+    const K_EMO_CUR = `${NS}.p2:current`;              // 감정선택 페이지에서 저장되는 현재 감정 스냅샷
+    const K_SCN_LAST_EMO = `${NS}.scenario:lastEmotion`; // 이 페이지가 마지막으로 본 감정 스냅샷
 
     // refs
     const yearEl = document.getElementById('year');
@@ -248,6 +253,15 @@
 
     function fmt(v){ return (v||'').trim(); }
 
+    /* ▣ 전체 초기화 함수 */
+    function clearAll() {
+      Object.keys(state).forEach(k => state[k] = (k === 'visualized' ? false : ''));
+      [yearEl, monthEl, dayEl, placeEl, withEl, doingEl, seeEl, hearEl, feelEl].forEach(el => el.value = '');
+      try { localStorage.removeItem(KEY); } catch(e){}
+      save(false);
+      render();
+    }
+
     function render(){
       const y = fmt(state.year)||'____', m = fmt(state.month)||'__', d = fmt(state.day)||'__';
       const plc = fmt(state.place)||'____';
@@ -261,10 +275,9 @@
       const f = fmt(state.feel)||'____';
       previewSense.innerHTML = `👁️ <strong>${s}</strong>이(가) 보이고, <br><br>👂🏻 <strong>${h}</strong>이(가) 들리고, <br><br>✨ <strong>${f}</strong>이(가) 느껴진다.`;
 
-      // 필수 체크
-      const ok = fmt(state.year) && fmt(state.month) && fmt(state.day) && fmt(state.place) && fmt(state.with) && fmt(state.doing);
-      nextBtn.disabled = !ok;
-      hint.textContent = ok ? '좋아요. 이제 목표설정으로 넘어갈 수 있어요.' : '필수 항목(연/월/일/장소/누구/무엇)을 채워주세요.';
+      // ▣ 필수 없음: 항상 이동 가능
+      nextBtn.disabled = false;
+      hint.textContent = '언제든 다음 단계로 이동할 수 있어요.';
 
       visualized.checked = !!state.visualized;
     }
@@ -281,31 +294,44 @@
 
     visualized.addEventListener('change', ()=>{ state.visualized = visualized.checked; save(false); });
 
-    clearBtn.addEventListener('click', ()=>{
-      Object.keys(state).forEach(k=> state[k] = (k==='visualized'? false : ''));
-      [yearEl,monthEl,dayEl,placeEl,withEl,doingEl,seeEl,hearEl,feelEl].forEach(el=> el.value='');
-      save(true); render();
-    });
+    clearBtn.addEventListener('click', ()=>{ clearAll(); flashToast('초기화했어요'); });
 
     nextBtn.addEventListener('click', ()=>{
       // 다음 단계로 전달 (예: goal.html)
       try{ sessionStorage.setItem('thisdive_affirmation_scenario_payload', JSON.stringify(state)); }catch(e){}
       flashToast('시나리오가 저장되었어요');
-      // TODO: 실제 경로로 이동
-       location.href = 'goal.html';
+      // 실제 경로로 이동
+      location.href = 'goal.html';
     });
 
-    // 복원
+    // 복원 + 감정 변경/QR 재진입 처리
     (function restore(){
       try{
-        const raw = localStorage.getItem(KEY);
-        if(raw){
-          const data = JSON.parse(raw);
-          Object.assign(state, data||{});
-          yearEl.value = state.year||''; monthEl.value = state.month||''; dayEl.value = state.day||'';
-          placeEl.value = state.place||''; withEl.value = state.with||''; doingEl.value = state.doing||'';
-          seeEl.value = state.see||''; hearEl.value = state.hear||''; feelEl.value = state.feel||'';
-          visualized.checked = !!state.visualized;
+        // 현재 감정 스냅샷
+        const curEmotion = localStorage.getItem(K_EMO_CUR) || '';
+        const lastEmotion = localStorage.getItem(K_SCN_LAST_EMO) || '';
+
+        // QR 재진입/강제 초기화 신호 (?qr=1, ?fresh=1, #reset)
+        const sp = new URLSearchParams(location.search);
+        const qrReenter = sp.get('qr') === '1' || sp.get('fresh') === '1' || (location.hash || '').includes('reset');
+
+        if ((curEmotion && lastEmotion && curEmotion !== lastEmotion) || qrReenter) {
+          // 감정이 바뀌었거나 QR 재진입 신호면 전체 초기화
+          clearAll();
+          localStorage.setItem(K_SCN_LAST_EMO, curEmotion || '');
+        } else {
+          // 평소처럼 복원
+          const raw = localStorage.getItem(KEY);
+          if(raw){
+            const data = JSON.parse(raw);
+            Object.assign(state, data||{});
+            yearEl.value = state.year||''; monthEl.value = state.month||''; dayEl.value = state.day||'';
+            placeEl.value = state.place||''; withEl.value = state.with||''; doingEl.value = state.doing||'';
+            seeEl.value = state.see||''; hearEl.value = state.hear||''; feelEl.value = state.feel||'';
+            visualized.checked = !!state.visualized;
+          }
+          // 현재 감정 스냅샷 기록(최초 진입 포함)
+          localStorage.setItem(K_SCN_LAST_EMO, curEmotion || '');
         }
       }catch(e){}
       render();
@@ -313,4 +339,3 @@
   </script>
 </body>
 </html>
-

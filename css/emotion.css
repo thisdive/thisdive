@@ -1,79 +1,109 @@
-:root {
-  --bg:#f7f3ee;
-  --card:#ffffff;
-  --ink:#1e293b;
-  --muted:#6b7280;
-  --accent:#0f172a;
-  --chip:#ffffff;
-  --chip-bd:#e5e7eb;
-  --chip-on:#0f172a;
-  --chip-on-ink:#ffffff;
-  --shadow:0 16px 36px rgba(0,0,0,.08);
-  --radius:22px;
+/* 로컬 폰트 예시 (woff2 파일을 /fonts 폴더에 두세요) */
+@font-face {
+  font-family: 'MaruBuri';
+  src: url('../fonts/MaruBuri-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MaruBuri';
+  src: url('../fonts/MaruBuri-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
-html,body{height:100%;}
+/* Pretendard는 ./vendor/pretendard.css 로 로드 */
+
+:root{
+  --bg:#f7f3ee; --card:#ffffff; --ink:#1e293b; --muted:#6b7280; --accent:#0f172a;
+  --chip:#ffffff; --chip-bd:var(--border); --chip-on:#0f172a; --chip-on-ink:#ffffff;
+  --shadow: 0 8px 26px rgba(23, 32, 52, .06);
+  --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
+  --radius:22px; --wrap-max: clamp(860px, 72vw, 1160px); --card-max: 350px;
+  --border:#ece6df; --rose-50:#fbf5f3; --rose-100:#f4e6e2; --rose-300:#d7a8b5;
+  --chip-on-bg:var(--rose-50); --chip-on-bd:var(--rose-100); --chip-on-ink:var(--ink);
+  --surface:var(--card); --radius-xl:var(--radius); --h2:1.02rem; --hint:.925rem;
+  --navy:#172034;
+}
+
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
 body{
+  margin:0;
   font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
   background: var(--bg);
   color: var(--ink);
-  display:flex; align-items:flex-start; justify-content:center;
-  padding: 28px 16px;
+  display:flex; flex-direction:column;
+  padding:0;
 }
 
-.sheet{
-  width:min(1040px, 100%);
-  background:var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: clamp(20px, 4vw, 44px);
-}
+/* Header */
+.header{ position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--border); }
+.header .inner{ max-width:var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative; }
+.logo-dot{ width:10px; height:10px; border-radius:9999px; background:var(--rose-300); box-shadow:0 0 0 6px var(--rose-100); }
+.title{ margin:0; font-size:16px; font-weight:700; letter-spacing:-.2px; }
 
-h1{ font-size: clamp(20px, 3.2vw, 28px); margin:0 0 8px; }
-.sub{ color:var(--muted); margin-bottom:22px; }
+/* Layout */
+.page{ display:flex; flex-direction:column; align-items:center; max-width:var(--wrap-max); margin:0 auto; padding:22px clamp(16px,3vw,28px) 0; }
+.sheet{ width:100%; max-width:100%; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(20px,4vw,28px); border:1px solid var(--border); margin:0 0 6px; }
+.sub{ color:var(--muted); margin:4px 0 14px; text-align:center; line-height:1.4; }
 
-.group{ margin: 18px 0; }
-.group h3{ display:flex; align-items:center; gap:8px; font-size:16px; margin:14px 0; }
-.chips{ display:flex; flex-wrap:wrap; gap:10px 12px; }
+/* Groups & chips */
+.groups{ display:flex; flex-direction:column; gap:14px; }
+.group{ padding:6px 0 2px; border-top:1px dashed var(--border); }
+.group:first-child{ border-top:0; padding-top:0; }
+.g-title{ font-family:'MaruBuri', serif; display:flex; align-items:center; justify-content:center; gap:8px; font-size:16px; margin:6px 0 10px; font-weight:700; letter-spacing:-.2px; }
 
+.chips{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; }
 .chip{
-  display:inline-flex; align-items:center; gap:8px;
-  border:1px solid var(--chip-bd); background:var(--chip);
-  padding:10px 14px; border-radius:999px; cursor:pointer;
+  font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; border:1px solid var(--chip-bd); background:var(--chip);
+  padding:10px 12px; border-radius:999px; cursor:pointer;
   transition: transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-  font-size:15px;
+  font-size:15px; white-space:nowrap; color:var(--muted);
 }
-.chip input{ appearance:none; width:16px; height:16px; border:2px solid #cbd5e1; border-radius:50%; position:relative; }
-.chip input:checked{ border-color:transparent; background:var(--chip-on); }
+.chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative; }
+.chip input:checked{ border-color:var(--rose-300); background:var(--rose-300); }
 .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
-.chip.on{
-  background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on);
-  box-shadow: 0 8px 18px rgba(15,23,42,.20);
-  transform: translateY(-1px);
-}
+.chip.on{ background:#faf7f2; color:var(--chip-on-ink); border-color:var(--chip-on-bd); box-shadow:0 6px 16px rgba(23,32,52,.06); transform:translateY(-1px); }
 
-.cta-bar{ display:flex; justify-content:flex-start; margin-top: 22px; }
-.cta{
-  background: var(--accent); color:#fff; border:0;
-  border-radius: 12px; padding: 14px 18px; font-weight:700;
-  cursor:pointer; font-size:16px;
+/* CTA */
+.cta{ width:100%; margin-top:18px; background:none; border-top:none; padding:0; }
+.cta-inner{ max-width:var(--wrap-max); margin:0 auto; text-align:center; position:relative; padding:14px 0; }
+.cta-inner::before{ content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:100vw; height:1px; background:var(--border); }
+.btn{
+  font-family:'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  width:200px; padding:16px 0; background:var(--navy); color:#fff;
+  border:1px solid rgba(23,32,52,.12); border-radius:18px;
+  font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22);
+  font-size:.9rem; cursor:pointer;
 }
-.cta:disabled{ opacity:.5; cursor:not-allowed; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; box-shadow:none; }
+.btn:active{ transform:translateY(1px); }
+.btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
 
-@media (max-width: 768px){
-  .sheet{ padding: 24px; }
-  .chips{ gap:10px; }
-  .chip{ padding:9px 12px; font-size:15px; }
-}
-@media (max-width: 420px){
-  .sheet{ padding: 18px; border-radius: 14px; }
-  .cta{ width:100%; text-align:center; padding:14px 16px; }
-}
-
+/* Network toast */
 .net{
-  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
-  background:#111827; color:#fff; padding:8px 12px; border-radius:999px; font-size:13px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.18);
-  opacity:0; pointer-events:none; transition: opacity .2s ease;
+  position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+  background:#172034; color:#fff; padding:10px 14px; border-radius:999px;
+  font-size:14px; box-shadow:0 10px 20px rgba(23,32,52,.2);
+  opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
 }
-.net.show{ opacity:.92; }
+.net.show{ opacity:1; transform:translateX(-50%) translateY(-2px); }
+
+/* No JS notice */
+.nojs{ text-align:center; color:#9ca3af; }
+
+/* iOS safe area */
+@supports (padding: max(0px)){
+  .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+}
+
+/* Mobile */
+@media (max-width:480px){
+  :root{ --card-max:100%; }
+  .sheet{ padding-left:27px; padding-right:27px; }
+  .chips{ grid-template-columns:1fr 1fr; }
+}

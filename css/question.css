@@ -1,153 +1,229 @@
-/* =========================
-   JIYOON SOFT THEME
-==========================*/
+/* ▣ 로컬 폰트 (woff2 파일을 /fonts에 두세요) */
+@font-face{
+  font-family:'MaruBuri';
+  src: url('../fonts/MaruBuri-Regular.woff2') format('woff2');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'MaruBuri';
+  src: url('../fonts/MaruBuri-Bold.woff2') format('woff2');
+  font-weight:700; font-style:normal; font-display:swap;
+}
+/* Pretendard는 ./vendor/pretendard.css 로 로드 */
+
+/* ===== THEME ===== */
 :root{
-  /* palette (beige × soft rose) */
-  --bg: #f7f3ed;          /* paper beige */
-  --surface: #ffffff;     /* card white */
-  --fg: #2a2a2a;          /* warm charcoal */
-  --muted: #7a7a7a;       /* soft gray */
-  --border: #ece6df;      /* light beige line */
+  --bg:#f7f3ee;
+  --surface:#ffffff;
+  --fg:#2a2a2a;
+  --muted:#7a7a7a;
+  --border:#ece6df;
+
+  --wrap-max: clamp(860px, 72vw, 1160px);
 
   --rose-50:#fbf5f3;
   --rose-100:#f4e6e2;
-  --rose-300:#d7a8b5;     /* accent tint */
-  --navy:#172034;         /* calm navy for CTA */
+  --rose-300:#d7a8b5;
+  --navy:#172034;
 
   --radius-xl:20px;
   --radius-lg:16px;
-  --radius-md:12px;
 
-  --shadow: 0 8px 26px rgba(23, 32, 52, .06);
-  --shadow-soft: 0 3px 10px rgba(23, 32, 52, .04);
+  --shadow: 0 8px 26px rgba(23,32,52,.06);
+  --shadow-soft: 0 3px 10px rgba(23,32,52,.04);
 
-  --h2: 1.02rem;       /* a bit modest */
-  --body: .96rem;
-  --hint: .925rem;
+  --h2:1.02rem;
+  --hint:.925rem;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+html,body{ overflow-x:hidden; }
+
 body{
-  margin:0; background:var(--bg); color:var(--fg);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
-  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
   letter-spacing:.2px;
 }
 
-.app{min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto}
+p, textarea, .btn { font-family: inherit; }
 
-/* Subtle header */
+.app{ min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto; }
+
+/* ===== Header ===== */
 .header{
-  position: sticky; top:0; z-index:10;
-  background: linear-gradient(180deg, rgba(247,243,237,.9), rgba(247,243,237,.65));
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(6px);
+  position:sticky; top:0; z-index:10;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
 }
 .header .inner{
-  max-width: 860px; margin:0 auto; padding: 14px 22px;
-  display:flex; align-items:center; gap:10px;
+  max-width:var(--wrap-max);
+  margin:0 auto;
+  padding:14px 22px;
+  display:flex; align-items:center; justify-content:center;
+  gap:10px; position:relative;
 }
 .logo-dot{
   width:10px; height:10px; border-radius:9999px;
-  background: var(--rose-300);
-  box-shadow: 0 0 0 6px var(--rose-100);
+  background:var(--rose-300);
+  box-shadow:0 0 0 6px var(--rose-100);
 }
-.title{
-  font-weight: 650;  /* softer than bold */
+.title{ margin:0; font-weight:650; }
+
+/* 뒤로가기 버튼 (기본 숨김: 필요 시 display:block) */
+.back-btn{
+  display:none; /* ← 쓰려면 이 줄을 제거하세요 */
+  position:absolute; left:16px;
+  width:22px; height:22px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:#9aa0a6;
+  font-size:16px;
+  display:grid; place-items:center; line-height:1;
+  cursor:pointer;
+  box-shadow:var(--shadow-soft);
+  transition:all .2s ease;
+  font-family:'Pretendard', sans-serif;
+  padding:0;
+}
+.back-btn:hover{
+  background:var(--rose-50);
+  box-shadow:var(--shadow);
 }
 
-/* Content wrap */
+/* ===== Content wrap ===== */
 .wrap{
-  max-width: 860px; margin: 0 auto;
-  padding: 22px clamp(16px, 3vw, 28px) 120px;
+  max-width:var(--wrap-max);
+  margin:0 auto;
+  padding:22px clamp(16px,3vw,28px) 40px;
 }
 
-/* Card */
+/* ===== Card ===== */
 .card{
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-soft);
-  padding: 18px clamp(14px, 2.3vw, 26px);
-  margin-bottom: 18px;
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-soft);
+  padding:23px clamp(14px,2.3vw,26px);
+  margin-bottom:28px;
+  min-height:clamp(240px,38vh,420px);
+  display:flex; flex-direction:column;
 }
-.card:hover{ box-shadow: var(--shadow) }
+.card:hover{ box-shadow:var(--shadow); }
+.card:last-of-type{ margin-bottom:-15px; }
 
+.card h2, .card .hint{ font-family:'MaruBuri', serif; }
 .card h2{
-  margin: 0 0 8px;
-  font-size: var(--h2);
-  font-weight: 650;        /* semi-bold, not heavy */
-  display:flex; align-items:center; gap:10px;
+  margin:0 0 14px;
+  font-size:var(--h2);
+  font-weight:700;
+  display:flex; align-items:center; justify-content:flex-start;
+  text-align:left; gap:10px;
+  color:#172034;
 }
 .hint{
-  margin:0 0 12px;
-  font-size: var(--hint);
-  color: var(--muted);
-  line-height: 1.55;
+  margin:0 0 14px;
+  font-size:var(--hint);
+  font-weight:400;
+  color:#172034;
+  line-height:1.65;
+  text-align:center;
 }
 
-/* Emotion emphasis – soft chip with underline feel */
+/* ===== Emotion badge ===== */
 .emotion-soft{
-  display:inline-block;
-  padding: 6px 12px;
-  background: var(--rose-50);
-  color: var(--fg);
-  border: 1px solid var(--border);
-  border-radius: 9999px;
-  position: relative;
-  font-size: .9rem;
-  margin: 0 4px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:6px 14px;
+  background:#fdfaf6;         /* 환한 베이지 */
+  border:1px solid #e9dcd7;
+  border-radius:9999px;
+  font-family:'Pretendard', sans-serif;
+  font-size:.95rem;
+  color:#172034;
+  line-height:1;
+  position:relative;
+  --chip-bdc:#e9dcd7;
 }
-.emotion-soft::after{
-  /* delicate underline shadow */
-  content:"";
-  position:absolute; left:12px; right:12px; bottom:4px; height:2px;
-  background: var(--rose-100);
-  border-radius: 2px;
+/* 텍스트 ‘아래만’ 2px 밑줄 (Pretendard Regular) */
+.emotion-soft .chip-label{
+  display:inline-flex;
+  align-items:center; justify-content:center;
+  padding-bottom:2px;
+  border-bottom:2px solid var(--chip-bdc);
+  font-weight:400;
+  width:auto; text-align:center;
+}
+/* 선택 칩 느낌을 강화하려면 아래 변수만 바꾸면 됨 */
+#emotionValue.emotion-soft{
+  background:#fdfaf6 !important;
+  border-color:#f4e6e2 !important;
+  color:var(--navy) !important;
+  --chip-bdc:#f4e6e2;
 }
 
+/* ===== Textarea ===== */
 textarea{
   width:100%;
-  min-height:112px;
-  padding:14px 14px 14px 14px;
-  font-size: var(--body);
-  color: var(--fg);
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  outline: none; resize: vertical;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+  min-height:130px;
+  padding:14px;
+  font-size:14px;
+  color:var(--fg);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  outline:none; resize:vertical;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  flex:1;
 }
-textarea::placeholder{ color: color-mix(in oklab, var(--muted) 78%, #bbb) }
+textarea::placeholder{ color: color-mix(in oklab, var(--muted) 78%, #bbb); }
 textarea:focus{
-  border-color: var(--rose-100);
-  box-shadow: 0 0 0 6px rgba(244,230,226,.55);
-  transition: box-shadow .18s ease, border-color .18s ease;
+  border-color:var(--rose-300);
+  box-shadow:none;
+  transition:border-color .18s ease;
 }
 
-/* CTA – calm navy, rounded, airy */
+/* ===== CTA ===== */
 .cta{
-  position: fixed; left:0; right:0; bottom:0; z-index:20;
-  background: linear-gradient(180deg, rgba(247,243,237,0), rgba(247,243,237,1) 48%);
-  border-top: 1px solid var(--border);
-  padding: 14px clamp(14px,3vw,26px);
+  position:static;
+  border-top:1px solid var(--border);
+  padding:14px clamp(14px,3vw,26px);
+  background:none;
 }
-.cta-inner{ max-width: 860px; margin: 0 auto; }
+.cta-inner{ max-width:var(--wrap-max); margin:0 auto; text-align:center; }
 .btn{
-  width:100%;
-  padding: 16px 18px;
-  background: var(--navy);
-  color: #fff;
-  border: 1px solid rgba(23,32,52,.12);
-  border-radius: 18px;
-  font-weight: 650; letter-spacing:.2px;
-  box-shadow: 0 10px 24px rgba(23,32,52,.22);
-  cursor: pointer;
+  width:200px;
+  padding:16px 0;
+  background:var(--navy);
+  color:#fff;
+  border:1px solid rgba(23,32,52,.12);
+  border-radius:18px;
+  font-weight:650; letter-spacing:.2px;
+  box-shadow:0 10px 24px rgba(23,32,52,.22);
+  font-size:.9rem;
+  cursor:pointer;
 }
-.btn:active{ transform: translateY(1px) }
-.btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35) }
+.btn:active{ transform:translateY(1px); }
+.btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
 
-@supports (padding: max(0px)){
-  .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)) }
+/* iOS safe area */
+@supports (padding:max(0px)){
+  .cta{ padding-bottom:max(14px, env(safe-area-inset-bottom)); }
+}
+
+/* No-JS */
+.nojs{ text-align:center; color:#9ca3af; }
+
+/* Mobile */
+@media (max-width:480px){
+  :root{ --wrap-max:100%; }
+  .wrap{ padding-left:14px; padding-right:14px; }
 }

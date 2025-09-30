@@ -70,27 +70,27 @@ body{
 /* Layout */
 .page{ display:flex; justify-content:center; padding:8px 12px; }
 .sheet{
-  width:100%; max-width: clamp(220px, 68vw, 260px);
+  width:100%; max-width: clamp(320px, 68vw, 420px); /* 기존보다 넓게 */
   background:var(--card);
   border:1px solid var(--border);
   border-radius:var(--radius);
   box-shadow: 0 3px 10px rgba(23,32,52,.04);
   padding:clamp(20px,4vw,30px);
-  margin:14px 0;
+  margin: 0 auto;                       /* 중앙 정렬 */
 }
 .sheet:hover{ box-shadow:0 8px 26px rgba(23,32,52,.06); }
 
 /* Blocks */
 .block{ margin:0; padding:5px 0; }
 .sheet .block:first-of-type{ padding-top:0; }
-.block-title{ font-size:1rem; font-weight:700; margin:12px 0; color:var(--ink); font-family:'MaruBuri',serif; }
+.block-title{ font-size:1rem; font-weight:700; margin:12px 0; color:var(--ink); font-family:'MaruBuri',serif;   text-align: center; /* 항상 중앙 정렬 */ }
 .block-desc{
   font-size:1rem; color:var(--muted); text-align:center;
   margin:0 0 25px; line-height:1.4; letter-spacing:.2px;
 }
 
 /* Chips */
-.chips{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.chips{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px;  justify-content: center; /* 칩들을 항상 가운데 정렬 */ }
 .chip{
   justify-content:center; padding:10px 12px;
   border:1px solid var(--border); background:#fff; color:var(--muted);

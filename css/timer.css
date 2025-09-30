@@ -82,3 +82,17 @@ h1 { margin-bottom: 15px; font-size: 24px; font-weight: bold;  font-family: 'Mar
 }
 
 /* (주석 처리된 back-btn 스타일 유지) */
+
+/* (A) 모든 주요 블록을 확실히 가운데 정렬 */
+.timer-controls .row{ justify-content:center; }      /* 혹시 누락됐으면 재보강 */
+.circle-timer{ margin-left:auto; margin-right:auto; }/* 원형 타이머 강제 중앙 */
+.reflection{ text-align:center; }                    /* 버튼 컨테이너 중앙 */
+
+ /* (B) 보상 버튼 스타일이 셀렉터 충돌로 안 먹을 때 대비해 id에 직접 지정 */
+#completeBtn{
+  background-color:#F3ECE2; color:#2a3249; border:none;
+  padding:10px 16px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+#completeBtn:disabled{ opacity:.5; cursor:not-allowed; }
+#completeBtn.done{ background-color:#2A3249; color:#F3ECE2; pointer-events:none; }

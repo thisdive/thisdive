@@ -3,175 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <title>오늘의 몰입 목표</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
 
+  <!-- CSP: 자가 호스팅 기준, inline 금지, frame-ancestors 제외(깃허브 호환) -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'unsafe-inline';
-    style-src  'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
-    img-src    'self' data:;
-    font-src   'self' https://fonts.gstatic.com https://fonts.googleapis.com;
+    script-src  'self';
+    style-src   'self';
+    img-src     'self' data:;
+    font-src    'self';
     connect-src 'self';
-    frame-ancestors 'none';
-    base-uri 'self';
+    object-src  'none';
+    base-uri    'self';
+    form-action 'self';
     upgrade-insecure-requests
   ">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap">
+  <!-- 검색 차단 & referrer -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-  <style>
-  @font-face{ font-family:'MaruBuri'; src:url('./fonts/MaruBuri-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'MaruBuri'; src:url('./fonts/MaruBuri-Bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'Pretendard'; src:url('./fonts/Pretendard-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+  <!-- 캐시 억제(테스트 편의) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
-  :root{
-    --bg:#f7f3ee;
-    --card:#fff;
-    --ink:#1f2937;
-    --muted:#6b7280;
-    --accent:#0f172a;
-    --divider:#f0ebe6;
-    --border: var(--divider, #ece6df);
-    --rose-50:#fbf5f3;
-    --rose-100:#f4e6e2;
-    --rose-300:#d7a8b5;
-    --chip-on-bg:#faf7f2;
-    --chip-on-bd:var(--rose-100);
-    --chip-on-ink:var(--ink);
-    --radius:22px;
-    --wrap-max: 1160px;
-    --star-on:#FDE68A;
-    --star-off:#F3F4F6;
-    --star-hover:#FDE68A;
-    --navy:#172034;
-    --section-gap:12px;
-  }
+  <!-- 자가 호스팅 리소스 -->
+  <link rel="stylesheet" href="./vendor/normalize.min.css" />
+  <link rel="stylesheet" href="./css/goal.css" />
 
-  html,body{height:100%}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-    padding:0;
-  }
-
-  .page{ display:flex; justify-content:center; padding:8px 12px; }
-  .header{ position: sticky; top:0; z-index:10; background: var(--bg); border-bottom: 1px solid var(--border); }
-  .header .inner{ max-width: var(--wrap-max); margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:center; gap:10px; position:relative; }
-  /* .back-btn{ position: absolute; left:16px; width:22px; height:22px; border-radius:50%; border:1px solid var(--border); background:#fff; color:#bbb; font-size:16px; display:grid; place-items:center; cursor:pointer; }
-  .back-btn:hover{ background:#f8f4ef; } */
-  .logo-dot{ width:10px; height:10px; border-radius:9999px; background: var(--rose-300); box-shadow: 0 0 0 6px var(--rose-100); }
-  .title{ font-weight:650; }
-
-  .sheet{
-    width:100%; max-width: clamp(220px, 68vw, 260px);
-    background:var(--card);
-    border: 1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow: 0 3px 10px rgba(23,32,52,.04);
-    padding:clamp(20px,4vw,30px);
-    margin:14px 0;
-  }
-  .sheet:hover{ box-shadow: 0 8px 26px rgba(23,32,52,.06); }
-
-  .block{ margin:0; padding:5px 0; }
-  .sheet .block:first-of-type{ padding-top:0; }
-  .sheet .block-title, .sheet .lead { text-align:center; }
-  .block-title{ font-size:1rem; font-weight:600; margin: var(--section-gap) 0 var(--section-gap); color:var(--ink); }
-
-  .sheet .chips{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
-  .sheet .chip{
-    justify-content:center; padding:10px 12px;
-    border:1px solid var(--border);
-    background:#fff; color:var(--muted);
-    border-radius:999px; font-weight:600;
-    display:inline-flex; align-items:center; gap:8px;
-    cursor:pointer; transition:transform .05s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-    white-space:nowrap;
-  }
-  .sheet .chip input{ appearance:none; width:14px; height:14px; border:2px solid var(--border); border-radius:50%; position:relative; }
-  .sheet .chip input:checked{ border-color:var(--rose-300); background:var(--rose-300); }
-  .sheet .chip input:checked::after{ content:''; position:absolute; inset:4px; background:#fff; border-radius:50%; }
-
-  #catField .chip.on{
-    background:#faf7f2 !important;
-    border-color:#f4e6e2 !important;
-    color:var(--ink) !important;
-    box-shadow:0 6px 16px rgba(23,32,52,.06);
-    transform:translateY(-1px);
-  }
-
-  .sheet .panel{ border:1px solid var(--border); background:#fff; border-radius:16px; padding:16px; max-width:280px; margin:0 auto; text-align:center; }
-  .sheet .panel-head{ margin-bottom:12px; }
-  .readout{ border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; padding:6px 10px; border-radius:999px; font-size:12.5px; display:inline-block; }
-
-  .stars{ display:inline-flex; flex-direction: row-reverse; gap:6px; user-select:none; padding:4px 2px; }
-  .stars input{ position:absolute; opacity:0; pointer-events:none; }
-  .stars label{ font-size:28px; line-height:1; cursor:pointer; color:var(--star-off); transition: color .12s ease, transform .08s ease; }
-  .stars label:hover, .stars label:hover ~ label{ color:var(--star-hover); }
-  .stars input:checked ~ label{ color:var(--star-on); }
-  .stars label:active{ transform: scale(.96); }
-  .stars input:focus-visible + label{ outline:3px solid rgba(59,130,246,.35); border-radius:6px; outline-offset:2px; }
-
-  .sheet .goal-input{
-    border:1px solid var(--border); background:#fff; border-radius:12px;
-    padding:12px 14px; font-size:15px; display:block; margin:0 auto; text-align:center;
-    width:90%; max-width:none;
-  }
-  .sheet .goal-input:focus{ outline:none; box-shadow:0 0 0 3px rgba(233,220,215,.45); }
-
-  #b1.block-title,#b2.block-title,#b3.block-title,#b4.block-title{
-    font-family:'MaruBuri', serif; font-weight:700;
-  }
-  .dotted-sep{ width:100%; height:0; border:0; border-top:1px dashed var(--border); margin:12px 0 1px; }
-
-  .cta{ border-top:1px solid var(--border); padding:14px clamp(14px,3vw,26px); background:none; }
-  .cta-inner{ max-width: var(--wrap-max); margin: 0 auto; text-align: center; }
-  .btn{ font-family:'Pretendard',sans-serif; width:200px; padding:16px 0; background:var(--navy); color:#fff; border:1px solid rgba(23,32,52,.12); border-radius:18px; font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22); font-size:.9rem; cursor:pointer; }
-  .btn:active{ transform:translateY(1px); }
-  .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
-  @supports (padding: max(0px)){ .cta{ padding-bottom: max(14px, env(safe-area-inset-bottom)); } }
-
-  /* 칩 배경 유지 보강 */
-  #catField > label.chip.on,
-  #catField > label.chip:is(:focus, :focus-visible, :active).on,
-  #catField > label.chip:has(input[type="radio"]:checked) {
-    background-color: #faf7f2 !important;
-    border-color: #f4e6e2 !important;
-    color: var(--ink) !important;
-    box-shadow: 0 6px 16px rgba(23,32,52,.06);
-    transform: translateY(-1px);
-  }
-  #catField > label.chip input[type="radio"]:checked {
-    border-color: var(--rose-300) !important;
-    background: var(--rose-300) !important;
-  }
-  #catField > label.chip.on:hover,
-  #catField > label.chip.on:focus,
-  #catField > label.chip.on:active {
-    background-color: #faf7f2 !important;
-  }
-
-  .block-desc {
-    font-size: 1rem;
-    color: var(--muted);
-    text-align: center;
-    margin: 0 0 25px;
-    line-height: 1.4;
-    letter-spacing: 0.2px;
-  }
-  </style>
+  <!-- JS (inline 금지) -->
+  <script src="./js/goal.js" defer></script>
 </head>
 <body>
   <header class="header">
     <div class="inner">
-      <!-- <button id="backBtn" class="back-btn" aria-label="뒤로가기">←</button> -->
       <span class="logo-dot" aria-hidden="true"></span>
-      <div class="title">오늘의 목표</div>
+      <h1 class="title">오늘의 목표</h1>
     </div>
   </header>
 
@@ -180,6 +50,7 @@
       <section class="block" aria-labelledby="b1">
         <p class="block-desc">행복한 <strong>미래의 하루</strong>를 위해<br>오늘은 <strong>어떤 몰입</strong>이 필요할까요?</p>
         <h2 id="b1" class="block-title">✨ 오늘의 몰입</h2>
+
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
           <label class="chip"><input type="radio" name="cat" value="학습"> 📚 학습</label>
@@ -217,7 +88,7 @@
       <div class="dotted-sep" role="separator"></div>
 
       <section class="block" aria-labelledby="b3">
-        <h2 id="b3" class="block-title"> 📝 오늘의 목표</h2>
+        <h2 id="b3" class="block-title">📝 오늘의 목표</h2>
         <input id="goalInput" class="goal-input" type="text" placeholder="예) ★ : 프랑스어 1개 외우기" />
       </section>
 
@@ -232,212 +103,12 @@
 
   <div class="cta">
     <div class="cta-inner">
-      <button class="btn" id="nextBtn">몰입 시작하기 →</button>
+      <button class="btn" id="nextBtn" type="button">몰입 시작하기 →</button>
     </div>
   </div>
 
-  <script>
-  /* =========================
-     기본 상수/요소
-     ========================= */
-  const NS = 'thisdive';
-  const K_P2_CURRENT    = `${NS}.p2:current`;     // 2페이지(감정) 현재 스냅샷
-  const K_P3_LASTSOURCE = `${NS}.p3:lastSource`;  // 3페이지가 직전에 참고했던 2페이지 스냅샷
-  const K_G_DATA        = `${NS}.g:data`;         // 3페이지(목표) 입력 스냅샷
-  const K_REWARD        = `${NS}.reward`;         // ▶ 오늘의 보상 (timer와 공유)
-
-  const backBtn   = document.getElementById('backBtn');
-  const catField  = document.getElementById('catField');
-  const readout   = document.getElementById('readout');
-  const goalEl    = document.getElementById('goalInput');
-  const rewardEl  = document.getElementById('rewardInput');
-  const nextBtn   = document.getElementById('nextBtn');
-  const starsWrap = document.getElementById('starsGroup');
-
-  const minuteMap = {1:10, 2:15, 3:25, 4:40, 5:50};
-  const diffText  = {0:'목표의 난이도를 선택하세요.', 1:'아주 쉽게', 2:'쉽게', 3:'적당하게', 4:'약간 어렵게', 5:'도전!'};
-
-  /* =========================
-     진입 시: p2:current vs p3:lastSource 비교
-     다르면 3페이지 값 초기화, 같으면 유지
-     ========================= */
-  (function compareEmotionAndResetIfChanged(){
-    try{
-      const cur = localStorage.getItem(K_P2_CURRENT)    || '';
-      const last= localStorage.getItem(K_P3_LASTSOURCE) || '';
-
-      if (cur !== last) {
-        // 저장값 삭제
-        try{ localStorage.removeItem(K_G_DATA); }catch(e){}
-
-        // UI 즉시 초기화
-        try{
-          catField.querySelectorAll('.chip').forEach(c=>{
-            c.classList.remove('on');
-            const r = c.querySelector('input[type="radio"]');
-            if (r) r.checked = false;
-          });
-          document.querySelectorAll('input[name="difficulty"]').forEach(r=> r.checked = false);
-          updateReadout(0);
-          goalEl.value = '';
-          rewardEl.value = '';
-        }catch(e){}
-      }
-
-      // 이번에 참고한 감정 스냅샷 기록
-      localStorage.setItem(K_P3_LASTSOURCE, cur);
-    }catch(e){}
-  })();
-
-  /* =========================
-     표시 & 저장 유틸
-     ========================= */
-  function updateReadout(v){
-    const val = Number(v) || 0;
-    readout.textContent = diffText[val];
-  }
-  function currentDiff(){
-    const sel = document.querySelector('input[name="difficulty"]:checked');
-    return sel ? Number(sel.value) : 0;
-  }
-  function save(){
-    const cat  = (catField.querySelector('input:checked')||{}).value || '';
-    const diff = currentDiff();
-    const goal = goalEl.value || '';
-    const reward = rewardEl.value || '';
-
-    const data = {cat, diff, goal, reward, at: Date.now()};
-    try{
-      localStorage.setItem(K_G_DATA, JSON.stringify(data));
-      sessionStorage.setItem(`${NS}.goal`, goal);
-      sessionStorage.setItem(`${NS}.cat`,  cat);
-      sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 사용
-    }catch(e){}
-  }
-
-  /* =========================
-     과거 저장값 복원(감정 동일 시)
-     ========================= */
-  (function restore(){
-    updateReadout(0);
-    try{
-      const raw = localStorage.getItem(K_G_DATA);
-      if(raw){
-        const d = JSON.parse(raw);
-        if (d.cat) {
-          const chip = [...catField.querySelectorAll('label.chip input')]
-            .find(i=>i.value===d.cat);
-          if (chip) { chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
-        }
-        if (d.diff) {
-          const r = document.getElementById('diff-' + d.diff);
-          if (r){ r.checked = true; updateReadout(d.diff); }
-        }
-        if (typeof d.goal === 'string')   goalEl.value = d.goal;
-        if (typeof d.reward === 'string') rewardEl.value = d.reward;
-      } else {
-        // 세션에 reward만 남아있을 수 있으므로 보조 복원
-        const sr = (sessionStorage.getItem(K_REWARD) || '').trim();
-        if (sr) rewardEl.value = sr;
-      }
-    }catch(e){}
-  })();
-
-  /* =========================
-     카테고리 칩
-     ========================= */
-  catField.addEventListener('click', (e)=>{
-    const label = e.target.closest('.chip');
-    if(!label) return;
-    const input = label.querySelector('input[type="radio"]');
-    if(!input) return;
-    input.checked = true;
-    catField.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
-    label.classList.add('on');
-    save();
-  });
-
-  /* =========================
-     별점 접근성
-     ========================= */
-  (function initStars(){
-    const radios = [...document.querySelectorAll('#starsGroup input[name="difficulty"]')];
-    const labels = [...document.querySelectorAll('#starsGroup label[for]')];
-
-    function setDifficulty(v){
-      updateReadout(v);
-      save();
-    }
-
-    radios.forEach(r=>{
-      r.addEventListener('change', ()=> setDifficulty(r.value));
-    });
-    labels.forEach(l=>{
-      l.addEventListener('click', ()=>{
-        const id = l.getAttribute('for');
-        const el = document.getElementById(id);
-        if (el){
-          el.checked = true;
-          el.dispatchEvent(new Event('change', { bubbles:true }));
-        }
-      });
-    });
-
-    radios.forEach(r=>{
-      r.addEventListener('keydown', e=>{
-        if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
-          e.preventDefault();
-          const prev = [...radios].reverse().find(x=> +x.value < +r.value);
-          if(prev){ prev.checked = true; prev.dispatchEvent(new Event('change', {bubbles:true})); prev.focus(); }
-        }
-        if(e.key==='ArrowRight' || e.key==='ArrowUp'){
-          e.preventDefault();
-          const next = [...radios].find(x=> +x.value > +r.value);
-          if(next){ next.checked = true; next.dispatchEvent(new Event('change', {bubbles:true})); next.focus(); }
-        }
-      });
-    });
-
-    setDifficulty((document.querySelector('#starsGroup input[name="difficulty"]:checked')||{}).value || 0);
-  })();
-
-  /* =========================
-     입력 저장
-     ========================= */
-  goalEl.addEventListener('input', save);
-  rewardEl.addEventListener('input', save);
-
-  /* =========================
-     CTA 이동 (timer: t-test.html)
-     ========================= */
-  nextBtn.addEventListener('click', ()=>{
-    const goal   = (goalEl.value||'').trim();
-    const reward = (rewardEl.value||'').trim();
-    try{
-      sessionStorage.setItem(`${NS}.goal`, goal);
-      sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 우선 사용
-    }catch(e){}
-
-    const qs = new URLSearchParams({
-      goal,
-      reward,                 // ▶ timer로 전달
-      v: String(Date.now())
-    });
-    location.href = `t-test.html?${qs.toString()}`;
-  });
-
-  /* =========================
-     뒤로가기 (q-test.html) — 버튼이 없으면 무시
-     ========================= */
-  if (backBtn){
-    backBtn.addEventListener('click', ()=>{
-      if (document.referrer){ history.back(); return; }
-      location.href = 'q-test.html?v=' + Date.now();
-    });
-  }
-  </script>
-
+  <noscript>
+    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
 </body>
 </html>
-
-

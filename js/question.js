@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ?next=로 덮어쓸 수 있고, 없으면 f-test4.html이 기본
       const override = new URLSearchParams(location.search).get('next');
-      const nextFile = (override && override.trim()) ? override.trim() : 'f-test4.html';
+      const nextFile = (override && override.trim()) ? override.trim() : 'future.html';
 
       const qs = new URLSearchParams({ emotion: label }).toString();
       const target = `${nextFile}${nextFile.includes('?') ? '&' : '?'}${qs}`;

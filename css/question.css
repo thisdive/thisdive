@@ -206,3 +206,13 @@ textarea:focus{
   :root{ --wrap-max:100%; }
   .wrap{ padding-left:14px; padding-right:14px; }
 }
+
+/* question.css 맨 아래에 추가 */
+.header .title,
+.header h1.title {
+  font-weight: 700;
+  font-size: clamp(18px, 3.8vw, 22px);
+  letter-spacing: -0.2px;
+  margin: 0;
+  line-height: 1.15;
+}

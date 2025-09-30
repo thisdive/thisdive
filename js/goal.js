@@ -159,7 +159,7 @@ rewardEl?.addEventListener('input', save);
       sessionStorage.setItem(K_REWARD, reward);
     }catch(_){}
     const qs = new URLSearchParams({ goal, reward, v:String(Date.now()) });
-    const target = `t-test.html?${qs.toString()}`;
+    const target = `timer.html?${qs.toString()}`;
     try { window.location.assign(target); } catch { window.location.href = target; }
   };
   if (nextBtn){

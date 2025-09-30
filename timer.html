@@ -2,80 +2,94 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>오늘의 몰입</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>오늘의 몰입 | thisdive</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
 
-    <!-- ✅ 검색 차단 -->
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="googlebot" content="noindex, nofollow">
+  <!-- 검색 차단 -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
 
-  <!-- ✅ 강력 CSP: 외부/인라인 차단, iframe 금지 -->
+  <!-- CSP: 자가 호스팅 기준(필요 시 CDN 추가) / frame-ancestors는 GH에서 미적용이라 제외 -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self';
-    style-src  'self';
-    img-src    'self' data:;
-    font-src   'self';
+    script-src  'self';
+    style-src   'self';
+    img-src     'self' data:;
+    font-src    'self';
     connect-src 'self';
-    frame-ancestors 'none';
-    base-uri 'self';
+    object-src  'none';
+    base-uri    'self';
+    form-action 'self';
     upgrade-insecure-requests
   ">
 
-  <!-- 보조 보안/캐시 메타 -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+  <!-- Referrer & 캐시 억제 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
-  <!-- ✅ 자가 호스팅 리소스 -->
-  <link rel="stylesheet" href="./css/normalize.css">
-  <!-- MaruBuri 로컬 선언(css/maruburi.css에서 @font-face 제공) -->
-  <link rel="stylesheet" href="./css/maruburi.css">
-  <link rel="stylesheet" href="./css/timer.css">
+  <!-- 스타일 (자가 호스팅) -->
+  <link rel="stylesheet" href="./vendor/normalize.min.css" />
+  <link rel="stylesheet" href="./vendor/pretendard.css" />
+  <link rel="stylesheet" href="./css/timer.css" />
+
+  <!-- 프레임 방지: 앱 스크립트보다 먼저 로드 -->
+  <script src="./js/framebust.js"></script>
+  <!-- 페이지 스크립트 -->
+  <script src="./js/timer.js" defer></script>
 </head>
-<body data-page="timer">
+<body>
+  <header class="header">
+    <div class="inner">
+      <span class="logo-dot" aria-hidden="true"></span>
+      <h1 class="title">오늘의 몰입</h1>
+    </div>
+  </header>
 
-<button id="backBtn" class="back-btn" type="button" aria-label="뒤로가기">←</button>
+  <main class="wrap" role="main">
+    <!-- 🎯 목표 배너 -->
+    <section class="goal-banner" id="goalBanner" hidden>
+      <span id="goalText" class="hl"></span>
+    </section>
 
-<h1>오늘의 몰입</h1>
+    <article class="card">
+      <!-- 시간 선택 -->
+      <div id="timeButtons" class="timer-controls">
+        <div class="row">
+          <button>1분</button>
+          <button>5분</button>
+          <button>15분</button>
+        </div>
+        <div class="row">
+          <button>30분</button>
+          <button>45분</button>
+          <button>60분</button>
+        </div>
+      </div>
 
-<!-- 🎯 목표 문구(하이라이트만) -->
-<div id="goalBanner" class="goal-banner" hidden>
-  <span id="goalText" class="hl"></span>
-</div>
+      <!-- 원형 타이머 -->
+      <div class="circle-timer" aria-live="polite">
+        <svg width="220" height="220" aria-hidden="true">
+          <circle class="bg" cx="110" cy="110" r="100"></circle>
+          <circle class="progress" cx="110" cy="110" r="100" stroke-dasharray="628.3" stroke-dashoffset="0"></circle>
+        </svg>
+        <div id="time" class="time-text">00:00</div>
+      </div>
 
-<div class="timer-controls" id="timeButtons" role="group" aria-label="시간 선택">
-  <button type="button">1분</button>
-  <button type="button">15분</button>
-  <button type="button">30분</button>
-  <button type="button">45분</button>
-  <button type="button">60분</button>
-</div>
+      <!-- 완료/보상 -->
+      <div class="cta">
+        <button id="completeBtn" class="btn" disabled>🎁 보상 받기</button>
+      </div>
+    </article>
+  </main>
 
-<div class="circle-timer" aria-live="polite">
-  <svg width="220" height="220" aria-hidden="true">
-    <circle class="bg" cx="110" cy="110" r="100"></circle>
-    <circle class="progress" cx="110" cy="110" r="100" stroke-dasharray="628.3" stroke-dashoffset="0"></circle>
-  </svg>
-  <div class="time-text" id="time">00:00</div>
-</div>
+  <!-- 토스트 -->
+  <div id="toast" class="toast" hidden aria-live="polite">수고했어요! 오늘도 몰입 완료 😻</div>
 
-<div class="reflection">
-  <p>👇 '첫 몰입' 종료 후 눌러주세요.</p>
-  <button id="completeBtn" class="complete" type="button" disabled>✔️ 몰입 완료</button>
-</div>
-
-<!-- 토스트 -->
-<div id="toast" class="toast" hidden aria-live="polite">수고했어요! 오늘도 몰입 완료 😻</div>
-
-<script src="./js/timer.js" defer></script>
-
-<noscript>
-  <p style="text-align:center;color:#9ca3af">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
-</noscript>
+  <noscript>
+    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
 </body>
 </html>
-
-
-

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>미래의 일상 | thisdive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- CSP: 자가 호스팅 기준, inline 금지, frame-ancestors 제외(깃허브 호환) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src  'self';
+    style-src   'self';
+    img-src     'self' data:;
+    font-src    'self';
+    connect-src 'self';
+    object-src  'none';
+    base-uri    'self';
+    form-action 'self';
+    upgrade-insecure-requests
+  ">
+
+  <!-- 검색 차단 -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
+
+  <!-- Referrer 정책 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- 캐시 억제(테스트 편의용) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- 로컬 정적 리소스(자가 호스팅) -->
+  <link rel="stylesheet" href="./vendor/normalize.min.css" />
+  <link rel="stylesheet" href="./css/future.css" />
+
+  <!-- 외부 스크립트(인라인 금지) -->
+  <script src="./js/future.js" defer></script>
+</head>
+<body>
+  <a class="sr-only" href="#main">본문 바로가기</a>
+
+  <header class="header" role="banner">
+    <div class="inner">
+      <span class="logo-dot" aria-hidden="true"></span>
+      <h1 class="title">미래의 하루</h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap" role="main">
+    <article class="card" aria-labelledby="h1">
+      <div class="card-head">
+        <p class="subtitle">
+          미래의 나의 하루는 어떨까요? 내가 원하는 하루를 구체적으로 적고, 1분간 그 장면 속에 머물러 보세요.
+        </p>
+      </div>
+
+      <div class="card-body">
+        <section class="section" aria-labelledby="sec-basic">
+          <h2 id="sec-basic" class="sr-only">기본 정보</h2>
+          <div class="grid">
+            <div class="row ymd">
+              <div class="field">
+                <label class="label" for="year">연도</label>
+                <input id="year" class="input" type="number" inputmode="numeric" placeholder="예) 2026" />
+              </div>
+              <div class="field">
+                <label class="label" for="month">월</label>
+                <input id="month" class="input" type="number" inputmode="numeric" placeholder="예) 4" />
+              </div>
+              <div class="field">
+                <label class="label" for="day">일</label>
+                <input id="day" class="input" type="number" inputmode="numeric" placeholder="예) 15" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="place">어디서</label>
+              <input id="place" class="input" type="text" placeholder="예) 성수동의 작업실에서" />
+            </div>
+
+            <div class="field">
+              <label class="label" for="with">누구와</label>
+              <input id="with" class="input" type="text" placeholder="예) 좋아하는 동료와 함께" />
+            </div>
+
+            <div class="field">
+              <label class="label" for="doing">무엇을</label>
+              <input id="doing" class="input" type="text" placeholder="예) 즐겁게 작업을 하고 있다" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sec-sense">
+          <h2 id="sec-sense" class="sr-only">감각 디테일</h2>
+          <div class="sense">
+            <div class="field">
+              <label class="label" for="see">보이는 것(시각)</label>
+              <input id="see" class="input" type="text" placeholder="예) 오후 햇살" />
+            </div>
+            <div class="field">
+              <label class="label" for="hear">들리는 것(청각)</label>
+              <input id="hear" class="input" type="text" placeholder="예) 잔잔한 재즈" />
+            </div>
+            <div class="field">
+              <label class="label" for="feel">느껴지는 것(촉/후/미각)</label>
+              <input id="feel" class="input" type="text" placeholder="예) 손끝의 따뜻함" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sec-preview">
+          <h2 id="sec-preview" class="sr-only">미리보기</h2>
+          <div class="preview" id="preview">
+            <!-- JS가 DOM으로 안전하게 채웁니다 -->
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sec-preview-sense">
+          <h2 id="sec-preview-sense" class="sr-only">감각 미리보기</h2>
+          <div class="preview" id="preview-sense">
+            <!-- JS가 DOM으로 안전하게 채웁니다 -->
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="sec-visual">
+          <h2 id="sec-visual" class="sr-only">시각화 체크</h2>
+          <label class="visualize">
+            <input type="checkbox" id="visualized" />
+            <span><strong>눈을 감고 1분간 그 장면을 떠올려 보세요.</strong></span>
+          </label>
+        </section>
+      </div>
+    </article>
+
+    <div class="cta" role="region" aria-live="polite">
+      <div class="cta-inner">
+        <button class="btn" id="btn-next" type="button">다음 → 목표설정</button>
+      </div>
+    </div>
+  </main>
+
+  <noscript>
+    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
+</body>
+</html>

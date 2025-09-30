@@ -27,8 +27,12 @@ let remainingSeconds = 0;
 
 const timeEl = document.getElementById('time');
 const progressEl = document.querySelector('.progress');
-// const timeButtonsWrap = document.getElementById('timeButtons');
 const completeBtn = document.getElementById('completeBtn');
+
+/* 초기 로드 시 버튼 잠금(일부 iOS에서 disabled가 풀리는 경우 대비) */
+document.addEventListener('DOMContentLoaded', () => {
+  if (completeBtn) completeBtn.disabled = true;
+});
 
 /* --------------------------------------------------- */
 function cameFromOtherPage(){
@@ -83,6 +87,8 @@ function cameFromOtherPage(){
 
   updateTimeDisplay();
   updateProgressCircle();
+
+  bindComplete(); // ✅ 완료 버튼 가드 바인딩
 })();
 
 function startTimer(minutes) {
@@ -91,7 +97,7 @@ function startTimer(minutes) {
   remainingSeconds = totalSeconds;
   updateTimeDisplay();
   updateProgressCircle();
-  completeBtn.disabled = true;
+  completeBtn.disabled = true; // 시작하면 항상 잠금
 
   snapshotSave({ minutes, startedAt: Date.now(), finished:false });
 
@@ -103,7 +109,7 @@ function startTimer(minutes) {
     if (remainingSeconds <= 0) {
       clearInterval(timerInterval);
       remainingSeconds = 0;
-      completeBtn.disabled = false;
+      completeBtn.disabled = false; // 끝나면 해제
       snapshotSave({ finished:true, finishedAt: Date.now() });
     }
   }, 1000);
@@ -170,13 +176,13 @@ function restoreTimer(){
         updateProgressCircle();
         if (remainingSeconds <= 0){
           clearInterval(timerInterval);
-          completeBtn.disabled = false;
+          completeBtn.disabled = false; // 종료 시 해제
           snapshotSave({ finished:true, finishedAt: Date.now() });
         }
       }, 1000);
     }else{
       remainingSeconds = 0;
-      completeBtn.disabled = false;
+      completeBtn.disabled = false; // 이미 끝난 상태
     }
     updateTimeDisplay();
     updateProgressCircle();
@@ -187,7 +193,10 @@ function restoreTimer(){
     remainingSeconds = 0;
     updateTimeDisplay();
     updateProgressCircle();
-    completeBtn.disabled = false;
+    completeBtn.disabled = false; // 완료 복원 시 해제
+  } else {
+    // 진행중/미시작 모두 잠금 유지
+    completeBtn.disabled = true;
   }
 }
 
@@ -200,6 +209,7 @@ timeButtonsWrap.addEventListener('click', (e)=>{
   btn.classList.add('active');
   const n = parseInt(btn.textContent, 10);
   if(Number.isFinite(n) && n > 0){
+    completeBtn.disabled = true; // 새로 시작했으니 잠금
     startTimer(n);
     snapshotSave({ minutes:n });
   }
@@ -221,32 +231,44 @@ function getRewardText(){
   }
 }
 
-// ✅ 완료 버튼: 텍스트 변경 + 스타일(done) + 토스트
-(function(){
+/* 토스트 표시 유틸 */
+function showToast(){
+  const toast = document.getElementById('toast');
+  if(!toast) return;
+  const reward = getRewardText();
+  const message = reward
+    ? `☕ 약속한 보상: ${reward}, 지금요.`
+    : `스스로에게 작은 칭찬 한 줄 😊`;
+  toast.textContent = message;
+  toast.hidden = false;
+  requestAnimationFrame(()=> toast.classList.add('show'));
+  setTimeout(()=>{
+    toast.classList.remove('show');
+    setTimeout(()=> toast.hidden = true, 200);
+  }, 3000);
+}
+
+/* ✅ 보상 버튼 클릭 가드: 종료 전/미시작 때는 무시 */
+function bindComplete(){
   if(!completeBtn) return;
-  completeBtn.addEventListener('click', (e)=>{
+
+  const onClick = (e)=>{
+    // 종료 전/미시작 시엔 무시 (iOS에서 disabled 무시되는 케이스 대비)
+    if (completeBtn.disabled || remainingSeconds > 0 || totalSeconds === 0) {
+      e.preventDefault();
+      return;
+    }
     e.preventDefault();
     completeBtn.classList.add('done');
     completeBtn.textContent = '💫몰입 성공💫';
+    showToast();
+  };
 
-    const toast = document.getElementById('toast');
-    if(toast){
-      const reward = getRewardText();
-      const message = reward
-        ? `☕ 약속한 보상: ${reward}, 지금요.`
-        : `스스로에게 작은 칭찬 한 줄 😊`;
-
-      toast.textContent = message;
-
-      toast.hidden = false;
-      requestAnimationFrame(()=> toast.classList.add('show'));
-      setTimeout(()=>{
-        toast.classList.remove('show');
-        setTimeout(()=> toast.hidden = true, 200);
-      }, 3000);
-    }
-  }, { once:true });
-})();
+  // 터치/마우스 모두 대응
+  ['click','touchend','pointerup'].forEach(evt =>
+    completeBtn.addEventListener(evt, onClick, { passive:false })
+  );
+}
 
 (function initGoalBanner(){
   const sp = new URLSearchParams(location.search);

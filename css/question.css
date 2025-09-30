@@ -74,27 +74,6 @@ p, textarea, .btn { font-family: inherit; }
 }
 .title{ margin:0; font-weight:650; }
 
-/* 뒤로가기 버튼 (기본 숨김: 필요 시 display:block) */
-.back-btn{
-  display:none; /* ← 쓰려면 이 줄을 제거하세요 */
-  position:absolute; left:16px;
-  width:22px; height:22px;
-  border-radius:50%;
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:#9aa0a6;
-  font-size:16px;
-  display:grid; place-items:center; line-height:1;
-  cursor:pointer;
-  box-shadow:var(--shadow-soft);
-  transition:all .2s ease;
-  font-family:'Pretendard', sans-serif;
-  padding:0;
-}
-.back-btn:hover{
-  background:var(--rose-50);
-  box-shadow:var(--shadow);
-}
 
 /* ===== Content wrap ===== */
 .wrap{

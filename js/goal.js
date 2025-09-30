@@ -1,173 +1,170 @@
-/* =========================
-   네임스페이스 & 키
-   ========================= */
+// ===== Constants / Keys =====
 const NS = 'thisdive';
-// page2(감정) 현재, page3(question) 데이터
-const K_P2_CURRENT = `${NS}.p2:current`;
-const K_Q_DATA     = `${NS}.q:data`;
-// page4(goal) 전용: 직전에 참고했던 p2, q 스냅샷
-const K_P4_LASTP2  = `${NS}.p4:lastP2`;
-const K_P4_LASTQ   = `${NS}.p4:lastQ`;
-// goal 입력 스냅샷
-const K_G_DATA     = `${NS}.g:data`;
-// 세션 보강용
-const K_SELECTED   = `${NS}.selectedEmotion`;
+const K_P2_CURRENT    = `${NS}.p2:current`;     // 2페이지(감정) 현재 스냅샷
+const K_P3_LASTSOURCE = `${NS}.p3:lastSource`;  // 3페이지가 직전에 참고했던 2페이지 스냅샷
+const K_G_DATA        = `${NS}.g:data`;         // 3페이지(목표) 입력 스냅샷
+const K_REWARD        = `${NS}.reward`;         // ▶ timer와 공유
 
-/* =========================
-   QR 재인식(#reset) → 전체 초기화
-   ========================= */
-(function resetIfHash(){
+// DOM helpers
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+// Elements
+const catField  = $('#catField');
+const readout   = $('#readout');
+const goalEl    = $('#goalInput');
+const rewardEl  = $('#rewardInput');
+const nextBtn   = $('#nextBtn');
+const starsWrap = $('#starsGroup');
+
+// Stars text
+const diffText  = {0:'목표의 난이도를 선택하세요.', 1:'아주 쉽게', 2:'쉽게', 3:'적당하게', 4:'약간 어렵게', 5:'도전!'};
+
+// ===== Init reset if emotion changed =====
+(function compareEmotionAndResetIfChanged(){
   try{
-    if (location.hash.replace('#','') === 'reset') {
-      sessionStorage.clear();
-      localStorage.removeItem(K_P2_CURRENT);
-      localStorage.removeItem(K_Q_DATA);
-      localStorage.removeItem(K_P4_LASTP2);
-      localStorage.removeItem(K_P4_LASTQ);
-      localStorage.removeItem(K_G_DATA);
+    const cur = localStorage.getItem(K_P2_CURRENT)    || '';
+    const last= localStorage.getItem(K_P3_LASTSOURCE) || '';
+
+    if (cur !== last) {
+      // 저장값 삭제
+      try{ localStorage.removeItem(K_G_DATA); }catch(_){}
+
+      // UI 초기화
+      try{
+        $$('#catField .chip').forEach(c=>{
+          c.classList.remove('on');
+          const r = c.querySelector('input[type="radio"]');
+          if (r) r.checked = false;
+        });
+        $$('input[name="difficulty"]').forEach(r=> r.checked = false);
+        updateReadout(0);
+        if (goalEl) goalEl.value = '';
+        if (rewardEl) rewardEl.value = '';
+      }catch(_){}
     }
-  }catch(e){}
+    localStorage.setItem(K_P3_LASTSOURCE, cur);
+  }catch(_){}
 })();
 
-/* =========================
-   요소
-   ========================= */
-const backBtn  = document.getElementById('backBtn');
-const catField = document.getElementById('catField');
-const readout  = document.getElementById('readout');
-const goalEl   = document.getElementById('goalInput');
-const startBtn = document.getElementById('startBtn');
-const starsWrap= document.getElementById('starsGroup');
-
-/* 난이도별 권장 시간/라벨 */
-const minuteMap = {1:10, 2:15, 3:25, 4:40, 5:50};
-const diffText  = {0:'미정', 1:'가볍게', 2:'쉬움', 3:'보통', 4:'집중', 5:'도전'};
-
-/* =========================
-   진입 시 스냅샷 비교
-   - emotion 변경(p2)만 초기화 트리거
-   - question 변경은 기록만 갱신
-   ========================= */
-(function compareSnapshotsOnEnter(){
+// ===== UI helpers =====
+function updateReadout(v){ readout && (readout.textContent = diffText[Number(v) || 0]); }
+function currentDiff(){
+  const sel = $('input[name="difficulty"]:checked');
+  return sel ? Number(sel.value) : 0;
+}
+function save(){
+  const cat  = (catField?.querySelector('input:checked')||{}).value || '';
+  const diff = currentDiff();
+  const goal = goalEl?.value || '';
+  const reward = rewardEl?.value || '';
+  const data = {cat, diff, goal, reward, at: Date.now()};
   try{
-    const curP2 = localStorage.getItem(K_P2_CURRENT) || '';
-    const lastP2= localStorage.getItem(K_P4_LASTP2)  || '';
-    if (curP2 !== lastP2) {
-      localStorage.removeItem(K_G_DATA); // 감정 바뀌면 목표 초기화
-    }
-    localStorage.setItem(K_P4_LASTP2, curP2);
+    localStorage.setItem(K_G_DATA, JSON.stringify(data));
+    sessionStorage.setItem(`${NS}.goal`, goal);
+    sessionStorage.setItem(`${NS}.cat`,  cat);
+    sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 사용
+  }catch(_){}
+}
 
-    const curQ = localStorage.getItem(K_Q_DATA) || '';
-    localStorage.setItem(K_P4_LASTQ, curQ);
-  }catch(e){}
-})();
-
-/* =========================
-   복원
-   ========================= */
+// ===== Restore =====
 (function restore(){
   updateReadout(0);
   try{
     const raw = localStorage.getItem(K_G_DATA);
-    if(!raw) return;
-    const d = JSON.parse(raw);
-
-    // 카테고리
-    if (d.cat) {
-      const chip = [...catField.querySelectorAll('label.chip input')]
-        .find(i=>i.value===d.cat);
-      if (chip) { chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
+    if(raw){
+      const d = JSON.parse(raw);
+      if (d.cat) {
+        const chip = [...$$('#catField label.chip input')].find(i=>i.value===d.cat);
+        if (chip) { chip.checked = true; chip.closest('.chip')?.classList.add('on'); }
+      }
+      if (d.diff) {
+        const r = $('#diff-' + d.diff);
+        if (r){ r.checked = true; updateReadout(d.diff); }
+      }
+      if (typeof d.goal === 'string' && goalEl)   goalEl.value = d.goal;
+      if (typeof d.reward === 'string' && rewardEl) rewardEl.value = d.reward;
+    } else {
+      // 세션에 reward만 남아있을 수 있음
+      const sr = (sessionStorage.getItem(K_REWARD) || '').trim();
+      if (sr && rewardEl) rewardEl.value = sr;
     }
-    // 난이도
-    if (d.diff) {
-      const r = document.getElementById('d'+d.diff);
-      if (r){ r.checked = true; paintStars(d.diff); updateReadout(d.diff); }
-    }
-    // 목표
-    if (typeof d.goal === 'string') goalEl.value = d.goal;
-  }catch(e){}
+  }catch(_){}
 })();
 
-/* =========================
-   카테고리 선택
-   ========================= */
-catField.addEventListener('click', (e)=>{
+// ===== Category chips =====
+catField?.addEventListener('click', (e)=>{
   const label = e.target.closest('.chip');
   if(!label) return;
   const input = label.querySelector('input[type="radio"]');
   if(!input) return;
   input.checked = true;
-  catField.querySelectorAll('.chip').forEach(c=> c.classList.remove('on'));
+  $$('#catField .chip').forEach(c=> c.classList.remove('on'));
   label.classList.add('on');
   save();
 });
 
-/* =========================
-   별점
-   ========================= */
-starsWrap.addEventListener('click', (e)=>{
-  const star = e.target.closest('.star');
-  if(!star) return;
-  const val = Number(star.dataset.val);
-  const r = document.getElementById('d'+val);
-  if (r){ r.checked = true; }
-  paintStars(val);
-  updateReadout(val);
-  save();
-});
+// ===== Stars (accessibility) =====
+(function initStars(){
+  const radios = [...$$('#starsGroup input[name="difficulty"]')];
+  const labels = [...$$('#starsGroup label[for]')];
 
-function paintStars(val){
-  [...starsWrap.querySelectorAll('.star')].forEach(s=>{
-    s.style.color = (Number(s.dataset.val) <= Number(val)) ? 'var(--star-on)' : 'var(--star-off)';
+  function setDifficulty(v){ updateReadout(v); save(); }
+
+  radios.forEach(r=>{
+    r.addEventListener('change', ()=> setDifficulty(r.value));
   });
-}
-function updateReadout(v){
-  const val = Number(v)||0;
-  const extra = minuteMap[val] ? ` · ${minuteMap[val]}분` : '';
-  readout.textContent = `${diffText[val]} (${val}/5)${extra}`;
-}
 
-/* =========================
-   저장
-   ========================= */
-function save(){
-  const cat  = (catField.querySelector('input:checked')||{}).value || '';
-  const diff = Number((document.querySelector('input[name="diff"]:checked')||{}).value||0);
-  const goal = goalEl.value || '';
-  const data = {cat, diff, goal, at: Date.now()};
-  try{ localStorage.setItem(K_G_DATA, JSON.stringify(data)); }catch(e){}
-}
-goalEl.addEventListener('input', save);
-
-/* =========================
-   CTA → timer.html
-   ========================= */
-startBtn.addEventListener('click', ()=>{
-  const cat  = (catField.querySelector('input:checked')||{}).value || '';
-  const goal = (goalEl.value||'').trim();
-
-  // 감정 세션 보강(없을 때만)
-  try{
-    if (!sessionStorage.getItem(K_SELECTED)) {
-      const p2raw = localStorage.getItem(K_P2_CURRENT);
-      if (p2raw) {
-        const obj = JSON.parse(p2raw);
-        if (obj && obj.value) sessionStorage.setItem(K_SELECTED, obj.value);
+  labels.forEach(l=>{
+    l.addEventListener('click', ()=>{
+      const id = l.getAttribute('for');
+      const el = $('#' + id);
+      if (el){
+        el.checked = true;
+        el.dispatchEvent(new Event('change', { bubbles:true }));
       }
-    }
-    sessionStorage.setItem(`${NS}.goal`, goal);
-    sessionStorage.setItem(`${NS}.cat`,  cat);
-  }catch(e){}
+    });
+  });
 
-  // 실제 파일명이 timer2.html이라면 아래를 'timer2.html'로 변경
-  location.href = `timer.html?goal=${encodeURIComponent(goal)}&v=${Date.now()}`;
-});
+  radios.forEach(r=>{
+    r.addEventListener('keydown', e=>{
+      if(e.key==='ArrowLeft' || e.key==='ArrowDown'){
+        e.preventDefault();
+        const prev = [...radios].reverse().find(x=> +x.value < +r.value);
+        if(prev){ prev.checked = true; prev.dispatchEvent(new Event('change', {bubbles:true})); prev.focus(); }
+      }
+      if(e.key==='ArrowRight' || e.key==='ArrowUp'){
+        e.preventDefault();
+        const next = [...radios].find(x=> +x.value > +r.value);
+        if(next){ next.checked = true; next.dispatchEvent(new Event('change', {bubbles:true})); next.focus(); }
+      }
+    });
+  });
 
-/* =========================
-   뒤로가기
-   ========================= */
-backBtn.addEventListener('click', ()=>{
-  if (document.referrer){ history.back(); return; }
-  // 실제 파일명이 question2.html이라면 아래를 'question2.html'로 변경
-  location.href = 'question.html?v=' + Date.now();
-});
+  setDifficulty(($('input[name="difficulty"]:checked')||{}).value || 0);
+})();
+
+// ===== Inputs save =====
+goalEl?.addEventListener('input', save);
+rewardEl?.addEventListener('input', save);
+
+// ===== CTA → timer (t-test.html) =====
+(function bindCTA(){
+  const go = (ev)=>{
+    ev.preventDefault(); ev.stopPropagation();
+    const goal   = (goalEl?.value||'').trim();
+    const reward = (rewardEl?.value||'').trim();
+    try{
+      sessionStorage.setItem(`${NS}.goal`, goal);
+      sessionStorage.setItem(K_REWARD, reward);
+    }catch(_){}
+    const qs = new URLSearchParams({ goal, reward, v:String(Date.now()) });
+    const target = `t-test.html?${qs.toString()}`;
+    try { window.location.assign(target); } catch { window.location.href = target; }
+  };
+  if (nextBtn){
+    ['click','touchend','pointerup'].forEach(evt =>
+      nextBtn.addEventListener(evt, go, { passive:false })
+    );
+  }
+})();

@@ -151,4 +151,10 @@ body{
 .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
 
 /* No-JS */
-.nojs{ text-al
+.nojs{ text-align:center; color:#9ca3af; }
+
+/* Mobile */
+@media (max-width:480px){
+  :root{ --wrap-max:100%; }
+  .sheet{ padding-left:22px; padding-right:22px; }
+}

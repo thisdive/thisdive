@@ -130,11 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 뒤로가기 버튼(옵션)
+<!--  // 뒤로가기 버튼(옵션)
   const backBtn = $('.back-btn');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
       history.back();
     });
   }
-});
+}); -->

@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="light" />
 
-  <!-- ▣ 강화된 CSP (자가 호스팅 전제: CDN 필요 시 style-src/script-src에 도메인 추가) -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src  'self';
@@ -20,31 +19,24 @@
     upgrade-insecure-requests
   ">
 
-  <!-- 검색 차단 -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="googlebot" content="noindex, nofollow" />
-
-  <!-- Referrer 정책 -->
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-
-  <!-- 캐시 억제(테스트/배포 편의) -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- 로컬 정적 리소스 -->
+  <!-- 경로는 현재 파일 위치 기준 상대경로 유지 -->
   <link rel="stylesheet" href="./vendor/normalize.min.css" />
   <link rel="stylesheet" href="./vendor/pretendard.css" />
   <link rel="stylesheet" href="./css/question.css" />
 
-  <!-- 외부 스크립트 (defer, inline 금지) -->
   <script src="./js/question.js" defer></script>
 </head>
 <body>
   <div class="app">
     <header class="header" role="banner">
       <div class="inner">
-
         <span class="logo-dot" aria-hidden="true"></span>
         <h1 class="title">오늘의 정돈</h1>
       </div>
@@ -61,10 +53,7 @@
         <textarea
           id="meText"
           placeholder="예) 화가난다 : 나를 무시한다고 생각했다 → 팀원으로 존중 받고 싶은 바램 [충족 X] &#10;&#10;예) 기쁘다 : 나를 챙겨준다고 생각했다 → 연인으로 사랑 받고 싶은 바램 [충족 O]"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="sentences"
-          spellcheck="false"
+          inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false"
         ></textarea>
       </section>
 
@@ -74,10 +63,7 @@
         <textarea
           id="youText"
           placeholder="예) 상대방도 내 행동이 자신을 무시한다고 생각했을 것 같다 → 책임자로 존중 받고 싶은 바램 [충족 X]"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="sentences"
-          spellcheck="false"
+          inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false"
         ></textarea>
       </section>
 
@@ -87,10 +73,7 @@
         <textarea
           id="loveText"
           placeholder="예) 상대방 입장이 되어보니 내 행동도 잘못된 부분이 있다는 걸 알게 됐다. 앞으로는 한 번 더 생각하고 행동하는 더 멋진 내가 되자!"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="sentences"
-          spellcheck="false"
+          inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false"
         ></textarea>
       </section>
     </main>
@@ -102,9 +85,6 @@
     </div>
   </div>
 
-  <noscript>
-    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
-  </noscript>
+  <noscript><p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p></noscript>
 </body>
 </html>
-

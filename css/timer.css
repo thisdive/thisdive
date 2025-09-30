@@ -1,69 +1,117 @@
-body {
-  font-family: 'MaruBuri', system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-  background-color: #f8f4ef;
-  color: #2a3249;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  min-height: 100vh; padding: 60px 16px 24px; margin: 0;
+/* ▣ 로컬 폰트 (woff2 파일을 /fonts에 두세요) */
+@font-face{
+  font-family:'Pretendard';
+  src:url('../fonts/Pretendard-Regular.woff2') format('woff2');
+  font-weight:400; font-style:normal; font-display:swap;
 }
-h1 { margin-bottom: 15px; font-size: 24px; font-weight: bold; }
+@font-face{
+  font-family:'MaruBuri';
+  src:url('../fonts/MaruBuri-Regular.woff2') format('woff2');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'MaruBuri';
+  src:url('../fonts/MaruBuri-Bold.woff2') format('woff2');
+  font-weight:700; font-style:normal; font-display:swap;
+}
 
-/* 🔶 목표 문구만 노란 하이라이트 */
-.goal-banner{ margin: 0 0 28px; text-align:center; max-width:min(86vw, 720px); }
+/* THEME */
+:root{
+  --bg:#f7f3ee;
+  --fg:#2a3249;
+  --muted:#6b7280;
+  --rose-50:#fbf5f3;
+  --rose-100:#f4e6e2;
+  --rose-300:#d7a8b5;
+  --beige-200:#ece6df;
+  --navy:#172034;
+
+  --wrap-max: clamp(860px, 72vw, 1160px);
+  --card-w: clamp(320px, 88vw, 720px);
+
+  --r-xl:22px; --r-md:14px;
+  --shadow: 0 8px 26px rgba(23,32,52,.06);
+  --shadow-soft: 0 3px 10px rgba(23,32,52,.04);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:'Pretendard',system-ui,-apple-system,"Segoe UI",Roboto, "Noto Sans KR",sans-serif;
+}
+
+/* Header */
+.header{ position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--beige-200); }
+.header .inner{
+  max-width:var(--wrap-max); margin:0 auto; padding:14px 22px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.logo-dot{ width:10px; height:10px; border-radius:9999px; background:var(--rose-300); box-shadow:0 0 0 6px var(--rose-100); }
+.title{ margin:0; font-weight:700; font-size: clamp(18px, 3.8vw, 22px); line-height:1.15; letter-spacing:-.2px; }
+
+/* Layout */
+.wrap{ display:flex; justify-content:center; padding:22px 16px 40px; }
+.card{
+  width:100%; max-width: var(--card-w);
+  background:#fff; border:1px solid var(--beige-200); border-radius:var(--r-xl);
+  box-shadow:var(--shadow-soft); padding:24px 20px; display:flex; flex-direction:column; align-items:center;
+}
+
+/* Goal banner */
+.goal-banner{ width:100%; max-width:var(--card-w); margin:0 auto 18px; text-align:center; }
 .goal-banner .hl{
-  font-weight:500; font-size:18.5px; padding:0 6px;
-  background: linear-gradient(transparent 60%, #FFD8C2 0);
-  border-radius:4px;
+  display:inline-block; padding:0 6px; font-size:18.5px; font-weight:500;
+  background:linear-gradient(transparent 60%, #FFD8C2 0);
+  border-radius:4px; color:var(--navy);
 }
 
-.timer-controls { display: flex; gap: 12px; margin-bottom: 42px; flex-wrap: wrap; justify-content: center; }
-.timer-controls button {
-  background-color: #F3ECE2; color: #2a3249; border: none;
-  padding: 10px 16px; border-radius: 8px; font-size: 16px; cursor: pointer;
-  transition: transform .06s ease, box-shadow .12s ease;
+/* Timer controls */
+.timer-controls{ display:flex; flex-direction:column; gap:14px; margin:0 0 26px; width:100%; max-width:460px; }
+.timer-controls .row{ display:flex; gap:12px; justify-content:center; }
+.timer-controls button{
+  width:70px; text-align:center;
+  background:#F3ECE2; color:var(--fg); border:0; border-radius:8px;
+  padding:8px 10px; font-size:16px; cursor:pointer;
+  transition: transform .06s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
 }
 .timer-controls button:active{ transform: translateY(1px); }
-.timer-controls button.active {
-  background-color: #2a3249; color: #F3ECE2; font-weight: 550;
+.timer-controls button.active{ background:var(--navy); color:#F3ECE2; font-weight:550; }
+
+/* Circle timer */
+.circle-timer{ position:relative; width:220px; height:220px; margin: 8px 0 18px; }
+.circle-timer svg{ transform: rotate(-90deg); }
+.circle-timer circle{ fill:none; stroke-width:6; }
+.bg{ stroke:#e8dfd6; }
+.progress{ stroke:var(--navy); stroke-linecap:round; transition: stroke-dashoffset 1s linear; }
+.time-text{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'MaruBuri',serif; font-weight:700; font-size:32px; color:var(--navy);
 }
 
-.circle-timer { position: relative; width: 220px; height: 220px; margin-bottom: 20px; }
-.circle-timer svg { transform: rotate(-90deg); }
-.circle-timer circle { fill: none; stroke-width: 6; }
-.bg { stroke: #e8dfd6; }
-.progress { stroke: #2a3249; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
-.time-text { position: absolute; inset: 0; display:flex; align-items:center; justify-content:center;
-  font-size: 32px; font-weight: bold; }
-
-.reflection { text-align: center; margin-top: 12px; }
-.reflection p { margin: 8px 0 25px; font-size: 16px; }
-
-/* ‘몰입 완료’ 버튼 */
-.complete {
-  background-color: #F3ECE2; color: #2a3249; border: none;
-  padding: 10px 16px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
-  transition: background-color .15s ease, color .15s ease;
+/* CTA */
+.cta{ margin-top:2px; }
+.btn{
+  width:200px; padding:14px 0; background:var(--navy); color:#fff;
+  border:1px solid rgba(23,32,52,.12); border-radius:18px; font-weight:650; letter-spacing:.2px;
+  box-shadow:0 10px 24px rgba(23,32,52,.22); font-size:.9rem; cursor:pointer;
 }
-.complete:disabled { opacity: .5; cursor: not-allowed; }
+.btn:active{ transform: translateY(1px); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
 
-/* ✅ 완료 상태(요청) : 남색 배경 + 글자색(#F3ECE2) */
-.complete.done { background-color: #2A3249; color: #F3ECE2; pointer-events: none; }
-
+/* Toast */
 .toast{
-  position: fixed; left: 50%; bottom: 75px; transform: translateX(-50%) translateY(12px);
-  padding: 12px 16px; background:#fff; color:#2A3249; border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.18); opacity: 0; transition: opacity .2s ease, transform .2s ease;
-  z-index: 10000; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; white-space: nowrap;
+  position:fixed; left:50%; bottom:75px; transform:translateX(-50%) translateY(12px);
+  padding:12px 16px; background:#fff; color:var(--navy); border-radius:12px;
+  box-shadow:0 10px 24px rgba(0,0,0,.18); opacity:0; transition:opacity .2s ease, transform .2s ease;
+  z-index:10000; white-space:nowrap; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
-.toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-@media (max-width: 420px){
+/* No-JS */
+.nojs{ text-align:center; color:#9ca3af; }
+
+/* Mobile */
+@media (max-width:420px){
   .goal-banner .hl{ font-size:17px; }
 }
-
-.back-btn{
-  appearance:none; border:1px solid #e5e7eb; background:#fff; color:#374151;
-  width:36px; height:36px; border-radius:10px; font-size:18px; line-height:1;
-  display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
-  margin:0 8px 8px 0; align-self:flex-start;
-}
-.back-btn:active{ transform: translateY(1px); }

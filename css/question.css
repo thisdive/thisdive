@@ -74,6 +74,15 @@ p, textarea, .btn { font-family: inherit; }
 }
 .title{ margin:0; font-weight:650; }
 
+/* ▼ 추가: emotion 페이지와 동일한 타이틀 크기/라인하이트 고정 */
+.header .title,
+.header h1.title{
+  font-weight:700;
+  font-size: clamp(18px, 3.8vw, 22px);
+  line-height:1.15;
+  letter-spacing:-0.2px;
+  margin:0;
+}
 
 /* ===== Content wrap ===== */
 .wrap{

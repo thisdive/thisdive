@@ -130,95 +130,83 @@ document.addEventListener('DOMContentLoaded', () => {
   bindPersistence(label);
 
   // ▼ CTA 이동
-// ▼ CTA 이동 — iOS Safari BFCache 대응 (단일 click 리스너 + 복원 시 리셋)
+// ▼ CTA 이동 — 단일 click 리스너 + iOS BFCache 리셋 (가장 보수적으로)
 (function initCTA(){
-  const nextBtn = document.querySelector('#nextBtn');
-  if (!nextBtn) return;
+  var btn = document.getElementById('nextBtn');
+  if (!btn) return;                      // 버튼 못 찾으면 조용히 종료
 
-  // 이전에 붙어있을지 모를 핸들러 제거(복원 시 이중 바인딩 방지)
-  nextBtn.replaceWith(nextBtn.cloneNode(true));
-  const btn = document.querySelector('#nextBtn');
+  var didGo = false;                     // 다중 클릭 방지 플래그
 
-  let didGo = false;
+  // 쿼리 파서(폴백 포함)
+  function getQS(name){
+    if (typeof URLSearchParams !== 'undefined') {
+      return new URLSearchParams(location.search).get(name);
+    }
+    var s = (location.search || '').replace(/^\?/, '');
+    if (!s) return null;
+    var o = {};
+    s.split('&').forEach(function(p){
+      var i = p.indexOf('=');
+      if (i < 0) { o[decodeURIComponent(p)] = ''; return; }
+      o[decodeURIComponent(p.slice(0,i))] = decodeURIComponent(p.slice(i+1));
+    });
+    return o[name] || null;
+  }
+  function buildQS(obj){
+    if (typeof URLSearchParams !== 'undefined') return new URLSearchParams(obj).toString();
+    var out = [];
+    for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj,k)) {
+      var v = obj[k] == null ? '' : String(obj[k]);
+      out.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+    }
+    return out.join('&');
+  }
+  function safeNextFile(s){
+    s = (s || '').trim();
+    return (/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(s)) ? s : 'future.html';
+  }
 
-  function safeNextFile(str) {
-    const v = (str || '').trim();
-    if (/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(v)) return v;
-    return 'future.html';
+  function computeTarget(){
+    // emotion 값: 쿼리 우선, 없으면 화면 라벨 폴백
+    var emotion = (getQS('emotion') || '').trim();
+    if (!emotion) {
+      var t = document.querySelector('#emotionValue .chip-label');
+      if (t && t.textContent) emotion = t.textContent.trim();
+    }
+    var override = getQS('next') || '';
+    var nextFile = safeNextFile(override || 'future.html');
+    return nextFile + (nextFile.indexOf('?') >= 0 ? '&' : '?') + buildQS({ emotion: emotion });
   }
 
   function go(ev){
-    // iOS에서 touch→click 순으로 2번 들어와도 didGo로 방지
-    if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(_){} }
+    try { ev && ev.preventDefault(); ev && ev.stopPropagation(); } catch(_){}
     if (didGo) return;
     didGo = true;
 
-    // ?next= 덮어쓰기 허용(상대 .html만)
-    const override = (typeof URLSearchParams !== 'undefined')
-      ? new URLSearchParams(location.search).get('next')
-      : (function(){ const q=location.search.replace(/^\?/,'').split('&').reduce((m,s)=>{const i=s.indexOf('='); if(i<0){m[decodeURIComponent(s)]='';} else {m[decodeURIComponent(s.slice(0,i))]=decodeURIComponent(s.slice(i+1));} return m;},{}); return q.next; })();
+    var target = computeTarget();
 
-    const nextFile = safeNextFile(override || 'future.html');
-
-    // emotion 파라미터 다시 구성 (URLSearchParams 폴백 포함)
-    var labelParam = (function(){
-      if (typeof URLSearchParams !== 'undefined') {
-        return (new URLSearchParams(location.search).get('emotion') || '').trim();
-      }
-      const s = location.search.replace(/^\?/,'');
-      const map = {};
-      s && s.split('&').forEach(p=>{
-        const i=p.indexOf('=');
-        if(i<0){ map[decodeURIComponent(p)]=''; return; }
-        map[decodeURIComponent(p.slice(0,i))]=decodeURIComponent(p.slice(i+1));
-      });
-      return (map.emotion || '').trim();
-    })();
-
-    // labelParam이 비어있으면 화면에 표시된 라벨을 활용(최후 폴백)
-    if (!labelParam) {
-      const t = document.querySelector('#emotionValue .chip-label');
-      if (t && t.textContent) labelParam = t.textContent.trim();
-    }
-
-    // 쿼리 생성(폴백)
-    function buildQS(obj){
-      if (typeof URLSearchParams !== 'undefined') return new URLSearchParams(obj).toString();
-      const out=[]; for(const k in obj){ if(!Object.prototype.hasOwnProperty.call(obj,k)) continue;
-        out.push(encodeURIComponent(k)+'='+encodeURIComponent(obj[k] == null ? '' : String(obj[k])));
-      } return out.join('&');
-    }
-    const target = nextFile + (nextFile.indexOf('?')>=0 ? '&':'?') + buildQS({ emotion: labelParam });
-
-    // iOS에서 가끔 assign가 씹히는 이슈 → 약간 지연을 주면 안정적
-    setTimeout(()=>{
+    // iOS에서 assign 타이밍 이슈 회피용 미세 지연
+    setTimeout(function(){
       try { window.location.assign(target); }
-      catch { window.location.href = target; }
+      catch (_){ window.location.href = target; }
     }, 0);
   }
 
-  // 단일 click 만 사용 (touch/pointer는 iOS에서 click을 합성하므로 오히려 중복 유발)
+  // 단일 click만 사용 (touch/pointer는 iOS에서 click 합성 → 중복/충돌 원인)
   btn.addEventListener('click', go, { passive:false });
 
-  // BFCache 복원 시 플래그/리스너를 리셋
-  function resetAfterBFCache(){
-    didGo = false;
-    // 혹시 모를 중복 바인딩 방지: 리스너 재설치
-    btn.replaceWith(btn.cloneNode(true));
-    const fresh = document.querySelector('#nextBtn');
-    fresh.addEventListener('click', go, { passive:false });
-  }
-
-  window.addEventListener('pageshow', (e)=>{
-    // iOS Safari: e.persisted === true 면 BFCache에서 복원
-    const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
-    const isBF = (e && e.persisted) || (nav && nav.type === 'back_forward');
-    if (isBF) resetAfterBFCache();
+  // BFCache 복원 시 플래그 리셋 (아이폰 뒤로 왔다가 다시 클릭 가능하게)
+  window.addEventListener('pageshow', function(e){
+    // e.persisted: 사파리 BFCache / nav.type === 'back_forward' 다른 브라우저
+    var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
+    var isBF = (e && e.persisted) || (nav && nav.type === 'back_forward');
+    if (isBF) didGo = false;
   });
 
-  // 어떤 환경에서는 visibilitychange 후에만 클릭이 먹는 경우가 있어 보강
-  document.addEventListener('visibilitychange', ()=>{
+  // 가끔 탭 복귀 시 첫 클릭이 씹히는 케이스 보강
+  document.addEventListener('visibilitychange', function(){
     if (document.visibilityState === 'visible') didGo = false;
   });
 })();
+
 

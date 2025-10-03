@@ -31,6 +31,45 @@ const KEY_TO_KO = Object.freeze({
   }
 })();
 
+// ---------- URLSearchParams 폴백 유틸 ----------
+function parseQS(search) {
+  const out = {};
+  const s = (search || '').replace(/^\?/, '');
+  if (!s) return out;
+  s.split('&').forEach(p => {
+    const i = p.indexOf('=');
+    if (i < 0) { out[decodeURIComponent(p)] = ''; return; }
+    const k = decodeURIComponent(p.slice(0, i));
+    const v = decodeURIComponent(p.slice(i+1));
+    out[k] = v;
+  });
+  return out;
+}
+function buildQS(obj) {
+  const parts = [];
+  for (const k in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
+    const v = obj[k] == null ? '' : String(obj[k]);
+    parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+  }
+  return parts.join('&');
+}
+// 안전한 쿼리 읽기/쓰기 (URLSearchParams 있으면 사용, 없으면 폴백)
+function getQueryParam(name) {
+  if (typeof URLSearchParams !== 'undefined') {
+    return new URLSearchParams(location.search).get(name);
+  }
+  const q = parseQS(location.search);
+  return q[name] || null;
+}
+function appendQuery(url, paramsObj) {
+  const hasQ = url.indexOf('?') >= 0;
+  const qs = (typeof URLSearchParams !== 'undefined')
+    ? new URLSearchParams(paramsObj).toString()
+    : buildQS(paramsObj);
+  return url + (hasQ ? '&' : '?') + qs;
+}
+
 function $(s, r=document){ return r.querySelector(s); }
 
 // 인덱스 재진입 토큰 처리
@@ -76,13 +115,12 @@ function bindPersistence(emotionLabel){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(location.search);
-  let raw = (params.get('emotion') || '').trim();
+  // emotion 파라미터 안전 파싱
+  let raw = (getQueryParam('emotion') || '').trim();
   let label = '선택 안됨';
-
   if (raw && ALLOWED.has(raw)) label = KEY_TO_KO[raw] || raw;
   else {
-    const alt = (params.get('emo') || params.get('e') || '').trim();
+    const alt = (getQueryParam('emo') || getQueryParam('e') || '').trim();
     if (alt && ALLOWED.has(alt)) label = KEY_TO_KO[alt] || alt;
   }
 
@@ -92,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
   enforceResetFromIndex();
   bindPersistence(label);
 
-  // ▼ CTA 이동 (클릭·터치 모두 커버, iOS Safari 신뢰성 강화)
+  // ▼ CTA 이동
   const nextBtn = document.querySelector('#nextBtn');
   if (nextBtn) {
     let didGo = false; // 다중 트리거 방지
@@ -102,18 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (didGo) return;
       didGo = true;
 
-      // ?next= 덮어쓰기 가능, 없으면 future.html
-      const override = new URLSearchParams(location.search).get('next');
-      let nextFile = (override && override.trim()) ? override.trim() : 'future.html';
-
-      // ★ 간단 화이트리스트: 상대경로 .html만 허용 (보안/오타 보호)
+      // ?next= 덮어쓰기 (상대경로 .html만 허용)
+      let nextFile = (getQueryParam('next') || '').trim() || 'future.html';
       if (!/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(nextFile)) {
         nextFile = 'future.html';
       }
 
-      const qs = new URLSearchParams({ emotion: label }).toString();
-      const target = `${nextFile}${nextFile.includes('?') ? '&' : '?'}${qs}`;
-
+      const target = appendQuery(nextFile, { emotion: label });
       try { window.location.assign(target); }
       catch { window.location.href = target; }
     };

@@ -130,34 +130,95 @@ document.addEventListener('DOMContentLoaded', () => {
   bindPersistence(label);
 
   // ▼ CTA 이동
+// ▼ CTA 이동 — iOS Safari BFCache 대응 (단일 click 리스너 + 복원 시 리셋)
+(function initCTA(){
   const nextBtn = document.querySelector('#nextBtn');
-  if (nextBtn) {
-    let didGo = false; // 다중 트리거 방지
-    const go = (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      if (didGo) return;
-      didGo = true;
+  if (!nextBtn) return;
 
-      // ?next= 덮어쓰기 (상대경로 .html만 허용)
-      let nextFile = (getQueryParam('next') || '').trim() || 'future.html';
-      if (!/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(nextFile)) {
-        nextFile = 'future.html';
+  // 이전에 붙어있을지 모를 핸들러 제거(복원 시 이중 바인딩 방지)
+  nextBtn.replaceWith(nextBtn.cloneNode(true));
+  const btn = document.querySelector('#nextBtn');
+
+  let didGo = false;
+
+  function safeNextFile(str) {
+    const v = (str || '').trim();
+    if (/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(v)) return v;
+    return 'future.html';
+  }
+
+  function go(ev){
+    // iOS에서 touch→click 순으로 2번 들어와도 didGo로 방지
+    if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(_){} }
+    if (didGo) return;
+    didGo = true;
+
+    // ?next= 덮어쓰기 허용(상대 .html만)
+    const override = (typeof URLSearchParams !== 'undefined')
+      ? new URLSearchParams(location.search).get('next')
+      : (function(){ const q=location.search.replace(/^\?/,'').split('&').reduce((m,s)=>{const i=s.indexOf('='); if(i<0){m[decodeURIComponent(s)]='';} else {m[decodeURIComponent(s.slice(0,i))]=decodeURIComponent(s.slice(i+1));} return m;},{}); return q.next; })();
+
+    const nextFile = safeNextFile(override || 'future.html');
+
+    // emotion 파라미터 다시 구성 (URLSearchParams 폴백 포함)
+    var labelParam = (function(){
+      if (typeof URLSearchParams !== 'undefined') {
+        return (new URLSearchParams(location.search).get('emotion') || '').trim();
       }
+      const s = location.search.replace(/^\?/,'');
+      const map = {};
+      s && s.split('&').forEach(p=>{
+        const i=p.indexOf('=');
+        if(i<0){ map[decodeURIComponent(p)]=''; return; }
+        map[decodeURIComponent(p.slice(0,i))]=decodeURIComponent(p.slice(i+1));
+      });
+      return (map.emotion || '').trim();
+    })();
 
-      const target = appendQuery(nextFile, { emotion: label });
+    // labelParam이 비어있으면 화면에 표시된 라벨을 활용(최후 폴백)
+    if (!labelParam) {
+      const t = document.querySelector('#emotionValue .chip-label');
+      if (t && t.textContent) labelParam = t.textContent.trim();
+    }
+
+    // 쿼리 생성(폴백)
+    function buildQS(obj){
+      if (typeof URLSearchParams !== 'undefined') return new URLSearchParams(obj).toString();
+      const out=[]; for(const k in obj){ if(!Object.prototype.hasOwnProperty.call(obj,k)) continue;
+        out.push(encodeURIComponent(k)+'='+encodeURIComponent(obj[k] == null ? '' : String(obj[k])));
+      } return out.join('&');
+    }
+    const target = nextFile + (nextFile.indexOf('?')>=0 ? '&':'?') + buildQS({ emotion: labelParam });
+
+    // iOS에서 가끔 assign가 씹히는 이슈 → 약간 지연을 주면 안정적
+    setTimeout(()=>{
       try { window.location.assign(target); }
       catch { window.location.href = target; }
-    };
-    nextBtn.addEventListener('click', go, { passive:false });
-    nextBtn.addEventListener('touchend', go, { passive:false });
-    nextBtn.addEventListener('pointerup', go, { passive:false });
-
-    // 🔹 iOS Safari BFCache 복원 시 플래그 리셋
-    window.addEventListener('pageshow', (e) => {
-      if (e.persisted) {
-        didGo = false;
-      }
-    });
+    }, 0);
   }
-});
+
+  // 단일 click 만 사용 (touch/pointer는 iOS에서 click을 합성하므로 오히려 중복 유발)
+  btn.addEventListener('click', go, { passive:false });
+
+  // BFCache 복원 시 플래그/리스너를 리셋
+  function resetAfterBFCache(){
+    didGo = false;
+    // 혹시 모를 중복 바인딩 방지: 리스너 재설치
+    btn.replaceWith(btn.cloneNode(true));
+    const fresh = document.querySelector('#nextBtn');
+    fresh.addEventListener('click', go, { passive:false });
+  }
+
+  window.addEventListener('pageshow', (e)=>{
+    // iOS Safari: e.persisted === true 면 BFCache에서 복원
+    const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
+    const isBF = (e && e.persisted) || (nav && nav.type === 'back_forward');
+    if (isBF) resetAfterBFCache();
+  });
+
+  // 어떤 환경에서는 visibilitychange 후에만 클릭이 먹는 경우가 있어 보강
+  document.addEventListener('visibilitychange', ()=>{
+    if (document.visibilityState === 'visible') didGo = false;
+  });
+})();
+

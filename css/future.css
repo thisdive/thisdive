@@ -1,3 +1,23 @@
+/* ★ Android 글자 자동확대 방지 */
+html{
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+/* 프리뷰·입력 영역은 명시 크기(과확대 방지) */
+.preview,
+#preview,
+#preview-sense,
+input.input,
+.select,
+.sense .input{
+  font-size: 16px;
+  line-height: 1.6;
+}
+/* 일부 WebKit 계열에서 보정 보장 */
+@supports (-webkit-touch-callout: none) {
+  .preview, #preview, #preview-sense { font-size: 16px; }
+}
+
 /* ▣ 로컬 폰트 (woff2를 /fonts 에 두세요) */
 @font-face{
   font-family:'Pretendard';

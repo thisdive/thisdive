@@ -37,7 +37,9 @@ function $(s, r=document){ return r.querySelector(s); }
 function enforceResetFromIndex(){
   function uiReset(){
     try { localStorage.removeItem(K_STATE); } catch(_){}
-    ['#meText','#youText','#loveText'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+    ['#meText','#youText','#loveText'].forEach(id => {
+      const el = $(id); if (el) el.value = '';
+    });
   }
   function maybeReset(){
     const resetEpoch = localStorage.getItem(K_RESET) || '';
@@ -65,7 +67,9 @@ function bindPersistence(emotionLabel){
   }
   const save = () => {
     const values = areas.map(ta => (ta && ta.value) ? ta.value : '');
-    try { localStorage.setItem(K_STATE, JSON.stringify({ emotion: emotionLabel, values, ts: Date.now() })); } catch(_){}
+    try {
+      localStorage.setItem(K_STATE, JSON.stringify({ emotion: emotionLabel, values, ts: Date.now() }));
+    } catch(_){}
   };
   areas.forEach(ta => ta && ta.addEventListener('input', save));
   window.addEventListener('beforeunload', save);
@@ -91,18 +95,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // ▼ CTA 이동 (클릭·터치 모두 커버, iOS Safari 신뢰성 강화)
   const nextBtn = document.querySelector('#nextBtn');
   if (nextBtn) {
+    let didGo = false; // 다중 트리거 방지
     const go = (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
+      if (didGo) return;
+      didGo = true;
 
-      // ?next=로 덮어쓸 수 있고, 없으면 f-test4.html이 기본
+      // ?next= 덮어쓰기 가능, 없으면 future.html
       const override = new URLSearchParams(location.search).get('next');
-      const nextFile = (override && override.trim()) ? override.trim() : 'future.html';
+      let nextFile = (override && override.trim()) ? override.trim() : 'future.html';
+
+      // ★ 간단 화이트리스트: 상대경로 .html만 허용 (보안/오타 보호)
+      if (!/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(nextFile)) {
+        nextFile = 'future.html';
+      }
 
       const qs = new URLSearchParams({ emotion: label }).toString();
       const target = `${nextFile}${nextFile.includes('?') ? '&' : '?'}${qs}`;
 
-      // assign을 우선 사용 (iOS 백스와이프 히스토리 보존)
       try { window.location.assign(target); }
       catch { window.location.href = target; }
     };

@@ -24,7 +24,7 @@ var KEY_TO_KO = Object.freeze({
   anxious:"불안하다", tense:"긴장된다", afraid:"두렵다", burdened:"부담된다"
 });
 
-// ▣ 프레임 버스트(클릭재킹 억제; GH Pages에서 frame-ancestors 대안)
+// ▣ 프레임 버스트
 (function frameBust(){
   if (window.top !== window.self) {
     try { window.top.location = window.location; } catch(_) {}
@@ -58,62 +58,43 @@ function bindPersistence(emotionLabel){
   var areas = ['#meText','#youText','#loveText'].map(function(sel){ return $(sel); }).filter(Boolean);
   var saved = null;
   try { saved = JSON.parse(localStorage.getItem(K_STATE) || 'null'); } catch(_){}
-
   if (saved && saved.emotion && saved.emotion !== emotionLabel) {
     try { localStorage.removeItem(K_STATE); } catch(_){}
     saved = null;
   }
   if (saved && Array.isArray(saved.values)) {
-    areas.forEach(function(ta, i){
-      if (typeof saved.values[i] === 'string') ta.value = saved.values[i];
-    });
+    areas.forEach(function(ta, i){ if (typeof saved.values[i] === 'string') ta.value = saved.values[i]; });
   }
   var save = function(){
     var values = areas.map(function(ta){ return (ta && ta.value) ? ta.value : ''; });
-    try {
-      localStorage.setItem(K_STATE, JSON.stringify({ emotion: emotionLabel, values: values, ts: Date.now() }));
-    } catch(_){}
+    try { localStorage.setItem(K_STATE, JSON.stringify({ emotion: emotionLabel, values: values, ts: Date.now() })); } catch(_){}
   };
   areas.forEach(function(ta){ if (ta) ta.addEventListener('input', save); });
   window.addEventListener('beforeunload', save);
 }
 
-// URLSearchParams 폴백
-function getQS(name){
-  if (typeof URLSearchParams !== 'undefined') return new URLSearchParams(location.search).get(name);
-  var s = (location.search || '').replace(/^\?/, ''); if (!s) return null;
-  var o = {};
-  s.split('&').forEach(function(p){
-    var i = p.indexOf('=');
-    if (i < 0) { o[decodeURIComponent(p)] = ''; return; }
-    o[decodeURIComponent(p.slice(0,i))] = decodeURIComponent(p.slice(i+1));
-  });
-  return o[name] || null;
-}
-function buildQS(obj){
-  if (typeof URLSearchParams !== 'undefined') return new URLSearchParams(obj).toString();
-  var out = [];
-  for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj,k)) {
-    var v = obj[k] == null ? '' : String(obj[k]);
-    out.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
-  }
-  return out.join('&');
-}
-function safeNextFile(s){
-  s = (s || '').trim();
-  return (/^[a-z0-9._/-]+\.html(?:\?.*)?$/i.test(s)) ? s : 'future.html';
-}
-
+// ==========================
+// 메인 로직
+// ==========================
 document.addEventListener('DOMContentLoaded', function(){
-  // emotion 라벨 계산 (화이트리스트)
-  var params = (typeof URLSearchParams !== 'undefined') ? new URLSearchParams(location.search) : null;
-  var raw = params ? (params.get('emotion') || '') : (getQS('emotion') || '');
-  raw = (raw || '').trim();
-  var label = '선택 안됨';
 
-  if (raw && ALLOWED.has(raw)) label = KEY_TO_KO[raw] || raw;
-  else {
-    var alt = (getQS('emo') || getQS('e') || '').trim();
+  // emotion 라벨 계산
+  var params = new URLSearchParams(location.search);
+  var raw = (params.get('emotion') || '').trim();
+
+  // 없으면 emotion.html에서 저장한 값 사용
+  if (!raw) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('thisdive.p2:current') || 'null');
+      if (saved && saved.value) raw = String(saved.value).trim();
+    } catch(_) {}
+  }
+
+  var label = '선택 안됨';
+  if (raw && ALLOWED.has(raw)) {
+    label = KEY_TO_KO[raw] || raw;
+  } else {
+    var alt = (params.get('emo') || params.get('e') || '').trim();
     if (alt && ALLOWED.has(alt)) label = KEY_TO_KO[alt] || alt;
   }
 
@@ -123,50 +104,39 @@ document.addEventListener('DOMContentLoaded', function(){
   enforceResetFromIndex();
   bindPersistence(label);
 
-  // ▼ CTA 이동 — 단일 click 리스너 + iOS BFCache 리셋 + 앵커 백업
-  (function initCTA(){
-    var btn = document.getElementById('nextBtn');
-    if (!btn) return;
-
+  // CTA 이동
+  var btn = document.getElementById('nextBtn');
+  if (btn) {
     var didGo = false;
 
     function computeTarget(){
-      // emotion 값: 쿼리 우선, 없으면 화면 라벨 폴백
-      var emotion = (getQS('emotion') || '').trim();
-      if (!emotion) {
-        var t = document.querySelector('#emotionValue .chip-label');
-        if (t && t.textContent) emotion = t.textContent.trim();
-      }
-      var override = getQS('next') || '';
-      var nextFile = safeNextFile(override || 'future.html');
-      return nextFile + (nextFile.indexOf('?') >= 0 ? '&' : '?') + buildQS({ emotion: emotion });
+      var emotion = (params.get('emotion') || '').trim() || label;
+      var override = params.get('next') || '';
+      var nextFile = (override && override.trim()) ? override.trim() : 'future.html';
+      return nextFile + (nextFile.indexOf('?') >= 0 ? '&' : '?') + 'emotion=' + encodeURIComponent(emotion);
     }
 
     function go(ev){
-      // JS가 동작하면 오버라이드, 실패 시 앵커의 기본 href로 이동(백업)
-      try { ev && ev.preventDefault(); ev && ev.stopPropagation(); } catch(_){}
+      try { ev.preventDefault(); ev.stopPropagation(); } catch(_){}
       if (didGo) return;
       didGo = true;
-
       var target = computeTarget();
       setTimeout(function(){
         try { window.location.assign(target); }
-        catch (_){ window.location.href = target; }
+        catch(_) { window.location.href = target; }
       }, 0);
     }
 
     btn.addEventListener('click', go, { passive:false });
+    btn.addEventListener('touchend', go, { passive:false });
+    btn.addEventListener('pointerup', go, { passive:false });
 
-    // BFCache 복원 시 플래그 리셋
+    // BFCache 복원 시 reset
     window.addEventListener('pageshow', function(e){
-      var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation') || [])[0];
-      var isBF = (e && e.persisted) || (nav && nav.type === 'back_forward');
-      if (isBF) didGo = false;
+      if (e.persisted) didGo = false;
     });
-
-    // 탭 복귀 보강
     document.addEventListener('visibilitychange', function(){
       if (document.visibilityState === 'visible') didGo = false;
     });
-  })();
+  }
 });

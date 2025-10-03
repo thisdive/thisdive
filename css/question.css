@@ -169,36 +169,34 @@ textarea:focus{ border-color:var(--rose-300); box-shadow:none; transition:border
 
 /* ===== CTA ===== */
 .cta{
-  position:relative;  /* 🔧 static → relative */
-  z-index:5;          /* 🔧 항상 버튼이 위에 오도록 */
+  position:relative;
+  z-index:5;
   border-top:1px solid var(--border);
   padding:14px clamp(14px,3vw,26px);
   background:none;
 }
 .cta-inner{ max-width:var(--wrap-max); margin:0 auto; text-align:center; }
-.btn{
-/* 버튼/링크 공통 스타일 (a, button 둘 다 OK) */
-.btn{
-  display: inline-flex;               /* ⬅️ 핵심: 링크여도 폭/패딩 적용 */
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;              /* a 밑줄 제거 */
-  width: 200px;
-  padding: 16px 0;
-  background: var(--navy);
-  color: #fff;
-  border: 1px solid rgba(23,32,52,.12);
-  border-radius: 18px;
-  font-weight: 650;
-  letter-spacing: .2px;
-  box-shadow: 0 10px 24px rgba(23,32,52,.22);
-  font-size: .9rem;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent; /* iOS 터치 하이라이트 제거 */
-}
-.btn:active{ transform: translateY(1px); }
-.btn:focus-visible{ outline: 0; box-shadow: 0 0 0 6px rgba(215,168,181,.35); }
 
+.btn{
+  display:inline-flex;              /* a 태그에도 적용 */
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;             /* 링크 밑줄 제거 */
+  width:200px;
+  padding:16px 0;
+  background:var(--navy);
+  color:#fff;
+  border:1px solid rgba(23,32,52,.12);
+  border-radius:18px;
+  font-weight:650;
+  letter-spacing:.2px;
+  box-shadow:0 10px 24px rgba(23,32,52,.22);
+  font-size:.9rem;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent; /* iOS 터치 하이라이트 제거 */
+}
+.btn:active{ transform:translateY(1px); }
+.btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
 
 /* iOS safe area */
 @supports (padding:max(0px)){

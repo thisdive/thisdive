@@ -37,8 +37,7 @@
 }
 
 *{ box-sizing:border-box; }
-html,body{ height:100%; }
-html,body{ overflow-x:hidden; }
+html,body{ height:100%; overflow-x:hidden; }
 
 body{
   margin:0;
@@ -74,7 +73,6 @@ p, textarea, .btn { font-family: inherit; }
 }
 .title{ margin:0; font-weight:650; }
 
-/* ▼ 추가: emotion 페이지와 동일한 타이틀 크기/라인하이트 고정 */
 .header .title,
 .header h1.title{
   font-weight:700;
@@ -104,7 +102,8 @@ p, textarea, .btn { font-family: inherit; }
   display:flex; flex-direction:column;
 }
 .card:hover{ box-shadow:var(--shadow); }
-.card:last-of-type{ margin-bottom:-15px; }
+/* 🔧 음수 마진 제거 */
+.card:last-of-type{ margin-bottom:0; }
 
 .card h2, .card .hint{ font-family:'MaruBuri', serif; }
 .card h2{
@@ -127,11 +126,9 @@ p, textarea, .btn { font-family: inherit; }
 /* ===== Emotion badge ===== */
 .emotion-soft{
   display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+  align-items:center; justify-content:center;
   padding:6px 14px;
-  background:#fdfaf6;         /* 환한 베이지 */
+  background:#fdfaf6;
   border:1px solid #e9dcd7;
   border-radius:9999px;
   font-family:'Pretendard', sans-serif;
@@ -141,16 +138,11 @@ p, textarea, .btn { font-family: inherit; }
   position:relative;
   --chip-bdc:#e9dcd7;
 }
-/* 텍스트 ‘아래만’ 2px 밑줄 (Pretendard Regular) */
 .emotion-soft .chip-label{
-  display:inline-flex;
-  align-items:center; justify-content:center;
   padding-bottom:2px;
   border-bottom:2px solid var(--chip-bdc);
   font-weight:400;
-  width:auto; text-align:center;
 }
-/* 선택 칩 느낌을 강화하려면 아래 변수만 바꾸면 됨 */
 #emotionValue.emotion-soft{
   background:#fdfaf6 !important;
   border-color:#f4e6e2 !important;
@@ -173,31 +165,25 @@ textarea{
   flex:1;
 }
 textarea::placeholder{ color: color-mix(in oklab, var(--muted) 78%, #bbb); }
-textarea:focus{
-  border-color:var(--rose-300);
-  box-shadow:none;
-  transition:border-color .18s ease;
-}
+textarea:focus{ border-color:var(--rose-300); box-shadow:none; transition:border-color .18s ease; }
 
 /* ===== CTA ===== */
 .cta{
-  position:static;
+  position:relative;  /* 🔧 static → relative */
+  z-index:5;          /* 🔧 항상 버튼이 위에 오도록 */
   border-top:1px solid var(--border);
   padding:14px clamp(14px,3vw,26px);
   background:none;
 }
 .cta-inner{ max-width:var(--wrap-max); margin:0 auto; text-align:center; }
 .btn{
-  width:200px;
-  padding:16px 0;
-  background:var(--navy);
-  color:#fff;
+  width:200px; padding:16px 0;
+  background:var(--navy); color:#fff;
   border:1px solid rgba(23,32,52,.12);
   border-radius:18px;
   font-weight:650; letter-spacing:.2px;
   box-shadow:0 10px 24px rgba(23,32,52,.22);
-  font-size:.9rem;
-  cursor:pointer;
+  font-size:.9rem; cursor:pointer;
 }
 .btn:active{ transform:translateY(1px); }
 .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }

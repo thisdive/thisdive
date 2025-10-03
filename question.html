@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="light" />
 
-  <!-- ▣ 강화된 CSP (자가 호스팅 전제: 외부 필요 없으면 'self'만) -->
+  <!-- ▣ 강화된 CSP -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src  'self';
@@ -20,24 +20,22 @@
     upgrade-insecure-requests
   ">
 
-  <!-- 검색 차단(원하면 유지) -->
+  <!-- 검색 차단 -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="googlebot" content="noindex, nofollow" />
-
-  <!-- Referrer 정책 -->
   <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-  <!-- 캐시 억제(필요 시) -->
+  <!-- 캐시 억제 -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- 정적 리소스 (로컬) -->
+  <!-- 정적 리소스 -->
   <link rel="stylesheet" href="./vendor/normalize.min.css" />
   <link rel="stylesheet" href="./vendor/pretendard.css" />
   <link rel="stylesheet" href="./css/question.css" />
 
-  <!-- 프레임 방지: 가장 먼저 로드(인라인 금지) -->
+  <!-- 프레임 방지 -->
   <script src="./js/framebust.js"></script>
 </head>
 <body>
@@ -57,47 +55,26 @@
           <span class="emotion-soft" id="emotionValue"><span class="chip-label">선택 안됨</span></span>
           라는 감정은 <br />나의 어떤 생각/바램으로 시작되었나요?
         </p>
-        <textarea
-          id="meText"
-          placeholder="예) 화가난다 : 나를 무시한다고 생각했다 → 팀원으로 존중 받고 싶은 바램 [충족 X] &#10;&#10;예) 기쁘다 : 나를 챙겨준다고 생각했다 → 연인으로 사랑 받고 싶은 바램 [충족 O]"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="sentences"
-          spellcheck="false"
-        ></textarea>
+        <textarea id="meText" placeholder="예) 화가난다 : 나를 무시한다고 생각했다 → 팀원으로 존중 받고 싶은 바램 [충족 X]&#10;&#10;예) 기쁘다 : 나를 챙겨준다고 생각했다 → 연인으로 사랑 받고 싶은 바램 [충족 O]" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
       </section>
 
       <section class="card" aria-labelledby="h2">
         <h2 id="h2">👂🏻 너의 이야기 (선택)</h2>
         <p class="hint">같은 장면에서 상대방은<br />어떤 생각/바램이 있었을까요?</p>
-        <textarea
-          id="youText"
-          placeholder="예) 상대방도 내 행동이 자신을 무시한다고 생각했을 것 같다 → 책임자로 존중 받고 싶은 바램 [충족 X]"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="sentences"
-          spellcheck="false"
-        ></textarea>
+        <textarea id="youText" placeholder="예) 상대방도 내 행동이 자신을 무시한다고 생각했을 것 같다 → 책임자로 존중 받고 싶은 바램 [충족 X]" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
       </section>
 
       <section class="card" aria-labelledby="h3">
         <h2 id="h3">💌 사랑하는 나에게</h2>
         <p class="hint">지금의 나에게, 사랑을 담아<br />가장 필요한 말을 전해주세요.</p>
-        <textarea
-          id="loveText"
-          placeholder="예) 상대방 입장이 되어보니 내 행동도 잘못된 부분이 있다는 걸 알게 됐다. 앞으로는 한 번 더 생각하고 행동하는 더 멋진 내가 되자!"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="sentences"
-          spellcheck="false"
-        ></textarea>
+        <textarea id="loveText" placeholder="예) 상대방 입장이 되어보니 내 행동도 잘못된 부분이 있다는 걸 알게 됐다. 앞으로는 한 번 더 생각하고 행동하는 더 멋진 내가 되자!" inputmode="text" autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
       </section>
     </main>
 
     <div class="cta" role="region" aria-live="polite">
       <div class="cta-inner">
-        <!-- ✅ 기본 이동 가능(백업) + JS가 있으면 파라미터 덧붙여 이동 -->
-        <a class="btn" id="nextBtn" href="future.html" role="button">오늘의 목표 정하기 →</a>
+        <!-- ✅ 기본 링크 이동 + JS 오버라이드 -->
+        <a class="btn" id="nextBtn" href="future.html">오늘의 목표 정하기 →</a>
       </div>
     </div>
   </div>

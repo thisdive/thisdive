@@ -6,7 +6,7 @@ const K_G_DATA        = `${NS}.g:data`;         // 3페이지(목표) 입력 스
 const K_REWARD        = `${NS}.reward`;         // ▶ timer와 공유
 
 // DOM helpers
-const $ = (s, r=document) => r.querySelector(s);
+const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
 // Elements
@@ -18,20 +18,32 @@ const nextBtn   = $('#nextBtn');
 const starsWrap = $('#starsGroup');
 
 // Stars text
-const diffText  = {0:'목표의 난이도를 선택하세요.', 1:'아주 쉽게', 2:'쉽게', 3:'적당하게', 4:'약간 어렵게', 5:'도전!'};
+const diffText  = {
+  0:'목표의 난이도를 선택하세요.',
+  1:'아주 쉽게',
+  2:'쉽게',
+  3:'적당하게',
+  4:'약간 어렵게',
+  5:'도전!'
+};
 
 // ===== Init reset if emotion changed =====
 (function compareEmotionAndResetIfChanged(){
-  try{
-    const cur = localStorage.getItem(K_P2_CURRENT)    || '';
-    const last= localStorage.getItem(K_P3_LASTSOURCE) || '';
+  try {
+    const cur  = localStorage.getItem(K_P2_CURRENT)    || '';
+    const last = localStorage.getItem(K_P3_LASTSOURCE) || '';
 
     if (cur !== last) {
-      // 저장값 삭제
-      try{ localStorage.removeItem(K_G_DATA); }catch(_){}
+      // 저장값 삭제 (localStorage + sessionStorage 모두 초기화)
+      try { 
+        localStorage.removeItem(K_G_DATA); 
+        sessionStorage.removeItem(`${NS}.goal`);
+        sessionStorage.removeItem(`${NS}.cat`);
+        sessionStorage.removeItem(K_REWARD);
+      } catch(_) {}
 
       // UI 초기화
-      try{
+      try {
         $$('#catField .chip').forEach(c=>{
           c.classList.remove('on');
           const r = c.querySelector('input[type="radio"]');
@@ -41,10 +53,10 @@ const diffText  = {0:'목표의 난이도를 선택하세요.', 1:'아주 쉽게
         updateReadout(0);
         if (goalEl) goalEl.value = '';
         if (rewardEl) rewardEl.value = '';
-      }catch(_){}
+      } catch(_) {}
     }
     localStorage.setItem(K_P3_LASTSOURCE, cur);
-  }catch(_){}
+  } catch(_) {}
 })();
 
 // ===== UI helpers =====
@@ -54,23 +66,23 @@ function currentDiff(){
   return sel ? Number(sel.value) : 0;
 }
 function save(){
-  const cat  = (catField?.querySelector('input:checked')||{}).value || '';
-  const diff = currentDiff();
-  const goal = goalEl?.value || '';
+  const cat    = (catField?.querySelector('input:checked')||{}).value || '';
+  const diff   = currentDiff();
+  const goal   = goalEl?.value || '';
   const reward = rewardEl?.value || '';
-  const data = {cat, diff, goal, reward, at: Date.now()};
-  try{
+  const data   = {cat, diff, goal, reward, at: Date.now()};
+  try {
     localStorage.setItem(K_G_DATA, JSON.stringify(data));
     sessionStorage.setItem(`${NS}.goal`, goal);
     sessionStorage.setItem(`${NS}.cat`,  cat);
     sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 사용
-  }catch(_){}
+  } catch(_) {}
 }
 
 // ===== Restore =====
 (function restore(){
   updateReadout(0);
-  try{
+  try {
     const raw = localStorage.getItem(K_G_DATA);
     if(raw){
       const d = JSON.parse(raw);
@@ -82,14 +94,14 @@ function save(){
         const r = $('#diff-' + d.diff);
         if (r){ r.checked = true; updateReadout(d.diff); }
       }
-      if (typeof d.goal === 'string' && goalEl)   goalEl.value = d.goal;
+      if (typeof d.goal === 'string' && goalEl)   goalEl.value   = d.goal;
       if (typeof d.reward === 'string' && rewardEl) rewardEl.value = d.reward;
     } else {
       // 세션에 reward만 남아있을 수 있음
       const sr = (sessionStorage.getItem(K_REWARD) || '').trim();
       if (sr && rewardEl) rewardEl.value = sr;
     }
-  }catch(_){}
+  } catch(_) {}
 })();
 
 // ===== Category chips =====
@@ -148,23 +160,21 @@ catField?.addEventListener('click', (e)=>{
 goalEl?.addEventListener('input', save);
 rewardEl?.addEventListener('input', save);
 
-// ===== CTA → timer (t-test.html) =====
+// ===== CTA → timer =====
 (function bindCTA(){
   const go = (ev)=>{
-    ev.preventDefault(); ev.stopPropagation();
+    ev.preventDefault();
     const goal   = (goalEl?.value||'').trim();
     const reward = (rewardEl?.value||'').trim();
-    try{
+    try {
       sessionStorage.setItem(`${NS}.goal`, goal);
       sessionStorage.setItem(K_REWARD, reward);
-    }catch(_){}
+    } catch(_) {}
     const qs = new URLSearchParams({ goal, reward, v:String(Date.now()) });
     const target = `timer.html?${qs.toString()}`;
-    try { window.location.assign(target); } catch { window.location.href = target; }
+    window.location.href = target; // 단순화 (안드/구형 브라우저 호환 ↑)
   };
   if (nextBtn){
-    ['click','touchend','pointerup'].forEach(evt =>
-      nextBtn.addEventListener(evt, go, { passive:false })
-    );
+    nextBtn.addEventListener('click', go, { passive:false });
   }
 })();

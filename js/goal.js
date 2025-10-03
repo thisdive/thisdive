@@ -1,9 +1,9 @@
 // ===== Constants / Keys =====
 const NS = 'thisdive';
 const K_P2_CURRENT    = `${NS}.p2:current`;     // 2페이지(감정) 현재 스냅샷
-const K_P3_LASTSOURCE = `${NS}.p3:lastSource`;  // 3페이지가 직전에 참고했던 2페이지 스냅샷
-const K_G_DATA        = `${NS}.g:data`;         // 3페이지(목표) 입력 스냅샷
-const K_REWARD        = `${NS}.reward`;         // ▶ timer와 공유
+const K_P3_LASTSOURCE = `${NS}.p3:lastSource`;  // goal이 마지막으로 참고한 감정 스냅샷
+const K_G_DATA        = `${NS}.g:data`;         // goal 입력 스냅샷
+const K_REWARD        = `${NS}.reward`;         // timer와 공유
 
 // DOM helpers
 const $  = (s, r=document) => r.querySelector(s);
@@ -15,7 +15,6 @@ const readout   = $('#readout');
 const goalEl    = $('#goalInput');
 const rewardEl  = $('#rewardInput');
 const nextBtn   = $('#nextBtn');
-const starsWrap = $('#starsGroup');
 
 // Stars text
 const diffText  = {
@@ -27,20 +26,20 @@ const diffText  = {
   5:'도전!'
 };
 
-// ===== Init reset if emotion changed =====
+// ===== 감정 변경 감지 → 초기화 =====
 (function compareEmotionAndResetIfChanged(){
   try {
-    const cur  = localStorage.getItem(K_P2_CURRENT)    || '';
-    const last = localStorage.getItem(K_P3_LASTSOURCE) || '';
+    const cur  = (localStorage.getItem(K_P2_CURRENT) || '').trim();
+    const last = (localStorage.getItem(K_P3_LASTSOURCE) || '').trim();
 
-    if (cur !== last) {
-      // 저장값 삭제 (localStorage + sessionStorage 모두 초기화)
-      try { 
-        localStorage.removeItem(K_G_DATA); 
+    const emotionChanged = !cur || (cur !== last); // 비어있어도 리셋
+    if (emotionChanged) {
+      try {
+        localStorage.removeItem(K_G_DATA);
         sessionStorage.removeItem(`${NS}.goal`);
         sessionStorage.removeItem(`${NS}.cat`);
         sessionStorage.removeItem(K_REWARD);
-      } catch(_) {}
+      } catch (_) {}
 
       // UI 초기화
       try {
@@ -53,16 +52,17 @@ const diffText  = {
         updateReadout(0);
         if (goalEl) goalEl.value = '';
         if (rewardEl) rewardEl.value = '';
-      } catch(_) {}
+      } catch (_) {}
     }
+
     localStorage.setItem(K_P3_LASTSOURCE, cur);
-  } catch(_) {}
+  } catch (_) {}
 })();
 
 // ===== UI helpers =====
 function updateReadout(v){ readout && (readout.textContent = diffText[Number(v) || 0]); }
 function currentDiff(){
-  const sel = $('input[name="difficulty"]:checked');
+  const sel = document.querySelector('input[name="difficulty"]:checked');
   return sel ? Number(sel.value) : 0;
 }
 function save(){
@@ -75,7 +75,7 @@ function save(){
     localStorage.setItem(K_G_DATA, JSON.stringify(data));
     sessionStorage.setItem(`${NS}.goal`, goal);
     sessionStorage.setItem(`${NS}.cat`,  cat);
-    sessionStorage.setItem(K_REWARD, reward); // ▶ timer에서 사용
+    sessionStorage.setItem(K_REWARD, reward);
   } catch(_) {}
 }
 
@@ -94,10 +94,9 @@ function save(){
         const r = $('#diff-' + d.diff);
         if (r){ r.checked = true; updateReadout(d.diff); }
       }
-      if (typeof d.goal === 'string' && goalEl)   goalEl.value   = d.goal;
+      if (typeof d.goal === 'string'   && goalEl)   goalEl.value   = d.goal;
       if (typeof d.reward === 'string' && rewardEl) rewardEl.value = d.reward;
     } else {
-      // 세션에 reward만 남아있을 수 있음
       const sr = (sessionStorage.getItem(K_REWARD) || '').trim();
       if (sr && rewardEl) rewardEl.value = sr;
     }
@@ -116,7 +115,7 @@ catField?.addEventListener('click', (e)=>{
   save();
 });
 
-// ===== Stars (accessibility) =====
+// ===== Stars =====
 (function initStars(){
   const radios = [...$$('#starsGroup input[name="difficulty"]')];
   const labels = [...$$('#starsGroup label[for]')];
@@ -130,7 +129,7 @@ catField?.addEventListener('click', (e)=>{
   labels.forEach(l=>{
     l.addEventListener('click', ()=>{
       const id = l.getAttribute('for');
-      const el = $('#' + id);
+      const el = document.getElementById(id);
       if (el){
         el.checked = true;
         el.dispatchEvent(new Event('change', { bubbles:true }));
@@ -153,28 +152,34 @@ catField?.addEventListener('click', (e)=>{
     });
   });
 
-  setDifficulty(($('input[name="difficulty"]:checked')||{}).value || 0);
+  setDifficulty((document.querySelector('input[name="difficulty"]:checked')||{}).value || 0);
 })();
 
-// ===== Inputs save =====
-goalEl?.addEventListener('input', save);
-rewardEl?.addEventListener('input', save);
-
-// ===== CTA → timer =====
+// ===== CTA → timer (a[href] 백업 + 파라미터 합치기) =====
 (function bindCTA(){
-  const go = (ev)=>{
-    ev.preventDefault();
+  const buildURL = () => {
     const goal   = (goalEl?.value||'').trim();
     const reward = (rewardEl?.value||'').trim();
+
     try {
       sessionStorage.setItem(`${NS}.goal`, goal);
       sessionStorage.setItem(K_REWARD, reward);
     } catch(_) {}
-    const qs = new URLSearchParams({ goal, reward, v:String(Date.now()) });
-    const target = `timer.html?${qs.toString()}`;
-    window.location.href = target; // 단순화 (안드/구형 브라우저 호환 ↑)
+
+    const base = (nextBtn?.getAttribute('href') || 'timer.html').replace(/\?.*$/, '');
+    const qs   = new URLSearchParams({ goal, reward, v: String(Date.now()) }).toString();
+    return `${base}?${qs}`;
   };
-  if (nextBtn){
-    nextBtn.addEventListener('click', go, { passive:false });
+
+  const go = (ev)=>{
+    try { ev.preventDefault(); ev.stopPropagation(); } catch(_) {}
+    const url = buildURL();
+    try { location.assign(url); } catch { location.href = url; }
+  };
+
+  if (nextBtn) {
+    ['click','touchend','pointerup'].forEach(evt =>
+      nextBtn.addEventListener(evt, go, { passive:false })
+    );
   }
 })();

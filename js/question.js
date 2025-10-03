@@ -54,7 +54,6 @@ function buildQS(obj) {
   }
   return parts.join('&');
 }
-// 안전한 쿼리 읽기/쓰기 (URLSearchParams 있으면 사용, 없으면 폴백)
 function getQueryParam(name) {
   if (typeof URLSearchParams !== 'undefined') {
     return new URLSearchParams(location.search).get(name);
@@ -153,5 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     nextBtn.addEventListener('click', go, { passive:false });
     nextBtn.addEventListener('touchend', go, { passive:false });
     nextBtn.addEventListener('pointerup', go, { passive:false });
+
+    // 🔹 iOS Safari BFCache 복원 시 플래그 리셋
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        didGo = false;
+      }
+    });
   }
 });

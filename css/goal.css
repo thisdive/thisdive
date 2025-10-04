@@ -141,14 +141,25 @@ body{
 .cta{ border-top:1px solid var(--border); padding:14px clamp(14px,3vw,26px); background:none; }
 .cta-inner{ max-width:var(--wrap-max); margin:0 auto; text-align:center; }
 .btn{
+.btn{
   font-family:'Pretendard',sans-serif;
-  width:200px; padding:16px 0; background:var(--navy); color:#fff;
-  border:1px solid rgba(23,32,52,.12); border-radius:18px;
-  font-weight:650; letter-spacing:.2px; box-shadow:0 10px 24px rgba(23,32,52,.22);
-  font-size:.9rem; cursor:pointer;
+  width:200px;
+  padding:16px 0;
+  background:var(--navy);
+  color:#fff;
+  border:1px solid rgba(23,32,52,.12);
+  border-radius:18px;
+  font-weight:650;
+  letter-spacing:.2px;
+  box-shadow:0 10px 24px rgba(23,32,52,.22);
+  font-size:.9rem;
+  cursor:pointer;
+  text-align:center;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn:active{ transform:translateY(1px); }
 .btn:focus-visible{ outline:0; box-shadow:0 0 0 6px rgba(215,168,181,.35); }
+
 
 /* No-JS */
 .nojs{ text-align:center; color:#9ca3af; }

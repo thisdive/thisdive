@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light" />
 
-  <!-- CSP: 자가 호스팅 기준 -->
+  <!-- CSP -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src  'self';
@@ -24,12 +24,14 @@
   <meta name="googlebot" content="noindex, nofollow" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-  <!-- 캐시 억제(테스트 편의) -->
+  <!-- 캐시 억제(테스트용) -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
+  <!-- 정적 리소스 -->
   <link rel="stylesheet" href="./vendor/normalize.min.css" />
+  <link rel="stylesheet" href="./vendor/pretendard.css" />
   <link rel="stylesheet" href="./css/goal.css" />
 
   <!-- 프레임 방지 -->
@@ -46,10 +48,10 @@
   </header>
 
   <div class="page">
-    <main class="sheet" role="main" aria-labelledby="pageTitle">
-      <section class="block" aria-labelledby="b1">
+    <main class="sheet" role="main">
+      <section class="block">
         <p class="block-desc">행복한 <strong>미래의 하루</strong>를 위해<br>오늘은 <strong>어떤 몰입</strong>이 필요할까요?</p>
-        <h2 id="b1" class="block-title">✨ 오늘의 몰입</h2>
+        <h2 class="block-title">✨ 오늘의 몰입</h2>
 
         <div class="chips" id="catField">
           <label class="chip"><input type="radio" name="cat" value="회복"> 🧘 회복</label>
@@ -63,58 +65,45 @@
 
       <div class="dotted-sep" role="separator"></div>
 
-      <section class="block" aria-labelledby="b2">
-        <h2 id="b2" class="block-title">🪄 오늘의 난이도</h2>
-        <div class="panel" role="radiogroup" aria-labelledby="difficultyLabel">
+      <section class="block">
+        <h2 class="block-title">🪄 오늘의 난이도</h2>
+        <div class="panel" role="radiogroup">
           <div class="panel-head">
             <span id="readout" class="readout">목표의 난이도를 선택하세요.</span>
           </div>
-
           <div class="stars" id="starsGroup">
-            <input type="radio" name="difficulty" id="diff-5" value="5" aria-label="5 - 도전!" />
-            <label for="diff-5" title="5">★</label>
-            <input type="radio" name="difficulty" id="diff-4" value="4" aria-label="4 - 약간 어렵게" />
-            <label for="diff-4" title="4">★</label>
-            <input type="radio" name="difficulty" id="diff-3" value="3" aria-label="3 - 적당하게" />
-            <label for="diff-3" title="3">★</label>
-            <input type="radio" name="difficulty" id="diff-2" value="2" aria-label="2 - 쉽게" />
-            <label for="diff-2" title="2">★</label>
-            <input type="radio" name="difficulty" id="diff-1" value="1" aria-label="1 - 아주 쉽게" />
-            <label for="diff-1" title="1">★</label>
+            <input type="radio" name="difficulty" id="diff-5" value="5"><label for="diff-5">★</label>
+            <input type="radio" name="difficulty" id="diff-4" value="4"><label for="diff-4">★</label>
+            <input type="radio" name="difficulty" id="diff-3" value="3"><label for="diff-3">★</label>
+            <input type="radio" name="difficulty" id="diff-2" value="2"><label for="diff-2">★</label>
+            <input type="radio" name="difficulty" id="diff-1" value="1"><label for="diff-1">★</label>
           </div>
         </div>
       </section>
 
       <div class="dotted-sep" role="separator"></div>
 
-      <section class="block" aria-labelledby="b3">
-        <h2 id="b3" class="block-title">📝 오늘의 목표</h2>
+      <section class="block">
+        <h2 class="block-title">📝 오늘의 목표</h2>
         <input id="goalInput" class="goal-input" type="text" placeholder="예) ★ : 프랑스어 1개 외우기" />
       </section>
 
       <div class="dotted-sep" role="separator"></div>
 
-      <section class="block" aria-labelledby="b4">
-        <h2 id="b4" class="block-title">🌸 오늘의 보상</h2>
+      <section class="block">
+        <h2 class="block-title">🌸 오늘의 보상</h2>
         <input id="rewardInput" class="goal-input" type="text" placeholder="예) 좋아하는 차 한 잔 마시기" />
       </section>
     </main>
   </div>
 
-  <!-- ✅ 폴백 강한 방식: form + submit -->
-  <div class="cta" role="region" aria-live="polite">
+  <div class="cta">
     <div class="cta-inner">
-      <form id="goalForm" action="timer.html" method="get" novalidate>
-        <input type="hidden" name="goal" id="qGoal" />
-        <input type="hidden" name="reward" id="qReward" />
-        <input type="hidden" name="v" id="qV" />
-        <button class="btn" id="nextBtn" type="submit" aria-label="몰입 시작하기">몰입 시작하기 →</button>
-      </form>
+      <!-- a를 버튼처럼 보이게 + JS가 실패해도 기본 이동 가능 -->
+      <a class="btn" id="nextBtn" href="timer.html">몰입 시작하기 →</a>
     </div>
   </div>
 
-  <noscript>
-    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
-  </noscript>
+  <noscript><p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 기능이 제한됩니다.</p></noscript>
 </body>
 </html>

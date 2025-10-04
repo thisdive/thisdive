@@ -75,3 +75,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard',sys
   :root{--wrap-max:100%}
   .sheet{padding-left:22px;padding-right:22px}
 }
+
+/* ---- CTA 터치 막힘 핫픽스 ---- */
+.cta{ position: relative; z-index: 5; }                 /* 버튼 영역을 위로 */
+.cta::before{ pointer-events: none !important; }        /* 분리선(가상요소)이 클릭 가로막지 않게 */
+.btn{ position: relative; z-index: 10; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; -webkit-tap-highlight-color:transparent; }
+.page, .sheet{ position: relative; z-index: 1; }        /* 상단 카드가 덮지 않도록 안전장치 */

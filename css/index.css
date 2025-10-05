@@ -63,6 +63,15 @@ p {
   margin-bottom: 28px;
 }
 
+/* ▼▼▼ 추가: 강제 다크가 텍스트에 주입하는 배경 제거 */
+.wrap h1, .wrap p, .wrap h1 *, .wrap p * {
+  background: transparent !important;
+  background-image: none !important;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* ▲▲▲ 추가 끝 */
+
 .btn{
   display:inline-flex;           /* 아이콘+텍스트 가로 정렬 */
   align-items:center;
@@ -104,6 +113,20 @@ p {
   flex: 0 0 auto;
 }
 
-
-
-
+/* ▼▼▼ 추가: 브라우저가 '다크 선호'라도 라이트 팔레트 유지 */
+@media (prefers-color-scheme: dark){
+  :root {
+    --bg: #f7f3ed;
+    --fg: #2a3249;
+    --muted: #6b7280;
+    --rose-100:#f4e6e2;
+    --rose-300:#d7a8b5;
+  }
+  html, body { background: var(--bg); color: var(--fg); }
+  /* 텍스트 배경 재확인 */
+  .wrap h1, .wrap p, .wrap h1 *, .wrap p * {
+    background: transparent !important;
+    background-image: none !important;
+  }
+}
+/* ▲▲▲ 추가 끝 */

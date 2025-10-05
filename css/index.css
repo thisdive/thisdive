@@ -35,9 +35,26 @@
   --rose-300:#d7a8b5;   /* 내부 원 */
 }
 
-/* === 라이트 전용 고정 (NEW) === */
+/* 기본(라이트) 토큰 */
+:root {
+  --bg:#f7f3ed; --fg:#2a3249; --muted:#6b7280;
+  --rose-100:#f4e6e2; --rose-300:#d7a8b5;
+}
+
+/* 전역 라이트 고정 힌트 (유지) */
 :root, html { color-scheme: light; }
-html, body { background:#f7f3ed; color:#2a3249; } /* 텍스트 컬러도 명시 */
+html, body { background:#f7f3ed; color:#2a3249; }
+
+/* ▶ 다크 모드에서도 '같은 색'을 쓰게 하여 강제 반전을 회피 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#f7f3ed; --fg:#2a3249; --muted:#6b7280;
+    --rose-100:#f4e6e2; --rose-300:#d7a8b5;
+  }
+  html, body { background:#f7f3ed; color:#2a3249; }
+  .wrap, .card { background:#ffffff; } /* 투명 방지용: 주요 컨테이너에 배경 명시 */
+}
+
 
 
 * { box-sizing: border-box; }
@@ -108,5 +125,6 @@ p {
   display:inline-block;
   flex: 0 0 auto;
 }
+
 
 

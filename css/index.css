@@ -35,6 +35,11 @@
   --rose-300:#d7a8b5;   /* 내부 원 */
 }
 
+/* === 라이트 전용 고정 (NEW) === */
+:root, html { color-scheme: light; }
+html, body { background:#f7f3ed; color:#2a3249; } /* 텍스트 컬러도 명시 */
+
+
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body {
@@ -103,4 +108,5 @@ p {
   display:inline-block;
   flex: 0 0 auto;
 }
+
 

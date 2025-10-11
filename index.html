@@ -5,14 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   
   <title>오늘의 몰입 시작 | thisdive</title>
-  <!-- light 단독 → light dark 로 변경 -->
+  <!-- 라이트/다크 지원 힌트 -->
   <meta name="color-scheme" content="light dark" />
 
   <!-- 검색 차단 (원하면 제거) -->
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
 
-  <!-- CSP: inline 금지, 자가호스팅 + (필요 시) jsDelivr/Google Fonts 허용 -->
+  <!-- Referrer 정책 (보안) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- 캐시 억제 (테스트/배포 편의) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!--
+    CSP: 통합 · 강화
+    - 기본은 'self'로 제한하되, 필요한 CDN은 명시적으로 허용 (index에서 사용하므로)
+    - object-src:none 등 보안 강화 지시 추가
+  -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://cdn.jsdelivr.net;
@@ -20,7 +32,9 @@
     img-src    'self' data:;
     font-src   'self' https://cdn.jsdelivr.net https://fonts.gstatic.com https://fonts.googleapis.com;
     connect-src 'self';
+    object-src 'none';
     base-uri 'self';
+    form-action 'self';
     upgrade-insecure-requests
   ">
 
@@ -37,6 +51,14 @@
       <span class="logo-dot" aria-hidden="true"></span> 시작하기
     </a>
   </div>
+
+  <!-- 네트워크 상태 알림 요소 (오프라인 표시용) -->
+  <div id="net" class="net" aria-live="polite" hidden>오프라인입니다. 네트워크를 확인하세요.</div>
+
+  <!-- 자바스크립트 비활성 안내 -->
+  <noscript>
+    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 이 페이지의 기능이 제한됩니다.</p>
+  </noscript>
 
   <script src="./js/index.js" defer></script>
 </body>

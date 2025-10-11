@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>만료 안내 | thisdive</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- 검색 차단 -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
+
+  <!-- Referrer 정책 -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- 캐시 억제(필요 시 제거 가능) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- ▣ 강화된 CSP (자가 호스팅 전제: 필요한 경우에만 CDN 도메인 추가) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src  'self';
+    style-src   'self';
+    img-src     'self' data:;
+    font-src    'self';
+    connect-src 'self';
+    object-src  'none';
+    base-uri    'self';
+    form-action 'self';
+    upgrade-insecure-requests
+  ">
+
+  <!-- 스타일: normalize/pretendard는 로컬 벤더를 가정 -->
+  <link rel="stylesheet" href="./vendor/normalize.min.css" />
+  <link rel="stylesheet" href="./vendor/pretendard.css" />
+  <link rel="stylesheet" href="./css/expired.css" />
+
+  <!-- 프레임 방지(가장 먼저) -->
+  <script src="./js/framebust.js"></script>
+  <!-- 페이지 스크립트 -->
+  <script src="./js/expired.js" defer></script>
+</head>
+<body>
+  <a class="sr-only" href="#main">본문 바로가기</a>
+
+  <header class="header" role="banner">
+    <div class="inner">
+      <span class="logo-dot" aria-hidden="true"></span>
+      <h1 class="title">만료 안내</h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap" role="main">
+    <article class="card" aria-labelledby="h1">
+      <div class="card-body">
+        <h2 id="h1" class="headline">감사합니다</h2>
+        <p class="lead">
+          첫 1분기를 끝까지 걸어온 당신, 정말 잘하셨어요. 💫<br>
+          이 몰입은 사계절을 지나 새해의 꿈을 현실로 만들 거예요. ✨<br>
+          <strong>2026년의 마지막 날, 웃고 있는 당신을 thisdive가 기다립니다.</strong>
+        </p>
+
+        <div class="actions">
+          <a class="btn primary" href="./index.html">몰입 이어가기</a>
+          <!-- 필요시 외부 결제/연장 링크 -->
+          <!-- <a class="btn" href="https://example.com/renew" rel="noopener">연장하기</a> -->
+        </div>
+
+        <p class="note">지난 기록은 계정에 안전하게 보관되어 있어요. 다음 분기도 함께 걸을까요?</p>
+      </div>
+    </article>
+  </main>
+
+  <noscript>
+    <p class="nojs">⚠️ 자바스크립트가 꺼져 있어요. 일부 기능이 제한될 수 있어요.</p>
+  </noscript>
+</body>
+</html>
